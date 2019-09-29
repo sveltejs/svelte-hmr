@@ -1,0 +1,8 @@
+{
+  "name": "svelte-hmr",
+  "version": "0.0.0",
+  "description": "Bundler agnostic HMR utils for Svelte 3",
+  "main": "index.js",
+  "author": "rixo <rixo@rixo.fr>",
+  "license": "MIT"
+}
