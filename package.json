@@ -4,5 +4,8 @@
   "description": "Bundler agnostic HMR utils for Svelte 3",
   "main": "index.js",
   "author": "rixo <rixo@rixo.fr>",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "test": "echo TODO"
+  }
 }
