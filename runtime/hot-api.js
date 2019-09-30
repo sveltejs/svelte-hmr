@@ -2,6 +2,8 @@ import { createProxy } from './proxy'
 
 const defaultHotOptions = {
   noPreserveState: false,
+  noReload: false,
+  optimistic: false,
 }
 
 const registry = new Map()
