@@ -104,6 +104,7 @@ export const createProxiedComponent = (
   { noPreserveState, onInstance, onMount, onDestroy }
 ) => {
   let cmp
+  let last
   let parentComponent
   let compileData
   let options = initialOptions
@@ -162,16 +163,24 @@ export const createProxiedComponent = (
       const previous = cmp
       if (conservative) {
         try {
-          cmp = createComponent(Component, restore, previous)
-          targetCmp.$destroy()
+          const next = createComponent(Component, restore, previous)
+          // prevents on_destroy from firing on non-final cmp instance
+          cmp = null
+          previous.$destroy()
+          cmp = next
         } catch (err) {
-          cmp = targetCmp
+          cmp = previous
           throw err
         }
       } else {
-        cmp = null // prevents on_destroy from firing on non-final cmp instance
-        targetCmp.$destroy()
-        cmp = createComponent(Component, restore, previous)
+        // prevents on_destroy from firing on non-final cmp instance
+        cmp = null
+        if (previous) {
+          // previous can be null if last constructor has crashed
+          previous.$destroy()
+        }
+        cmp = createComponent(Component, restore, last)
+        last = cmp
       }
       return cmp
     }

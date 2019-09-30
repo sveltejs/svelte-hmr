@@ -147,7 +147,7 @@ export default class ProxyAdapterDom {
       err.hmrFatal = true
       return err
     }
-    refreshComponent(insertionPoint.parentNode, insertionPoint, true)
+    refreshComponent(insertionPoint.parentNode, insertionPoint)
   }
 
   renderError(err) {
