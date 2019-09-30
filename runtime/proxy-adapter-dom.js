@@ -18,6 +18,7 @@ const ErrorOverlay = () => {
       font-family: Menlo, Consolas, monospace;
       font-size: large;
       color: rgb(232, 232, 232);
+      overflow: auto;
     `,
     h1: `
       margin-top: 0;
