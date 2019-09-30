@@ -118,10 +118,11 @@ class ProxyComponent {
           }
         } catch (err) {
           const errString = String((err && err.stack) || err)
-          logError(`Error during component init ${debugName}: ${errString}`)
           setError(err, target, anchor)
           if (!current.hotOptions.optimistic || (err && err.hmrFatal)) {
             throw err
+          } else {
+            logError(`Error during component init ${debugName}: ${errString}`)
           }
         }
       }
@@ -195,9 +196,6 @@ class ProxyComponent {
       })
     } catch (err) {
       const { target, anchor } = options
-      logError(
-        `Failed to create ${debugName} instance: ${(err && err.stack) || err}`
-      )
       setError(err, target, anchor)
       throw err
     }
