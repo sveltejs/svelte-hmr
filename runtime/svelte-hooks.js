@@ -4,7 +4,11 @@
  * All references to private compoonent state ($$) are now isolated in this
  * module.
  */
-import { current_component, set_current_component } from 'svelte/internal'
+import {
+  current_component,
+  get_current_component,
+  set_current_component,
+} from 'svelte/internal'
 
 // NOTE excludes store subscriptions because it causes crashes (and also
 // probably not intented to restore stores states -- stores lives outside of
@@ -236,8 +240,23 @@ export const createProxiedComponent = (
     }
   }
 
-  parentComponent = current_component
+  // NOTE relying on dynamic bindings (current_component) makes us dependent on
+  // bundler config (and apparently it does not work in demo-svelte-nollup)
+  try {
+    parentComponent = get_current_component()
+  } catch (err) {
+    // that makes us tightly coupled to the error message but, at least, we
+    // won't mute an unexpected error, which is quite a horrible thing to do
+    if (err.message === 'Function called outside component initialization') {
+      // who knows...
+      parentComponent = current_component
+    } else {
+      throw err
+    }
+  }
+
   cmp = new Component(options)
+
   instrument(cmp)
 
   return cmp
