@@ -6,13 +6,16 @@ const defaultHotOptions = {
 
 const registry = new Map()
 
-const reload = () => {
+const domReload = () => {
   if (
     typeof window !== 'undefined' &&
     window.location &&
     window.location.reload
   ) {
+    console.log('[HMR][Svelte] Reload')
     window.location.reload()
+  } else {
+    console.log('[HMR][Svelte] Full reload required')
   }
 }
 
@@ -22,13 +25,13 @@ const reload = () => {
 // Additionaly does whatever it can to avoid crashing on runtime errors,
 // and tries to decline HMR if that doesn't go well.
 //
-export function doApplyHMR(
-  hotOptions,
+export function runUpdate({
   id,
+  hotOptions,
   Component,
   ProxyAdapter,
-  compileData
-) {
+  compileData,
+}) {
   // resolve existing record
   let record = registry.get(id)
   let error = null
@@ -46,9 +49,10 @@ export function doApplyHMR(
 
   // (re)render
   if (record) {
-    const success = record.reload({ Component, hotOptions })
-    if (success === false) {
-      error = true
+    if (record.hasFatalError()) {
+      fatalError = true
+    } else {
+      error = !record.reload({ Component, hotOptions })
     }
   } else {
     record = createProxy(ProxyAdapter, id, Component, hotOptions)
@@ -69,5 +73,43 @@ export function doApplyHMR(
     throw new Error(`Failed to create HMR proxy for Svelte component ${id}`)
   }
 
-  return { proxy, error }
+  return { proxy, error, fatalError }
+}
+
+const logUnrecoverable = id => {
+  console.log(
+    `[HMR][Svelte] Unrecoverable error in ${id}: next update will trigger full reload`
+  )
+}
+
+export function doApplyHmr(args) {
+  try {
+    const { id, reload = domReload, accept, decline, hotOptions } = args
+
+    const { proxy, fatalError, error } = runUpdate(args)
+
+    if (fatalError) {
+      if (hotOptions && hotOptions.noReload) {
+        console.log('[HMR][Svelte] Full reload required')
+      } else {
+        reload()
+      }
+    } else if (error) {
+      logUnrecoverable(id)
+      decline()
+    } else {
+      accept()
+    }
+
+    return proxy
+  } catch (err) {
+    const { id, decline } = args || {}
+    logUnrecoverable(id)
+    if (decline) {
+      decline()
+    }
+    // since we won't return the proxy and the app will expect a svelte
+    // component, it's gonna crash... so it's best to report the real cause
+    throw err
+  }
 }

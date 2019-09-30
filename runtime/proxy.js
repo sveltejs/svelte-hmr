@@ -67,48 +67,6 @@ const copyComponentMethods = (proxy, cmp, debugName) => {
   })
 }
 
-// TODO clean this extremely ad-hoc, coupled, & fragile code
-// TODO native: this must respect Page/Frame interface... or need tolerance from SN
-const createErrorComponent = (adapter, err, target, anchor) => {
-  const cmp = {
-    $destroy: noop,
-    $set: noop,
-    $$: {
-      fragment: {
-        c: noop, // create
-        l: noop, // claim
-        h: noop, // hydrate
-        m: (target, anchor) => {
-          cmp.$destroy = adapter.renderError(err, target, anchor)
-        }, // mount
-        p: noop, // update
-        i: noop, // intro
-        o: noop, // outro
-        d: noop, // destroy
-      },
-      ctx: {},
-      // state
-      props: [],
-      update: noop,
-      not_equal: noop,
-      bound: {},
-      // lifecycle
-      on_mount: [],
-      on_destroy: [],
-      before_render: [],
-      after_render: [],
-      context: {},
-      // everything else
-      callbacks: [],
-      dirty: noop,
-    },
-  }
-  if (target) {
-    cmp.$destroy = adapter.renderError(err, target, anchor)
-  }
-  return cmp
-}
-
 // everything in the constructor!
 //
 // so we don't polute the component class with new members
@@ -147,26 +105,22 @@ class ProxyComponent {
       if (lastError) {
         lastError = null
         adapter.rerender()
-      } else if (conservativeDestroy) {
-        try {
-          cmp = cmp.$replace(current.Component, {
-            target,
-            anchor,
-            conservative: true,
-          })
-        } catch (err) {
-          const errString = String((err && err.stack) || err)
-          logError(`Error during component init ${debugName}: ${errString}`)
-        }
       } else {
         try {
-          cmp = cmp.$replace(current.Component, { target, anchor })
+          if (conservativeDestroy) {
+            cmp = cmp.$replace(current.Component, {
+              target,
+              anchor,
+              conservative: true,
+            })
+          } else {
+            cmp = cmp.$replace(current.Component, { target, anchor })
+          }
         } catch (err) {
           const errString = String((err && err.stack) || err)
           logError(`Error during component init ${debugName}: ${errString}`)
-          if (current.hotOptions.optimistic) {
-            setError(err, target, anchor)
-          } else {
+          setError(err, target, anchor)
+          if (!current.hotOptions.optimistic || (err && err.hmrFatal)) {
             throw err
           }
         }
@@ -176,9 +130,7 @@ class ProxyComponent {
     // TODO need to use cmp.$replace
     const setError = (err, target, anchor) => {
       lastError = err
-      // destroyComponent();
-      // create a noop comp to trap Svelte's calls
-      // cmp = createErrorComponent(cmp, adapter, err, target, anchor);
+      adapter.renderError(err)
     }
 
     const instance = {
@@ -243,14 +195,11 @@ class ProxyComponent {
       })
     } catch (err) {
       const { target, anchor } = options
-      if (current.hotOptions.optimistic && target) {
-        logError(
-          `Failed to create ${debugName} instance: ${(err && err.stack) || err}`
-        )
-        setError(err, target, anchor)
-      } else {
-        throw err
-      }
+      logError(
+        `Failed to create ${debugName} instance: ${(err && err.stack) || err}`
+      )
+      setError(err, target, anchor)
+      throw err
     }
   }
 }
@@ -262,13 +211,11 @@ const copyStatics = (component, proxy) => {
   }
 }
 
-/*
-creates a proxy object that
-decorates the original component with trackers
-and ensures resolution to the
-latest version of the component
-*/
+// Creates a proxy object that decorates the original component with trackers
+// and ensures resolution to the latest version of the component
 export function createProxy(Adapter, id, Component, hotOptions) {
+  let fatalError = false
+
   const debugName = getDebugName(id)
   const instances = []
 
@@ -287,22 +234,37 @@ export function createProxy(Adapter, id, Component, hotOptions) {
   const proxy = {
     [name]: class extends ProxyComponent {
       constructor(options) {
-        super(
-          {
-            Adapter,
-            id,
-            debugName,
-            current,
-            register: rerender => {
-              instances.push(rerender)
+        try {
+          super(
+            {
+              Adapter,
+              id,
+              debugName,
+              current,
+              register: rerender => {
+                instances.push(rerender)
+              },
+              unregister: () => {
+                const i = instances.indexOf(this)
+                instances.splice(i, 1)
+              },
             },
-            unregister: () => {
-              const i = instances.indexOf(this)
-              instances.splice(i, 1)
-            },
-          },
-          options
-        )
+            options
+          )
+        } catch (err) {
+          // If we fail to create a proxy instance, any instance, that means
+          // that we won't be able to fix this instance when it is updated.
+          // Recovering to normal state will be impossible. HMR's dead.
+          //
+          // Fatal error will trigger a full reload on next update (reloading
+          // right now is kinda pointless since buggy code still exists).
+          //
+          fatalError = true
+          logError(
+            `Unrecoverable error in ${debugName}: next update will trigger full reload`
+          )
+          throw err
+        }
       }
     },
   }[name]
@@ -338,5 +300,7 @@ export function createProxy(Adapter, id, Component, hotOptions) {
     return true
   }
 
-  return { id, proxy, reload }
+  const hasFatalError = () => fatalError
+
+  return { id, proxy, reload, hasFatalError }
 }

@@ -1,1 +1,1 @@
-export { doApplyHMR } from './hot-api'
+export { doApplyHmr } from './hot-api'
