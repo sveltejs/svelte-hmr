@@ -12,15 +12,21 @@ export default class ProxyAdapterDom {
     this.rerender = this.rerender.bind(this)
   }
 
-  static getErrorOverlay() {
-    if (!this.errorOverlay) {
+  // NOTE overlay is only created before being actually shown to help test
+  // runner (it won't have to account for error overlay when running assertions
+  // about the contents of the rendered page)
+  static getErrorOverlay(noCreate = false) {
+    if (!noCreate && !this.errorOverlay) {
       this.errorOverlay = ErrorOverlay()
     }
     return this.errorOverlay
   }
 
   static renderCompileError(message) {
-    this.getErrorOverlay().setCompileError(message)
+    const noCreate = !message
+    const overlay = this.getErrorOverlay(noCreate)
+    if (!overlay) return
+    overlay.setCompileError(message)
   }
 
   dispose() {
@@ -67,7 +73,9 @@ export default class ProxyAdapterDom {
   }
 
   clearError() {
-    this.constructor.getErrorOverlay().clearErrors()
+    const overlay = this.constructor.getErrorOverlay(true)
+    if (!overlay) return
+    overlay.clearErrors()
   }
 }
 
