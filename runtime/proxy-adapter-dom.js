@@ -19,6 +19,10 @@ export default class ProxyAdapterDom {
     return this.errorOverlay
   }
 
+  static renderCompileError(message) {
+    this.getErrorOverlay().setCompileError(message)
+  }
+
   dispose() {
     // Component is being destroyed, detaching is not optional in Svelte3's
     // component API, so we can dispose of the insertion point in every case.
@@ -65,8 +69,8 @@ export default class ProxyAdapterDom {
   clearError() {
     this.constructor.getErrorOverlay().clearErrors()
   }
+}
 
-  static renderCompileError(message) {
-    this.getErrorOverlay().setCompileError(message)
-  }
+if (typeof window !== 'undefined') {
+  window.__SVELTE_HMR_ADAPTER = ProxyAdapterDom
 }
