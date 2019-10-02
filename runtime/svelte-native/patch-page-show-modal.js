@@ -15,7 +15,7 @@
 //
 // Relevant code is there (last checked version):
 //
-// https://github.com/halfnelson/svelte-native/blob/08702e6b178644f43052f6ec0a789a51e800d21b/src/dom/svelte/StyleElement.ts
+// https://github.com/halfnelson/svelte-native/blob/48fdc97d2eb4d3958cfcb4ff6cf5755a220829eb/src/dom/navigation.ts#L132
 //
 
 // FIXME should we override ViewBase#showModal instead?
@@ -54,9 +54,9 @@ export const patchShowModal = () => {
       return modalData.closeCallback(...args)
     }
 
-    const temperedOptions = Object.assign({}, options, { closeCallback })
+    const tamperedOptions = Object.assign({}, options, { closeCallback })
 
-    return sup.call(this, modalView, temperedOptions)
+    return sup.call(this, modalView, tamperedOptions)
   }
 }
 
