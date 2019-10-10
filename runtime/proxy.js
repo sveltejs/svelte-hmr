@@ -1,3 +1,9 @@
+/**
+ * The HMR proxy is a component-like object whose task is to sit in the
+ * component tree in place of the proxied component, and rerender each
+ * successive versions of said component.
+ */
+
 import { createProxiedComponent } from './svelte-hooks'
 
 const handledMethods = ['constructor', '$destroy']
@@ -209,8 +215,10 @@ const copyStatics = (component, proxy) => {
   }
 }
 
-// Creates a proxy object that decorates the original component with trackers
-// and ensures resolution to the latest version of the component
+/**
+ * Creates a HMR proxy and its associated `reload` function that pushes a new
+ * version to all existing instances of the component.
+ */
 export function createProxy(Adapter, id, Component, hotOptions) {
   let fatalError = false
 

@@ -1,7 +1,7 @@
 /**
  * Emulates forthcoming HMR hooks in Svelte.
  *
- * All references to private compoonent state ($$) are now isolated in this
+ * All references to private component state ($$) are now isolated in this
  * module.
  */
 import {
@@ -11,7 +11,7 @@ import {
 } from 'svelte/internal'
 
 // NOTE excludes store subscriptions because it causes crashes (and also
-// probably not intented to restore stores states -- stores lives outside of
+// probably not intented to restore stores state -- stores lives outside of
 // the HMR'd component normally)
 const isWritable = v => !v.module && v.writable && v.name.substr(0, 1) !== '$'
 
@@ -191,6 +191,9 @@ export const createProxiedComponent = (
 
     // NOTE onMount must provide target & anchor (for us to be able to determinate
     // 			actual DOM insertion point)
+    //
+    // 			And also, to support keyed list, it needs to be called each time the
+    // 			component is moved (same as $$.fragment.m)
     if (onMount) {
       const m = targetCmp.$$.fragment.m
       targetCmp.$$.fragment.m = (...args) => {
@@ -243,8 +246,12 @@ export const createProxiedComponent = (
   // NOTE relying on dynamic bindings (current_component) makes us dependent on
   // bundler config (and apparently it does not work in demo-svelte-nollup)
   try {
+    // unfortunately, unlike current_component, get_current_component() can
+    // crash in the normal path (when there is really no parent)
     parentComponent = get_current_component()
   } catch (err) {
+    // ... so we need to consider that this error means that there is no parent
+    //
     // that makes us tightly coupled to the error message but, at least, we
     // won't mute an unexpected error, which is quite a horrible thing to do
     if (err.message === 'Function called outside component initialization') {

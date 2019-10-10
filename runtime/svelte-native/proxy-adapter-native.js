@@ -28,12 +28,14 @@ patchShowModal()
 // to navigate to it (no way to just replace it in its parent "element", for
 // example). This is how it is done in NS's own "core" HMR.
 //
+// NOTE The last paragraph has not really been confirmed with NS6.
+//
 // Unfortunately the API they're using to do that is not public... Its various
 // parts remain exposed though (but documented as private), so this exploratory
 // work now relies on it. It might be fragile...
 //
 // The problem is that there is no public API that can navigate to a page and
-// replacing (like location.replace) the current history entry. Actually there
+// replace (like location.replace) the current history entry. Actually there
 // is an active issue at NS asking for that. Incidentally, members of
 // NativeScript-Vue have commented on the issue to weight in for it -- they
 // probably face some similar challenge.
@@ -213,6 +215,8 @@ export default class ProxyAdapterNative extends ProxyAdapterDom {
       const isFirstPage = !frame.canGoBack()
 
       if (isFirstPage) {
+        // NOTE not so sure of bellow with the new NS6 method for replace
+        // 
         // The "replacePage" strategy does not work on the first page
         // of the stack.
         //

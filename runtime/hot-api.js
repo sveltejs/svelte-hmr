@@ -1,8 +1,11 @@
 import { createProxy } from './proxy'
 
 const defaultHotOptions = {
+  // don't preserve local state
   noPreserveState: false,
+  // don't reload on fatal error
   noReload: false,
+  // try to recover after runtime errors during component init
   optimistic: false,
 }
 
