@@ -87,6 +87,15 @@ const logUnrecoverable = id => {
   )
 }
 
+const defaultArgs = {
+  reload: domReload,
+}
+
+export const makeApplyHmr = transformArgs => args => doApplyHmr(
+  transformArgs({ ...defaultArgs, ...args })
+)
+
+// TODO deprecate this in favor of makeApplyHmr
 export function doApplyHmr(args) {
   try {
     const { id, reload = domReload, accept, decline, hotOptions } = args
