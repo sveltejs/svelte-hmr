@@ -24,25 +24,28 @@ const domReload = () => {
   }
 }
 
-// One stop shop for HMR updates. Combines functionality of `configure`,
-// `register`, and `reload`, based on current registry state.
-//
-// Additionaly does whatever it can to avoid crashing on runtime errors,
-// and tries to decline HMR if that doesn't go well.
-//
-export function runUpdate({
-  id,
-  hotOptions,
-  Component,
-  ProxyAdapter,
-  compileData,
-}) {
-  // resolve existing record
-  let record = registry.get(id)
-  let error = null
-  let fatalError = null
+const defaultArgs = {
+  reload: domReload,
+}
 
-  hotOptions = Object.assign({}, defaultHotOptions, hotOptions)
+export const makeApplyHmr = transformArgs => args => {
+  const allArgs = transformArgs({ ...defaultArgs, ...args })
+  return applyHmr(allArgs)
+}
+
+function applyHmr(args) {
+  const {
+    id,
+    reload = domReload,
+    // normalized hot API (must conform to rollup-plugin-hot)
+    hot,
+    hotOptions: hotOptionsArg,
+    Component,
+    compileData,
+    ProxyAdapter,
+  } = args
+
+  const hotOptions = Object.assign({}, defaultHotOptions, hotOptionsArg)
 
   // meta info from compilation (vars, things that could be inspected in AST...)
   // can be used to help the proxy better emulate the proxied component (and
@@ -52,19 +55,33 @@ export function runUpdate({
     Component.$$hmrCompileData = compileData
   }
 
-  // (re)render
-  if (record) {
-    if (record.hasFatalError()) {
-      fatalError = true
+  const existing = hot.data && hot.data.record
+  const r = existing || createProxy(ProxyAdapter, id, Component, hotOptions)
+
+  if (r.hasFatalError()) {
+    if (hotOptions && hotOptions.noReload) {
+      console.log('[HMR][Svelte] Full reload required')
     } else {
-      error = !record.reload({ Component, hotOptions })
+      reload()
     }
-  } else {
-    record = createProxy(ProxyAdapter, id, Component, hotOptions)
-    registry.set(id, record)
   }
 
-  const proxy = record && record.proxy
+  r.update({ Component, hotOptions })
+
+  hot.dispose(data => {
+    data.record = r
+  })
+
+  hot.accept(async () => {
+    await r.reload()
+    if (r.hasFatalError()) {
+      if (hotOptions && hotOptions.noReload) {
+        console.log('[HMR][Svelte] Full reload required')
+      } else {
+        reload()
+      }
+    }
+  })
 
   // well, endgame... we won't be able to render next updates, even successful,
   // if we don't have proxies in svelte's tree
@@ -74,56 +91,10 @@ export function runUpdate({
   //
   // full reload required
   //
-  if (!proxy) {
+  const proxyOk = r && r.proxy
+  if (!proxyOk) {
     throw new Error(`Failed to create HMR proxy for Svelte component ${id}`)
   }
 
-  return { proxy, error, fatalError }
-}
-
-const logUnrecoverable = id => {
-  console.log(
-    `[HMR][Svelte] Unrecoverable error in ${id}: next update will trigger full reload`
-  )
-}
-
-const defaultArgs = {
-  reload: domReload,
-}
-
-export const makeApplyHmr = transformArgs => args => doApplyHmr(
-  transformArgs({ ...defaultArgs, ...args })
-)
-
-// TODO deprecate this in favor of makeApplyHmr
-export function doApplyHmr(args) {
-  try {
-    const { id, reload = domReload, accept, decline, hotOptions } = args
-
-    const { proxy, fatalError, error } = runUpdate(args)
-
-    if (fatalError) {
-      if (hotOptions && hotOptions.noReload) {
-        console.log('[HMR][Svelte] Full reload required')
-      } else {
-        reload()
-      }
-    } else if (error) {
-      logUnrecoverable(id)
-      decline()
-    } else {
-      accept()
-    }
-
-    return proxy
-  } catch (err) {
-    const { id, decline } = args || {}
-    logUnrecoverable(id)
-    if (decline) {
-      decline()
-    }
-    // since we won't return the proxy and the app will expect a svelte
-    // component, it's gonna crash... so it's best to report the real cause
-    throw err
-  }
+  return r.proxy
 }

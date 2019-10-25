@@ -275,16 +275,19 @@ export function createProxy(Adapter, id, Component, hotOptions) {
     },
   }[name]
 
+  const update = newState => Object.assign(current, newState)
+
   // reload all existing instances of this component
-  const reload = ({ Component, hotOptions }) => {
+  const reload = () => {
     // update current references
-    Object.assign(current, { Component, hotOptions })
+    // Object.assign(current, { Component, hotOptions })
+    // const { Component, hotOptions } = current
 
     // copy statics before doing anything because a static prop/method
     // could be used somewhere in the create/render call
     // TODO delete props/methods previously added and of which value has
     // not changed since
-    copyStatics(Component, proxy)
+    copyStatics(current.Component, proxy)
 
     const errors = []
 
@@ -308,5 +311,5 @@ export function createProxy(Adapter, id, Component, hotOptions) {
 
   const hasFatalError = () => fatalError
 
-  return { id, proxy, reload, hasFatalError }
+  return { id, proxy, update, reload, hasFatalError }
 }
