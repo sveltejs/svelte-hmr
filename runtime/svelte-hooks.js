@@ -87,17 +87,16 @@ const filterProps = (props, { vars }) => {
   if (!vars) {
     return props
   }
-  const previousProps = props
   const result = {}
   vars
     .filter(({ export_name }) => !!export_name)
     .forEach(({ export_name }) => {
-      result[export_name] = previousProps[export_name]
+      result[export_name] = props[export_name]
     })
-  Object.keys(previousProps)
+  Object.keys(props)
     .filter(name => name.substr(0, 2) === '$$')
     .forEach(key => {
-      result[key] = previousProps[key]
+      result[key] = props[key]
     })
   return result
 }
