@@ -1,5 +1,7 @@
 import { createProxy } from './proxy'
 
+const logPrefix = '[HMR Svelte]'
+
 const defaultHotOptions = {
   // don't preserve local state
   noPreserveState: false,
@@ -7,9 +9,13 @@ const defaultHotOptions = {
   noReload: false,
   // try to recover after runtime errors during component init
   optimistic: false,
+  // more logs, mainly for debug / tests
+  runtimeVerbose: false,
 }
 
 const registry = new Map()
+
+const log = (...args) => console.log(logPrefix, ...args)
 
 const domReload = () => {
   if (
@@ -47,6 +53,10 @@ function applyHmr(args) {
 
   const hotOptions = Object.assign({}, defaultHotOptions, hotOptionsArg)
 
+  const verbose = hotOptions.runtimeVerbose
+    ? (...args) => console.debug(logPrefix, ...args)
+    : () => {}
+
   // meta info from compilation (vars, things that could be inspected in AST...)
   // can be used to help the proxy better emulate the proxied component (and
   // better mock svelte hooks, in the wait for official support)
@@ -60,7 +70,7 @@ function applyHmr(args) {
 
   if (r.hasFatalError()) {
     if (hotOptions && hotOptions.noReload) {
-      console.log('[HMR][Svelte] Full reload required')
+      log('Full reload required')
     } else {
       reload()
     }
@@ -76,10 +86,12 @@ function applyHmr(args) {
     await r.reload()
     if (r.hasFatalError()) {
       if (hotOptions && hotOptions.noReload) {
-        console.log('[HMR][Svelte] Full reload required')
+        log('Full reload required')
       } else {
         reload()
       }
+    } else {
+      verbose('Up to date')
     }
   })
 
