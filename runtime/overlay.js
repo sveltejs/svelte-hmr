@@ -44,8 +44,6 @@ const ErrorOverlay = () => {
     section.style = style.section
     const body = document.createElement('div')
     section.appendChild(body)
-    const target = document.body
-    target.appendChild(section)
     return { h1, el: section, body }
   }
 
@@ -54,11 +52,12 @@ const ErrorOverlay = () => {
   }
 
   const show = () => {
-    overlay.el.style.display = 'block'
+    const target = document.body
+    target.appendChild(overlay.el)
   }
 
   const hide = () => {
-    overlay.el.style.display = 'none'
+    overlay.el.remove()
   }
 
   const update = () => {
