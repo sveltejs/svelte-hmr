@@ -1,6 +1,6 @@
 import { createProxy } from './proxy'
 
-const logPrefix = '[HMR Svelte]'
+const logPrefix = '[HMR:Svelte]'
 
 const defaultHotOptions = {
   // don't preserve local state
@@ -23,10 +23,10 @@ const domReload = () => {
     window.location &&
     window.location.reload
   ) {
-    console.log('[HMR][Svelte] Reload')
+    log('Reload')
     window.location.reload()
   } else {
-    console.log('[HMR][Svelte] Full reload required')
+    log('Full reload required')
   }
 }
 
@@ -91,6 +91,9 @@ function applyHmr(args) {
         reload()
       }
     } else {
+      // this message is required to know when it's ok to run tests assertions
+      // because our accept handlers are async and this is not supported by
+      // some bundlers (webpack, nollup)
       verbose('Up to date')
     }
   })
