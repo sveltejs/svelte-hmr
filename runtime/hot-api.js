@@ -9,8 +9,6 @@ const defaultHotOptions = {
   noReload: false,
   // try to recover after runtime errors during component init
   optimistic: false,
-  // more logs, mainly for debug / tests
-  runtimeVerbose: false,
 }
 
 const registry = new Map()
@@ -53,10 +51,6 @@ function applyHmr(args) {
 
   const hotOptions = Object.assign({}, defaultHotOptions, hotOptionsArg)
 
-  const verbose = hotOptions.runtimeVerbose
-    ? (...args) => console.debug(logPrefix, ...args)
-    : () => {}
-
   // meta info from compilation (vars, things that could be inspected in AST...)
   // can be used to help the proxy better emulate the proxied component (and
   // better mock svelte hooks, in the wait for official support)
@@ -90,11 +84,6 @@ function applyHmr(args) {
       } else {
         reload()
       }
-    } else {
-      // this message is required to know when it's ok to run tests assertions
-      // because our accept handlers are async and this is not supported by
-      // some bundlers (webpack, nollup)
-      verbose('Up to date')
     }
   })
 
