@@ -88,7 +88,6 @@ class ProxyComponent {
       debugName,
       current, // { Component, hotOptions: { noPreserveState, ... } }
       register,
-      unregister,
       reportError,
     },
     options // { target, anchor, ... }
@@ -166,7 +165,7 @@ class ProxyComponent {
 
     // ---- register proxy instance ----
 
-    register(rerender)
+    const unregister = register(rerender)
 
     // ---- augmented methods ----
 
@@ -249,10 +248,11 @@ export function createProxy(Adapter, id, Component, hotOptions) {
               current,
               register: rerender => {
                 instances.push(rerender)
-              },
-              unregister: () => {
-                const i = instances.indexOf(this)
-                instances.splice(i, 1)
+                const unregister = () => {
+                  const i = instances.indexOf(rerender)
+                  instances.splice(i, 1)
+                }
+                return unregister
               },
             },
             options
