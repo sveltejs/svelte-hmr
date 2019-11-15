@@ -9,7 +9,6 @@ const ErrorOverlay = () => {
 
   const style = {
     section: `
-      display: none;
       position: fixed;
       top: 0;
       bottom: 0;
@@ -52,12 +51,18 @@ const ErrorOverlay = () => {
   }
 
   const show = () => {
-    const target = document.body
-    target.appendChild(overlay.el)
+    const { el } = overlay
+    if (!el.parentNode) {
+      const target = document.body
+      target.appendChild(overlay.el)
+    }
   }
 
   const hide = () => {
-    overlay.el.remove()
+    const { el } = overlay
+    if (el.parentNode) {
+      overlay.el.remove()
+    }
   }
 
   const update = () => {
