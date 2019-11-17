@@ -65,7 +65,7 @@ const copyComponentMethods = (proxy, cmp, debugName) => {
           //   we will be reloaded often...
           //
           throw new Error(
-            `Called to undefined method on ${debugName}: ${method}`
+            `HMR Proxy: call to undefined method on ${debugName}: ${method}`
           )
         }
       }
@@ -196,7 +196,7 @@ class ProxyComponent {
           // wrap them no more, because existing references would become
           // invalid)
           this.$$ = comp.$$
-          copyComponentMethods(this, comp)
+          copyComponentMethods(this, comp, debugName)
         },
       })
     } catch (err) {
