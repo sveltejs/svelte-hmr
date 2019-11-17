@@ -270,6 +270,9 @@ export function createProxy(Adapter, id, Component, hotOptions) {
     },
   }[name]
 
+  // initialize static members
+  copyStatics(current.Component, proxy)
+
   const update = newState => Object.assign(current, newState)
 
   // reload all existing instances of this component
