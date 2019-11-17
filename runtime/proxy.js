@@ -50,25 +50,20 @@ const copyComponentMethods = (proxy, cmp, debugName) => {
       !handledMethods.includes(method) &&
       !forwardedMethods.includes(method)
     ) {
-      proxy[method] = function() {
-        if (cmp[method]) {
-          return cmp[method].apply(this, arguments)
-        } else {
-          // we can end up here when calling a method added by a previous
-          // version of the component, then removed (but still called
-          // somewhere else in the code)
-          //
-          // TODO we should possibly consider removing all the methods that
-          //   have been added by a previous version of the component. This
-          //   would be better memory-wise. Not so much so complexity-wise,
-          //   though. And for now, we can't survive most runtime errors, so
-          //   we will be reloaded often...
-          //
-          throw new Error(
-            `HMR Proxy: call to undefined method on ${debugName}: ${method}`
-          )
+      Object.defineProperty(proxy, method, {
+        configurable: true,
+        get() {
+          return cmp[method]
+        },
+        set(value) {
+          // we're chaning it on the real component first to see what it
+          // gives... if it throws an error, we want to throw the same error in
+          // order to most closely follow non-hmr behaviour.
+          cmp[method] = value
+          // who knows? maybe the value has been transformed somehow
+          proxy[method] = cmp[method]
         }
-      }
+      })
     }
   })
 }
