@@ -22,7 +22,7 @@ const isProp = v => isWritable(v) && v.export_name != null
 // between projects, and even situations of what you're currently working on...
 // It's better to leave it as an option to the end user.
 const $capture_state = (cmp, { captureLocalState }) => {
-  const compileData = cmp.constructor.$$hmrCompileData
+  const compileData = cmp.constructor.$compile
   if (compileData && compileData.vars) {
     const state = {}
     const filter = captureLocalState ? isWritable : isProp
@@ -160,7 +160,7 @@ export const createProxiedComponent = (
       Component,
       { target = options.target, anchor = options.anchor, conservative = false }
     ) => {
-      compileData = Component.$$hmrCompileData
+      compileData = Component.$compile
       const restore = captureState(targetCmp, !noPreserveState)
       assignOptions(target, anchor, restore)
       const previous = cmp

@@ -56,7 +56,7 @@ function applyHmr(args) {
   // better mock svelte hooks, in the wait for official support)
   if (compileData) {
     // NOTE we're making Component carry the load to minimize diff with base branch
-    Component.$$hmrCompileData = compileData
+    Component.$compile = compileData
   }
 
   const existing = hot.data && hot.data.record
