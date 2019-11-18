@@ -51,10 +51,10 @@ const captureState = (cmp, captureLocalState = true) => {
     throw new Error('Invalid component')
   }
   const {
-    $$: { callbacks, bound, ctx: props },
+    $$: { callbacks, bound, ctx },
   } = cmp
   const state = $capture_state(cmp, { captureLocalState })
-  return { props, callbacks, bound, state }
+  return { ctx, callbacks, bound, state }
 }
 
 // restoreState
@@ -83,13 +83,13 @@ const restoreState = (cmp, restore) => {
   // better -- well, at all actually)
 }
 
-const filterProps = (props, { vars }) => {
+const filterProps = (props, { vars } = {}) => {
   if (!vars) {
     return props
   }
   const result = {}
   vars
-    .filter(({ export_name }) => !!export_name)
+    .filter(v => !!v.export_name)
     .forEach(({ export_name }) => {
       result[export_name] = props[export_name]
     })
@@ -114,27 +114,35 @@ export const createProxiedComponent = (
 
   const isCurrent = _cmp => cmp === _cmp
 
-  // it's better to restore props from the very beginning -- for example
-  // slots (yup, stored in props as $$slots) are broken if not present at
-  // component creation and later restored with $set
-  const restoreProps = restore => {
-    let props = restore && restore.props
-    if (props) {
-      // $capture_state is not present in some cases on components. Also, it
-      // does not preserves slots. So for now we need fallbacks.
-      if (restore.state) {
-        return { $$slots: props.$$slots }
-      } else {
-        if (compileData && compileData.vars) {
-          props = filterProps(props, compileData)
-        }
+  const restoreOptions = restore => {
+    const ctx = restore && restore.ctx
+    if (ctx) {
+      // if $inject_state is available (restore.state), then it will be used to
+      // restore prop values, after the component has been recreated with the
+      // initial props passed during component creation.
+      //
+      // NOTE original props contain slots: ctx.props.$$slots
+      //
+      // NOTE maybe compile data should be the preferred strategy because it
+      // avoids creating the component with outdated prop values, and maybe it
+      // can impact transitions or such. On the other hand, it seems somehow
+      // more representative of the normal (i.e. non HMR) component behaviour,
+      // to be created with the initial props and then transitionned to the
+      // current value.
+      if (!restore.state) {
+        const props = filterProps(ctx, compileData)
         return { props }
       }
     }
   }
 
   const assignOptions = (target, anchor, restore) =>
-    Object.assign(options, { target, anchor }, restoreProps(restore))
+    (options = Object.assign(
+      {},
+      initialOptions,
+      { target, anchor },
+      restoreOptions(restore)
+    ))
 
   const instrument = targetCmp => {
     const createComponent = (Component, restore, previousCmp) => {
