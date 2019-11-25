@@ -23,7 +23,7 @@ Rollup does not natively support HMR. You'll need to use one of the following so
 Documentation & examples for Webpack are currently lagging behind...
 
 - [svelte-loader-hot]
-- [demo-svelte3-hmr]
+- [svelte-template-webpack-hot]
 
 ## Sapper
 
@@ -45,4 +45,4 @@ The official Svelte Native template already includes HMR support.
 [svelte-template]: https://github.com/sveltejs/template
 [svelte-native-template]: https://github.com/halfnelson/svelte-native-template
 [svelte-loader-hot]: https://github.com/rixo/svelte-loader-hot
-[demo-svelte3-hmr]: https://github.com/rixo/demo-svelte3-hmr
+[svelte-template-webpack-hot]: https://github.com/rixo/svelte-template-webpack-hot
