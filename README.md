@@ -1,19 +1,19 @@
 # svelte-hmr
 
-HMR common utils for Svelte 3.
+HMR commons for Svelte 3.
 
-This project only provides shared primitives for implementing Svelte HMR in any bundler, it does nothing useful on its own. If you _are_ really developing a bundler adapter / plugin... Sorry, no docs for now! Drop me a line, I'd be happy to help! You can create an issue here, or contact me directly in Svelte's Discord channel.
+This packages provides shared dependencies for implementing Svelte HMR in bundler plugins. If you want to _use_ HMR in your Svelte project, what you need is a HMR enabled plugin for your bundler (e.g. Rollup or Webpack). See available options in the following list.
 
-If what you're after is to add HMR to your Svelte project, you'll find the relevant tools and information in the following projects.
+On the other hand, if you are really developing a plugin... Sorry, no docs for now! Drop me a line, I'd be happy to help!
 
 ## Rollup / Nollup
 
-- [svelte-template-hot] **`<-` Recommended starting point**
+- [svelte-template-hot] :arrow_left: **Recommended starting point**
 - [rollup-plugin-svelte-hot]
 
 ### HMR support for Rollup
 
-Rollup does not natively support HMR. You'll need to use one of the following solution. The best way to get started is to refer to [svelte-template-hot], that demonstrates usage of both.
+Rollup does not natively support HMR. You'll need to use one of the following solutions. The best way to get started is to refer to [svelte-template-hot], that demonstrates usage of both.
 
 - [rollup-plugin-hot]
 - [Nollup][nollup]
