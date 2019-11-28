@@ -2,7 +2,9 @@
 
 HMR commons for Svelte 3.
 
-This packages provides shared dependencies for implementing Svelte HMR in bundler plugins. If you want to _use_ HMR in your Svelte project, what you need is a HMR enabled plugin for your bundler (e.g. Rollup or Webpack). See available options in the following list.
+This packages provides shared dependencies for implementing Svelte HMR in bundler plugins.
+
+If you want to _use_ HMR in your Svelte project, what you need is a HMR enabled plugin for your bundler (e.g. Rollup or Webpack). See available options in the following list.
 
 On the other hand, if you are really developing a plugin... Sorry, no docs for now! Drop me a line, I'd be happy to help!
 
