@@ -5,6 +5,14 @@
   "main": "index.js",
   "author": "rixo <rixo@rixo.fr>",
   "license": "MIT",
+  "homepage": "https://github.com/rixo/svelte-hmr",
+  "bugs": {
+    "url": "https://github.com/rixo/svelte-hmr/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rixo/svelte-hmr"
+  },
   "scripts": {
     "test": "echo TODO"
   }
