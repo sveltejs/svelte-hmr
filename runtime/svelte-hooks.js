@@ -76,6 +76,27 @@ const extractProps = (state, { vars } = {}) => {
     .reduce(pluck(state), {})
 }
 
+const get_current_component_safe = () => {
+  // NOTE relying on dynamic bindings (current_component) makes us dependent on
+  // bundler config (and apparently it does not work in demo-svelte-nollup)
+  try {
+    // unfortunately, unlike current_component, get_current_component() can
+    // crash in the normal path (when there is really no parent)
+    return get_current_component()
+  } catch (err) {
+    // ... so we need to consider that this error means that there is no parent
+    //
+    // that makes us tightly coupled to the error message but, at least, we
+    // won't mute an unexpected error, which is quite a horrible thing to do
+    if (err.message === 'Function called outside component initialization') {
+      // who knows...
+      return current_component
+    } else {
+      throw err
+    }
+  }
+}
+
 export const createProxiedComponent = (
   Component,
   initialOptions,
@@ -83,7 +104,6 @@ export const createProxiedComponent = (
 ) => {
   let cmp
   let last
-  let parentComponent
   let compileData
   let options = initialOptions
 
@@ -212,24 +232,7 @@ export const createProxiedComponent = (
     }
   }
 
-  // NOTE relying on dynamic bindings (current_component) makes us dependent on
-  // bundler config (and apparently it does not work in demo-svelte-nollup)
-  try {
-    // unfortunately, unlike current_component, get_current_component() can
-    // crash in the normal path (when there is really no parent)
-    parentComponent = get_current_component()
-  } catch (err) {
-    // ... so we need to consider that this error means that there is no parent
-    //
-    // that makes us tightly coupled to the error message but, at least, we
-    // won't mute an unexpected error, which is quite a horrible thing to do
-    if (err.message === 'Function called outside component initialization') {
-      // who knows...
-      parentComponent = current_component
-    } else {
-      throw err
-    }
-  }
+  const parentComponent = get_current_component_safe()
 
   cmp = new Component(options)
 
