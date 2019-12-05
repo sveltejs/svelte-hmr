@@ -13,6 +13,9 @@
     "type": "git",
     "url": "https://github.com/rixo/svelte-hmr"
   },
+  "devDependencies": {
+    "@rixo/eslint-config": "^0.7.1-alpha.0"
+  },
   "scripts": {
     "test": "echo TODO"
   }
