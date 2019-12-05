@@ -62,7 +62,7 @@ const copyComponentMethods = (proxy, cmp, debugName) => {
           cmp[method] = value
           // who knows? maybe the value has been transformed somehow
           proxy[method] = cmp[method]
-        }
+        },
       })
     }
   })
@@ -107,15 +107,12 @@ class ProxyComponent {
         adapter.rerender()
       } else {
         try {
+          const noPreserveState = current.hotOptions.noPreserveState
+          const replaceOptions = { target, anchor, noPreserveState }
           if (conservativeDestroy) {
-            cmp = cmp.$replace(current.Component, {
-              target,
-              anchor,
-              conservative: true,
-            })
-          } else {
-            cmp = cmp.$replace(current.Component, { target, anchor })
+            replaceOptions.conservativeDestroy = true
           }
+          cmp = cmp.$replace(current.Component, replaceOptions)
         } catch (err) {
           const errString = String((err && err.stack) || err)
           setError(err, target, anchor)
@@ -179,7 +176,6 @@ class ProxyComponent {
 
     try {
       cmp = createProxiedComponent(current.Component, options, {
-        noPreserveState: current.hotOptions.noPreserveState,
         onDestroy,
         onMount: afterMount,
         onInstance: comp => {
