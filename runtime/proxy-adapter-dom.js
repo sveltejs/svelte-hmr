@@ -57,9 +57,7 @@ export default class ProxyAdapterDom {
       insertionPoint,
     } = this
     if (!insertionPoint) {
-      const err = new Error('Cannot rerender: Missing insertion point')
-      err.hmrFatal = true
-      return err
+      throw new Error('Cannot rerender: Missing insertion point')
     }
     refreshComponent(insertionPoint.parentNode, insertionPoint)
   }
