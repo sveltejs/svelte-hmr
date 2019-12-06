@@ -9,8 +9,7 @@ import { createProxiedComponent } from './svelte-hooks'
 const handledMethods = ['constructor', '$destroy']
 const forwardedMethods = ['$set', '$on']
 
-const noop = () => {}
-
+// eslint-disable-next-line no-console
 const logError = (...args) => console.error('[HMR][Svelte]', ...args)
 
 const posixify = file => file.replace(/[/\\]/g, '/')
@@ -42,7 +41,7 @@ const relayCalls = (getTarget, names, dest = {}) => {
   return dest
 }
 
-const copyComponentMethods = (proxy, cmp, debugName) => {
+const copyComponentMethods = (proxy, cmp) => {
   //proxy custom methods
   const methods = Object.getOwnPropertyNames(Object.getPrototypeOf(cmp))
   methods.forEach(method => {
@@ -83,7 +82,6 @@ class ProxyComponent {
       debugName,
       current, // { Component, hotOptions: { noPreserveState, ... } }
       register,
-      reportError,
     },
     options // { target, anchor, ... }
   ) {
@@ -126,7 +124,7 @@ class ProxyComponent {
     }
 
     // TODO need to use cmp.$replace
-    const setError = (err, target, anchor) => {
+    const setError = err => {
       lastError = err
       adapter.renderError(err)
     }
@@ -187,7 +185,7 @@ class ProxyComponent {
           // wrap them no more, because existing references would become
           // invalid)
           this.$$ = comp.$$
-          copyComponentMethods(this, comp, debugName)
+          copyComponentMethods(this, comp)
         },
       })
     } catch (err) {
