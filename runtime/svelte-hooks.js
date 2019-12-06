@@ -10,13 +10,6 @@ import {
   set_current_component,
 } from 'svelte/internal'
 
-// NOTE excludes store subscriptions because it causes crashes (and also
-// probably not intented to restore stores state -- stores lives outside of
-// the HMR'd component normally)
-const isWritable = v => !v.module && v.writable && v.name.substr(0, 1) !== '$'
-
-const isProp = v => isWritable(v) && v.export_name != null
-
 const captureState = cmp => {
   // sanity check: propper behaviour here is to crash noisily so that
   // user knows that they're looking at something broken
@@ -114,11 +107,7 @@ export const createProxiedComponent = (
       ? extractProps(restore.state, compileData)
       : restore.state
     const props = Object.assign({}, options.props, { $$inject })
-    options = Object.assign(
-      {},
-      initialOptions,
-      { target, anchor, props },
-    )
+    options = Object.assign({}, initialOptions, { target, anchor, props })
   }
 
   const instrument = targetCmp => {
