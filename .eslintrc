@@ -3,3 +3,8 @@ extends:
 
 globals:
   console: true
+
+overrides:
+  - files: ["./lib/**/*"]
+    env:
+      node: true
