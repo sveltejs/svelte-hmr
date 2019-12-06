@@ -1,4 +1,4 @@
-/* global document */
+/* global window, document */
 import ErrorOverlay from './overlay'
 
 const removeElement = el => el && el.parentNode && el.parentNode.removeChild(el)
