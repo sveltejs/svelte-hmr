@@ -200,7 +200,7 @@ class ProxyComponent {
 
 const copyStatics = (component, proxy) => {
   //forward static properties and methods
-  for (let key in component) {
+  for (const key in component) {
     proxy[key] = component[key]
   }
 }
