@@ -1,6 +1,6 @@
 /* global document */
 
-import { NavigationType } from 'tns-core-modules/ui/frame/frame-common'
+import { NavigationType } from 'tns-core-modules/ui/frame'
 
 import ProxyAdapterDom from '../proxy-adapter-dom'
 
