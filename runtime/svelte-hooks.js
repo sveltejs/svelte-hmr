@@ -23,6 +23,12 @@ const isProp = v => isWritable(v) && v.export_name != null
 // It's better to leave it as an option to the end user.
 const $capture_state = (cmp, { captureLocalState }) => {
   const compileData = cmp.constructor.$compile
+  // actual $capture_state is the only thing that works in 3.16+ (correct
+  // local state behaviour will be made possible when #3822 is merged)
+  if (cmp.$capture_state) {
+    // NOTE the captureLocalState option is fantasy for now
+    return cmp.$capture_state({ captureLocalState })
+  }
   if (compileData && compileData.vars) {
     const state = {}
     const filter = captureLocalState ? isWritable : isProp
@@ -32,11 +38,6 @@ const $capture_state = (cmp, { captureLocalState }) => {
       state[name] = ctx[name]
     }
     return state
-  }
-  // fallback on actual $capture_state
-  if (cmp.$capture_state) {
-    // NOTE the captureLocalState option is fantasy for now
-    return cmp.$capture_state({ captureLocalState })
   }
   // else nothing, state won't be used for restore...
 }
