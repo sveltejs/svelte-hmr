@@ -1,7 +1,5 @@
 # svelte-hmr
 
-:warning: **Svelte 3.16+ not supported yet** :warning: (fix is coming, meanwhile 3.15 is working)
-
 HMR commons for Svelte 3.
 
 This packages provides shared dependencies for implementing Svelte HMR in bundler plugins.
