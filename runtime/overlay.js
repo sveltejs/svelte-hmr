@@ -20,7 +20,7 @@ const ErrorOverlay = () => {
       font-size: large;
       color: rgb(232, 232, 232);
       overflow: auto;
-      z-index: 999;
+      z-index: 2147483647;
     `,
     h1: `
       margin-top: 0;
