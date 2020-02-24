@@ -1,6 +1,6 @@
 {
   "name": "svelte-hmr",
-  "version": "0.1.4",
+  "version": "0.2.0-0",
   "description": "Bundler agnostic HMR utils for Svelte 3",
   "main": "index.js",
   "author": "rixo <rixo@rixo.fr>",
@@ -12,6 +12,12 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/rixo/svelte-hmr"
+  },
+  "peerDependencies": {
+    "svelte": ">= 3.19"
+  },
+  "devDependencies": {
+    "@rixo/eslint-config": "^0.8.1"
   },
   "scripts": {
     "test": "echo TODO"

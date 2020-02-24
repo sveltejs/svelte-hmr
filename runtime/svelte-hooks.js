@@ -10,39 +10,7 @@ import {
   set_current_component,
 } from 'svelte/internal'
 
-// NOTE excludes store subscriptions because it causes crashes (and also
-// probably not intented to restore stores state -- stores lives outside of
-// the HMR'd component normally)
-const isWritable = v => !v.module && v.writable && v.name.substr(0, 1) !== '$'
-
-const isProp = v => isWritable(v) && v.export_name != null
-
-// Core $capture_state should be able to capture either only props or the whole
-// local state (i.e. any `let` value). The best behaviour regarding HMR varies
-// between projects, and even situations of what you're currently working on...
-// It's better to leave it as an option to the end user.
-const $capture_state = (cmp, { captureLocalState }) => {
-  const compileData = cmp.constructor.$compile
-  // actual $capture_state is the only thing that works in 3.16+ (correct
-  // local state behaviour will be made possible when #3822 is merged)
-  if (cmp.$capture_state) {
-    // NOTE the captureLocalState option is fantasy for now
-    return cmp.$capture_state({ captureLocalState })
-  }
-  if (compileData && compileData.vars) {
-    const state = {}
-    const filter = captureLocalState ? isWritable : isProp
-    const vars = compileData.vars.filter(filter)
-    const ctx = cmp.$$.ctx
-    for (const { name } of vars) {
-      state[name] = ctx[name]
-    }
-    return state
-  }
-  // else nothing, state won't be used for restore...
-}
-
-const captureState = (cmp, captureLocalState = true) => {
+const captureState = cmp => {
   // sanity check: propper behaviour here is to crash noisily so that
   // user knows that they're looking at something broken
   if (!cmp) {
@@ -54,7 +22,7 @@ const captureState = (cmp, captureLocalState = true) => {
   const {
     $$: { callbacks, bound, ctx },
   } = cmp
-  const state = $capture_state(cmp, { captureLocalState })
+  const state = cmp.$capture_state()
   return { ctx, callbacks, bound, state }
 }
 
@@ -70,80 +38,77 @@ const restoreState = (cmp, restore) => {
   if (!restore) {
     return
   }
-  const { callbacks, bound, state } = restore
+  const { callbacks, bound } = restore
   if (callbacks) {
     cmp.$$.callbacks = callbacks
   }
   if (bound) {
     cmp.$$.bound = bound
   }
-  if (state && cmp.$inject_state) {
-    cmp.$inject_state(state)
-  }
   // props, props.$$slots are restored at component creation (works
   // better -- well, at all actually)
 }
 
-const filterProps = (props, { vars } = {}) => {
-  if (!vars) {
-    return props
-  }
-  const result = {}
-  vars
-    .filter(v => !!v.export_name)
-    .forEach(({ export_name }) => {
-      result[export_name] = props[export_name]
-    })
-  Object.keys(props)
-    .filter(name => name.substr(0, 2) === '$$')
-    .forEach(key => {
-      result[key] = props[key]
-    })
+const pluck = source => (result, key) => {
+  result[key] = source[key]
   return result
+}
+
+const extractProps = (state, { vars } = {}) => {
+  if (!vars) {
+    return state
+  }
+  return vars
+    .filter(v => !!v.export_name)
+    .map(v => v.export_name)
+    .concat(
+      Object.keys(state)
+        .filter(name => name.substr(0, 2) === '$$')
+        .map(v => v.name)
+    )
+    .reduce(pluck(state), {})
+}
+
+const get_current_component_safe = () => {
+  // NOTE relying on dynamic bindings (current_component) makes us dependent on
+  // bundler config (and apparently it does not work in demo-svelte-nollup)
+  try {
+    // unfortunately, unlike current_component, get_current_component() can
+    // crash in the normal path (when there is really no parent)
+    return get_current_component()
+  } catch (err) {
+    // ... so we need to consider that this error means that there is no parent
+    //
+    // that makes us tightly coupled to the error message but, at least, we
+    // won't mute an unexpected error, which is quite a horrible thing to do
+    if (err.message === 'Function called outside component initialization') {
+      // who knows...
+      return current_component
+    } else {
+      throw err
+    }
+  }
 }
 
 export const createProxiedComponent = (
   Component,
   initialOptions,
-  { noPreserveState, onInstance, onMount, onDestroy }
+  { onInstance, onMount, onDestroy }
 ) => {
   let cmp
   let last
-  let parentComponent
   let compileData
   let options = initialOptions
 
   const isCurrent = _cmp => cmp === _cmp
 
-  const restoreOptions = restore => {
-    const ctx = restore && restore.ctx
-    if (ctx) {
-      // if $inject_state is available (restore.state), then it will be used to
-      // restore prop values, after the component has been recreated with the
-      // initial props passed during component creation.
-      //
-      // NOTE original props contain slots: ctx.props.$$slots
-      //
-      // NOTE maybe compile data should be the preferred strategy because it
-      // avoids creating the component with outdated prop values, and maybe it
-      // can impact transitions or such. On the other hand, it seems somehow
-      // more representative of the normal (i.e. non HMR) component behaviour,
-      // to be created with the initial props and then transitionned to the
-      // current value.
-      if (!restore.state) {
-        const props = filterProps(ctx, compileData)
-        return { props }
-      }
-    }
+  const assignOptions = (target, anchor, restore, noPreserveState) => {
+    const $$inject = noPreserveState
+      ? extractProps(restore.state, compileData)
+      : restore.state
+    const props = Object.assign({}, options.props, { $$inject })
+    options = Object.assign({}, initialOptions, { target, anchor, props })
   }
-
-  const assignOptions = (target, anchor, restore) =>
-    (options = Object.assign(
-      {},
-      initialOptions,
-      { target, anchor },
-      restoreOptions(restore)
-    ))
 
   const instrument = targetCmp => {
     const createComponent = (Component, restore, previousCmp) => {
@@ -167,11 +132,16 @@ export const createProxiedComponent = (
     //
     targetCmp.$replace = (
       Component,
-      { target = options.target, anchor = options.anchor, conservative = false }
+      {
+        target = options.target,
+        anchor = options.anchor,
+        noPreserveState,
+        conservative = false,
+      }
     ) => {
       compileData = Component.$compile
-      const restore = captureState(targetCmp, !noPreserveState)
-      assignOptions(target, anchor, restore)
+      const restore = captureState(targetCmp)
+      assignOptions(target, anchor, restore, noPreserveState)
       const previous = cmp
       if (conservative) {
         try {
@@ -251,24 +221,7 @@ export const createProxiedComponent = (
     }
   }
 
-  // NOTE relying on dynamic bindings (current_component) makes us dependent on
-  // bundler config (and apparently it does not work in demo-svelte-nollup)
-  try {
-    // unfortunately, unlike current_component, get_current_component() can
-    // crash in the normal path (when there is really no parent)
-    parentComponent = get_current_component()
-  } catch (err) {
-    // ... so we need to consider that this error means that there is no parent
-    //
-    // that makes us tightly coupled to the error message but, at least, we
-    // won't mute an unexpected error, which is quite a horrible thing to do
-    if (err.message === 'Function called outside component initialization') {
-      // who knows...
-      parentComponent = current_component
-    } else {
-      throw err
-    }
-  }
+  const parentComponent = get_current_component_safe()
 
   cmp = new Component(options)
 

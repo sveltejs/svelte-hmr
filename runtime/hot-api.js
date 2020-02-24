@@ -11,18 +11,15 @@ const defaultHotOptions = {
   optimistic: false,
 }
 
-const registry = new Map()
-
+// eslint-disable-next-line no-console
 const log = (...args) => console.log(logPrefix, ...args)
 
 const domReload = () => {
-  if (
-    typeof window !== 'undefined' &&
-    window.location &&
-    window.location.reload
-  ) {
+  // eslint-disable-next-line no-undef
+  const win = typeof window !== 'undefined' && window
+  if (win && win.location && win.location.reload) {
     log('Reload')
-    window.location.reload()
+    win.location.reload()
   } else {
     log('Full reload required')
   }

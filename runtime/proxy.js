@@ -9,8 +9,7 @@ import { createProxiedComponent } from './svelte-hooks'
 const handledMethods = ['constructor', '$destroy']
 const forwardedMethods = ['$set', '$on']
 
-const noop = () => {}
-
+// eslint-disable-next-line no-console
 const logError = (...args) => console.error('[HMR][Svelte]', ...args)
 
 const posixify = file => file.replace(/[/\\]/g, '/')
@@ -42,7 +41,7 @@ const relayCalls = (getTarget, names, dest = {}) => {
   return dest
 }
 
-const copyComponentMethods = (proxy, cmp, debugName) => {
+const copyComponentMethods = (proxy, cmp) => {
   //proxy custom methods
   const methods = Object.getOwnPropertyNames(Object.getPrototypeOf(cmp))
   methods.forEach(method => {
@@ -62,7 +61,7 @@ const copyComponentMethods = (proxy, cmp, debugName) => {
           cmp[method] = value
           // who knows? maybe the value has been transformed somehow
           proxy[method] = cmp[method]
-        }
+        },
       })
     }
   })
@@ -83,7 +82,6 @@ class ProxyComponent {
       debugName,
       current, // { Component, hotOptions: { noPreserveState, ... } }
       register,
-      reportError,
     },
     options // { target, anchor, ... }
   ) {
@@ -107,15 +105,12 @@ class ProxyComponent {
         adapter.rerender()
       } else {
         try {
+          const noPreserveState = current.hotOptions.noPreserveState
+          const replaceOptions = { target, anchor, noPreserveState }
           if (conservativeDestroy) {
-            cmp = cmp.$replace(current.Component, {
-              target,
-              anchor,
-              conservative: true,
-            })
-          } else {
-            cmp = cmp.$replace(current.Component, { target, anchor })
+            replaceOptions.conservativeDestroy = true
           }
+          cmp = cmp.$replace(current.Component, replaceOptions)
         } catch (err) {
           const errString = String((err && err.stack) || err)
           setError(err, target, anchor)
@@ -129,7 +124,7 @@ class ProxyComponent {
     }
 
     // TODO need to use cmp.$replace
-    const setError = (err, target, anchor) => {
+    const setError = err => {
       lastError = err
       adapter.renderError(err)
     }
@@ -179,7 +174,6 @@ class ProxyComponent {
 
     try {
       cmp = createProxiedComponent(current.Component, options, {
-        noPreserveState: current.hotOptions.noPreserveState,
         onDestroy,
         onMount: afterMount,
         onInstance: comp => {
@@ -191,7 +185,7 @@ class ProxyComponent {
           // wrap them no more, because existing references would become
           // invalid)
           this.$$ = comp.$$
-          copyComponentMethods(this, comp, debugName)
+          copyComponentMethods(this, comp)
         },
       })
     } catch (err) {
@@ -204,7 +198,7 @@ class ProxyComponent {
 
 const copyStatics = (component, proxy) => {
   //forward static properties and methods
-  for (let key in component) {
+  for (const key in component) {
     proxy[key] = component[key]
   }
 }

@@ -1,0 +1,14 @@
+extends:
+  - '@rixo'
+
+globals:
+  console: true
+
+settings:
+  import/core-modules:
+    - svelte/internal
+
+overrides:
+  - files: ["./lib/**/*"]
+    env:
+      node: true
