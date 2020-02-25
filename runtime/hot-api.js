@@ -2,15 +2,6 @@ import { createProxy } from './proxy'
 
 const logPrefix = '[HMR:Svelte]'
 
-const defaultHotOptions = {
-  // don't preserve local state
-  noPreserveState: false,
-  // don't reload on fatal error
-  noReload: false,
-  // try to recover after runtime errors during component init
-  optimistic: false,
-}
-
 // eslint-disable-next-line no-console
 const log = (...args) => console.log(logPrefix, ...args)
 
@@ -34,19 +25,22 @@ export const makeApplyHmr = transformArgs => args => {
   return applyHmr(allArgs)
 }
 
+const isNamedExport = v => v.export_name && v.module
+
 function applyHmr(args) {
   const {
     id,
     reload = domReload,
     // normalized hot API (must conform to rollup-plugin-hot)
     hot,
-    hotOptions: hotOptionsArg,
+    hotOptions,
     Component,
     compileData,
+    compileOptions,
     ProxyAdapter,
   } = args
 
-  const hotOptions = Object.assign({}, defaultHotOptions, hotOptionsArg)
+  let canAccept = true
 
   // meta info from compilation (vars, things that could be inspected in AST...)
   // can be used to help the proxy better emulate the proxied component (and
@@ -54,6 +48,25 @@ function applyHmr(args) {
   if (compileData) {
     // NOTE we're making Component carry the load to minimize diff with base branch
     Component.$compile = compileData
+
+    // if the module has named exports (in context="module"), then we can't
+    // auto accept the component, since all the consumers need to be aware of
+    // the change (e.g. rerender with the new exports value)
+    if (!hotOptions.acceptNamedExports && canAccept) {
+      const hasNamedExports = compileData.vars.some(isNamedExport)
+      if (hasNamedExports) {
+        canAccept = false
+      }
+    }
+
+    // ...same for accessors: if accessible props change, then we need to
+    // rerender/rerun all the consumers to reflect the change
+    if (
+      !hotOptions.acceptAccessors &&
+      (compileData.accessors || (compileOptions && compileOptions.accessors))
+    ) {
+      canAccept = false
+    }
   }
 
   const existing = hot.data && hot.data.record
@@ -73,16 +86,18 @@ function applyHmr(args) {
     data.record = r
   })
 
-  hot.accept(async () => {
-    await r.reload()
-    if (r.hasFatalError()) {
-      if (hotOptions && hotOptions.noReload) {
-        log('Full reload required')
-      } else {
-        reload()
+  if (canAccept) {
+    hot.accept(async () => {
+      await r.reload()
+      if (r.hasFatalError()) {
+        if (hotOptions && hotOptions.noReload) {
+          log('Full reload required')
+        } else {
+          reload()
+        }
       }
-    }
-  })
+    })
+  }
 
   // well, endgame... we won't be able to render next updates, even successful,
   // if we don't have proxies in svelte's tree
