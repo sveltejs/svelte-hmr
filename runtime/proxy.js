@@ -41,28 +41,31 @@ const relayCalls = (getTarget, names, dest = {}) => {
   return dest
 }
 
-const copyComponentMethods = (proxy, cmp) => {
+const copyComponentProperties = (proxy, cmp, previous) => {
   //proxy custom methods
-  const methods = Object.getOwnPropertyNames(Object.getPrototypeOf(cmp))
-  methods.forEach(method => {
-    if (
-      !handledMethods.includes(method) &&
-      !forwardedMethods.includes(method)
-    ) {
-      Object.defineProperty(proxy, method, {
+  const props = Object.getOwnPropertyNames(Object.getPrototypeOf(cmp))
+  if (previous) {
+    previous.forEach(prop => {
+      delete proxy[prop]
+    })
+  }
+  return props.filter(prop => {
+    if (!handledMethods.includes(prop) && !forwardedMethods.includes(prop)) {
+      Object.defineProperty(proxy, prop, {
         configurable: true,
         get() {
-          return cmp[method]
+          return cmp[prop]
         },
         set(value) {
-          // we're chaning it on the real component first to see what it
+          // we're changing it on the real component first to see what it
           // gives... if it throws an error, we want to throw the same error in
           // order to most closely follow non-hmr behaviour.
-          cmp[method] = value
+          cmp[prop] = value
           // who knows? maybe the value has been transformed somehow
-          proxy[method] = cmp[method]
+          proxy[prop] = cmp[prop]
         },
       })
+      return true
     }
   })
 }
@@ -173,6 +176,7 @@ class ProxyComponent {
     // ---- create & mount target component instance ---
 
     try {
+      let lastProperties
       cmp = createProxiedComponent(current.Component, options, {
         onDestroy,
         onMount: afterMount,
@@ -185,7 +189,7 @@ class ProxyComponent {
           // wrap them no more, because existing references would become
           // invalid)
           this.$$ = comp.$$
-          copyComponentMethods(this, comp)
+          lastProperties = copyComponentProperties(this, comp, lastProperties)
         },
       })
     } catch (err) {
