@@ -9,6 +9,6 @@ settings:
     - svelte/internal
 
 overrides:
-  - files: ["./lib/**/*"]
+  - files: ["index.js", "./lib/**/*"]
     env:
       node: true
