@@ -9,8 +9,15 @@ import { createProxiedComponent } from './svelte-hooks'
 const handledMethods = ['constructor', '$destroy']
 const forwardedMethods = ['$set', '$on']
 
-// eslint-disable-next-line no-console
-const logError = (...args) => console.error('[HMR][Svelte]', ...args)
+const logError = (msg, err) => {
+  // eslint-disable-next-line no-console
+  console.error('[HMR][Svelte]', msg)
+  if (err) {
+    // NOTE avoid too much wrapping around user errors
+    // eslint-disable-next-line no-console
+    console.error(err)
+  }
+}
 
 const posixify = file => file.replace(/[/\\]/g, '/')
 
@@ -115,18 +122,27 @@ class ProxyComponent {
           }
           cmp = cmp.$replace(current.Component, replaceOptions)
         } catch (err) {
-          const errString = String((err && err.stack) || err)
           setError(err, target, anchor)
-          if (!current.hotOptions.optimistic || (err && err.hmrFatal)) {
+          if (
+            !current.hotOptions.optimistic ||
+            // non acceptable components (that is components that have to defer
+            // to their parent for rerender -- e.g. accessors, named exports)
+            // are most tricky, and they havent been considered when most of the
+            // code has been written... as a result, they are especially tricky
+            // to deal with, it's better to consider any error with them to be
+            // fatal to avoid odities
+            !current.canAccept ||
+            (err && err.hmrFatal)
+          ) {
             throw err
           } else {
-            logError(`Error during component init ${debugName}: ${errString}`)
+            // const errString = String((err && err.stack) || err)
+            logError(`Error during component init: ${debugName}`, err)
           }
         }
       }
     }
 
-    // TODO need to use cmp.$replace
     const setError = err => {
       lastError = err
       adapter.renderError(err)
@@ -207,13 +223,15 @@ const copyStatics = (component, proxy) => {
   }
 }
 
+let fatalError = false
+
+export const hasFatalError = () => fatalError
+
 /**
  * Creates a HMR proxy and its associated `reload` function that pushes a new
  * version to all existing instances of the component.
  */
-export function createProxy(Adapter, id, Component, hotOptions) {
-  let fatalError = false
-
+export function createProxy(Adapter, id, Component, hotOptions, canAccept) {
   const debugName = getDebugName(id)
   const instances = []
 
@@ -221,6 +239,7 @@ export function createProxy(Adapter, id, Component, hotOptions) {
   const current = {
     Component,
     hotOptions,
+    canAccept,
   }
 
   const name = `Proxy${debugName}`
@@ -258,10 +277,17 @@ export function createProxy(Adapter, id, Component, hotOptions) {
           // Fatal error will trigger a full reload on next update (reloading
           // right now is kinda pointless since buggy code still exists).
           //
-          fatalError = true
-          logError(
-            `Unrecoverable error in ${debugName}: next update will trigger full reload`
-          )
+          // NOTE Only report first error to avoid too much polution -- following
+          // errors are probably caused by the first one, or they will show up
+          // in turn when the first one is fixed ¯\_(ツ)_/¯
+          //
+          if (!fatalError) {
+            fatalError = true
+            logError(
+              `Unrecoverable error in ${debugName}: next update will trigger a ` +
+                `full reload`
+            )
+          }
           throw err
         }
       }
@@ -291,9 +317,7 @@ export function createProxy(Adapter, id, Component, hotOptions) {
       try {
         rerender()
       } catch (err) {
-        logError(
-          `Failed to rerender ${debugName}: ${(err && err.stack) || err}`
-        )
+        logError(`Failed to rerender ${debugName}`, err)
         errors.push(err)
       }
     })
@@ -307,5 +331,5 @@ export function createProxy(Adapter, id, Component, hotOptions) {
 
   const hasFatalError = () => fatalError
 
-  return { id, proxy, update, reload, hasFatalError }
+  return { id, proxy, update, reload, hasFatalError, current }
 }

@@ -1,4 +1,4 @@
-import { createProxy } from './proxy'
+import { createProxy, hasFatalError } from './proxy'
 
 const logPrefix = '[HMR:Svelte]'
 
@@ -27,6 +27,8 @@ export const makeApplyHmr = transformArgs => args => {
 
 const isNamedExport = v => v.export_name && v.module
 
+let needsReload = false
+
 function applyHmr(args) {
   const {
     id,
@@ -40,7 +42,9 @@ function applyHmr(args) {
     ProxyAdapter,
   } = args
 
-  let canAccept = true
+  const existing = hot.data && hot.data.record
+
+  let canAccept = !existing || existing.current.canAccept
 
   // meta info from compilation (vars, things that could be inspected in AST...)
   // can be used to help the proxy better emulate the proxied component (and
@@ -69,32 +73,29 @@ function applyHmr(args) {
     }
   }
 
-  const existing = hot.data && hot.data.record
-  const r = existing || createProxy(ProxyAdapter, id, Component, hotOptions)
+  const r =
+    existing || createProxy(ProxyAdapter, id, Component, hotOptions, canAccept)
 
-  if (r.hasFatalError()) {
-    if (hotOptions && hotOptions.noReload) {
-      log('Full reload required')
-    } else {
-      reload()
-    }
-  }
-
-  r.update({ Component, hotOptions })
+  r.update({ Component, hotOptions, canAccept })
 
   hot.dispose(data => {
+    // handle previous fatal errors
+    if (needsReload || hasFatalError()) {
+      if (hotOptions && hotOptions.noReload) {
+        log('Full reload required')
+      } else {
+        reload()
+      }
+    }
+
     data.record = r
   })
 
   if (canAccept) {
     hot.accept(async () => {
-      await r.reload()
-      if (r.hasFatalError()) {
-        if (hotOptions && hotOptions.noReload) {
-          log('Full reload required')
-        } else {
-          reload()
-        }
+      const success = await r.reload()
+      if (hasFatalError() || (!success && !hotOptions.optimistic)) {
+        needsReload = true
       }
     })
   }
