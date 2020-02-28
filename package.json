@@ -19,7 +19,7 @@
     "runtime"
   ],
   "peerDependencies": {
-    "svelte": ">=3.19"
+    "svelte": ">=3.19.0"
   },
   "devDependencies": {
     "@rixo/eslint-config": "^0.8.1"
