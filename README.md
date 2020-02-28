@@ -48,3 +48,7 @@ The official Svelte Native template already includes HMR support.
 [svelte-native-template]: https://github.com/halfnelson/svelte-native-template
 [svelte-loader-hot]: https://github.com/rixo/svelte-loader-hot
 [svelte-template-webpack-hot]: https://github.com/rixo/svelte-template-webpack-hot
+
+## License
+
+[ISC](LICENSE)

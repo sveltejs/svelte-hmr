@@ -4,7 +4,7 @@
   "description": "Bundler agnostic HMR utils for Svelte 3",
   "main": "index.js",
   "author": "rixo <rixo@rixo.fr>",
-  "license": "MIT",
+  "license": "ISC",
   "homepage": "https://github.com/rixo/svelte-hmr",
   "bugs": {
     "url": "https://github.com/rixo/svelte-hmr/issues"
