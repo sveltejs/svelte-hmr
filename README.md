@@ -29,11 +29,11 @@ Documentation & examples for Webpack are currently lagging behind...
 
 ## Sapper
 
-Sapper can be supported with Webpack's loader. The link bellow is still very much a work in progress (no docs at time of writting), but I'm adding it for future reference.
+Sapper can be supported with Webpack's loader. The link bellow is still very much a work in progress (no docs at time of writing), but I'm adding it for future reference.
 
 - [sapper-template-hot#webpack](https://github.com/rixo/sapper-template-hot#webpack)
 
-Some initial work has also been made on supporting Sapper with Rollup, and basic support for simple cases is available. But this one is still in very early stages (and poorly documented for now, sorry). I could really use some help with this one actually, if you're in the mood ;)
+Some initial work has also been made on supporting Sapper with Rollup, and basic support for simple cases is available. But this one is still in very early stages (and, again, poorly documented for now, sorry). I could really use some help with this one actually, if you're in the mood ;)
 
 - [sapper-template-hot#rollup](https://github.com/rixo/sapper-template-hot#rollup)
 
