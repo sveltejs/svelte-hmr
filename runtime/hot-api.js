@@ -32,6 +32,7 @@ let needsReload = false
 function applyHmr(args) {
   const {
     id,
+    cssId,
     reload = domReload,
     // normalized hot API (must conform to rollup-plugin-hot)
     hot,
@@ -89,6 +90,11 @@ function applyHmr(args) {
     }
 
     data.record = r
+
+    if (cssId != null && typeof document !== 'undefined') {
+      // eslint-disable-next-line no-undef
+      document.getElementById(cssId).remove()
+    }
   })
 
   if (canAccept) {
