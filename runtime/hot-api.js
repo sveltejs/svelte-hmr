@@ -1,3 +1,5 @@
+/* eslint-env browser */
+
 import { createProxy, hasFatalError } from './proxy'
 
 const logPrefix = '[HMR:Svelte]'
@@ -14,6 +16,30 @@ const domReload = () => {
   } else {
     log('Full reload required')
   }
+}
+
+const replaceCss = (previousId, newId) => {
+  if (typeof document === 'undefined') return false
+  if (!previousId) return false
+  if (!newId) return false
+  // svelte-xxx-style => svelte-xxx
+  const previousClass = previousId.slice(0, -6)
+  const newClass = newId.slice(0, -6)
+  // eslint-disable-next-line no-undef
+  document.querySelectorAll('.' + previousClass).forEach(el => {
+    el.classList.remove(previousClass)
+    el.classList.add(newClass)
+  })
+  return true
+}
+
+const removeStylesheet = cssId => {
+  if (cssId == null) return
+  if (typeof document === 'undefined') return
+  // eslint-disable-next-line no-undef
+  const el = document.getElementById(cssId)
+  if (el) el.remove()
+  return
 }
 
 const defaultArgs = {
@@ -33,6 +59,7 @@ function applyHmr(args) {
   const {
     id,
     cssId,
+    nonCssHash,
     reload = domReload,
     // normalized hot API (must conform to rollup-plugin-hot)
     hot,
@@ -77,7 +104,17 @@ function applyHmr(args) {
   const r =
     existing || createProxy(ProxyAdapter, id, Component, hotOptions, canAccept)
 
-  r.update({ Component, hotOptions, canAccept })
+  const cssOnly =
+    hotOptions.injectCss &&
+    existing &&
+    nonCssHash &&
+    existing.current.nonCssHash === nonCssHash
+
+  if (!cssOnly) {
+    r.update({ Component })
+  }
+
+  r.update({ hotOptions, canAccept, cssId, nonCssHash, cssOnly })
 
   hot.dispose(data => {
     // handle previous fatal errors
@@ -91,16 +128,28 @@ function applyHmr(args) {
 
     data.record = r
 
-    if (cssId != null && typeof document !== 'undefined') {
-      // eslint-disable-next-line no-undef
-      const el = document.getElementById(cssId)
-      if (el) el.remove()
+    if (r.current.cssId !== cssId) {
+      if (hotOptions.cssEjectDelay) {
+        setTimeout(() => removeStylesheet(cssId), hotOptions.cssEjectDelay)
+      } else {
+        removeStylesheet(cssId)
+      }
     }
   })
 
   if (canAccept) {
     hot.accept(async () => {
+      const newCssId = r.current.cssId
+      const cssChanged = newCssId !== cssId
+      // ensure old style sheet has been removed by now
+      if (cssChanged) removeStylesheet(cssId)
+      // guard: css only change
+      if (r.current.cssOnly && (!cssChanged || replaceCss(cssId, newCssId))) {
+        return
+      }
+
       const success = await r.reload()
+
       if (hasFatalError() || (!success && !hotOptions.optimistic)) {
         needsReload = true
       }
