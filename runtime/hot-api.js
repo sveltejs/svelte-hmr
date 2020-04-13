@@ -93,7 +93,8 @@ function applyHmr(args) {
 
     if (cssId != null && typeof document !== 'undefined') {
       // eslint-disable-next-line no-undef
-      document.getElementById(cssId).remove()
+      const el = document.getElementById(cssId)
+      if (el) el.remove()
     }
   })
 
