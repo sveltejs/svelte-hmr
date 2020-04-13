@@ -138,13 +138,20 @@ function applyHmr(args) {
   })
 
   if (canAccept) {
-    hot.accept(async () => {
+    hot.accept(async ({ hasChangedDeps }) => {
       const newCssId = r.current.cssId
       const cssChanged = newCssId !== cssId
       // ensure old style sheet has been removed by now
       if (cssChanged) removeStylesheet(cssId)
       // guard: css only change
-      if (r.current.cssOnly && (!cssChanged || replaceCss(cssId, newCssId))) {
+      if (
+        // NOTE hasChangedDeps is provided only by rollup-plugin-hot, and we
+        // can't safely assume a CSS only change without it... this means we
+        // can't support CSS only injection with Nollup or Webpack currently
+        hasChangedDeps === false && // WARNING check false, not falsy!
+        r.current.cssOnly &&
+        (!cssChanged || replaceCss(cssId, newCssId))
+      ) {
         return
       }
 
