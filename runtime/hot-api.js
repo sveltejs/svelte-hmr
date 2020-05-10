@@ -138,7 +138,7 @@ function applyHmr(args) {
   })
 
   if (canAccept) {
-    hot.accept(async ({ hasChangedDeps }) => {
+    hot.accept(async ({ hasChangedDeps } = {}) => {
       const newCssId = r.current.cssId
       const cssChanged = newCssId !== cssId
       // ensure old style sheet has been removed by now
