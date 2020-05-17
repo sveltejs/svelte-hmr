@@ -110,11 +110,7 @@ function applyHmr(args) {
     nonCssHash &&
     existing.current.nonCssHash === nonCssHash
 
-  if (!cssOnly) {
-    r.update({ Component })
-  }
-
-  r.update({ hotOptions, canAccept, cssId, nonCssHash, cssOnly })
+  r.update({ Component, hotOptions, canAccept, cssId, nonCssHash, cssOnly })
 
   hot.dispose(data => {
     // handle previous fatal errors
