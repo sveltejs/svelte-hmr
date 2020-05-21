@@ -175,7 +175,7 @@ export const createProxiedComponent = (
     //
     // 			And also, to support keyed list, it needs to be called each time the
     // 			component is moved (same as $$.fragment.m)
-    if (onMount) {
+    if (onMount && targetCmp.$$.fragment) {
       const m = targetCmp.$$.fragment.m
       targetCmp.$$.fragment.m = (...args) => {
         const result = m(...args)
