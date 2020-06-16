@@ -1,6 +1,6 @@
 /* eslint-env browser */
 
-import { createProxy, hasFatalError } from './proxy'
+import { createProxy, hasFatalError } from './proxy.js'
 
 const logPrefix = '[HMR:Svelte]'
 

@@ -4,7 +4,7 @@
  * successive versions of said component.
  */
 
-import { createProxiedComponent } from './svelte-hooks'
+import { createProxiedComponent } from './svelte-hooks.js'
 
 const handledMethods = ['constructor', '$destroy']
 const forwardedMethods = ['$set', '$on']
