@@ -102,6 +102,11 @@ The official Svelte Native template already includes HMR support.
 
 - [svelte-native-template]
 
+### Vite
+
+- [vite-plugin-svelte]
+- [svite]
+
 [nollup]: https://github.com/PepsRyuu/nollup
 [rollup-plugin-hot]: https://github.com/rixo/rollup-plugin-hot
 [rollup-plugin-svelte-hot]: https://github.com/rixo/rollup-plugin-svelte-hot
@@ -111,12 +116,8 @@ The official Svelte Native template already includes HMR support.
 [svelte-native-template]: https://github.com/halfnelson/svelte-native-template
 [svelte-loader-hot]: https://github.com/rixo/svelte-loader-hot
 [svelte-template-webpack-hot]: https://github.com/rixo/svelte-template-webpack-hot
-
-### Vite
-
-Some early work for a Svelte plugin for Vite with HMR is being made by Svite.
-
-- [svite](https://github.com/dominikg/svite)
+[vite-plugin-svelte]: https://github.com/intrnl/vite-plugin-svelte
+[svite]: https://github.com/dominikg/svite
 
 ## License
 
