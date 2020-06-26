@@ -26,7 +26,7 @@ It's nice because it shortens your feedback loop (you don't lose the current sta
 
 Well, since you're reading this, let me tell you a little more about HMR. Magic is actually not such a good think in software development, so if we can demystify HMR a bit, it will probably benefits you when it comes to answer setup questions or, generally, get the most out of your HMR experience.
 
-So... There are multiple layers to HMR. The first one is the technical capacity to actually replace a JS _module_ (think ES module -- in practice a JS file) at runtime. This capacity is provided (or not) by your bundler or dev server (e.g. Webpack, Parcel, Vite, Snowpack...). A notable absent in the HMR capable bundlers is Rollup, but a HMR plugin exists, as well as a Rollup-compatible super fast dev bundler and server, Nollup (see links bellow).
+So... There are multiple layers to HMR. The first one is the technical capacity to actually replace a JS _module_ (think ES module -- in practice a JS file) at runtime. This capacity is provided (or not) by your bundler or dev server (e.g. Webpack, Parcel, Vite, Snowpack...). A notable absent in the HMR capable bundlers is Rollup, but a HMR plugin exists, as well as a Rollup-compatible super fast dev bundler and server, Nollup (see links below).
 
 The HMR capacity essentially revolves around watching your file system and sending events to the browser when this happens (and, of course, doing all the other bundler stuff, but they're not interesting for this discussion).
 
