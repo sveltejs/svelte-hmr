@@ -63,7 +63,30 @@ It makes sense: all those modules boast of being able to apply a code change to 
 
 Here you are. This is what HMR is, and how it works.
 
+I think the most important take away is that the component that is affected by a change will be recreated. Its state will be preserved but all its children will be recreated too, and their state not preserved. This is a necessity because the elements / child components structure of a component can be entirely different after the file has been modified (and we don't really have the technical capacity to track children).
+
 Now, the best way to see what it can do for you is probably to checkout the template bellow and get your hands at it! (Add 500 components and try Nollup, you should love the speed!)
+
+### Preservation of local state
+
+Local state is preserved by Svelte HMR, that is any state that Svelte itself tracks as reactive (basically any root scope `let` vars, exported or not).
+
+This means that in code like this:
+
+~~~svelte
+<script>
+  let x = 1
+  x++ // x is now 2
+</script>
+
+<p>{x}</p>
+~~~
+
+If you replace `let x = 1` by `let x = 10` and save, the previous value of `x` will be preserved. That is, `x` will be 2 and not 10. The restoration of previous state happens _after_ the init code of the component has run, so the value will not be 11 either, despite the `x++` that is still here.
+
+If you find this behaviour inconvenient, you can disable it by setting `noPreserveState` option of your HMR-enabled bundler plugin.
+
+If you want to disable it for just one particular file, or just temporarily, you can turn it off by adding a `// @!hmr` comment somewhere in your component.
 
 ## Svelte HMR tools
 
