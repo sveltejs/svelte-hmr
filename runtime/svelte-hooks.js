@@ -103,9 +103,17 @@ export const createProxiedComponent = (
   const isCurrent = _cmp => cmp === _cmp
 
   const assignOptions = (target, anchor, restore, noPreserveState) => {
-    const $$inject = noPreserveState
-      ? extractProps(restore.state, compileData)
-      : restore.state
+    // NOTE 2020-06-30 with noPreserveState, don't restore internal state of
+    // props either, reset them to the values set by the parent component or
+    // defaults
+    //
+    // TODO this makes compileData not needed anymore, so we should probably
+    // drop the weight now
+    //
+    // const $$inject = noPreserveState
+    //   ? extractProps(restore.state, compileData)
+    //   : restore.state
+    const $$inject = noPreserveState ? {} : restore.state
     const props = Object.assign({}, options.props)
     if ($$inject) {
       props.$$inject = $$inject
