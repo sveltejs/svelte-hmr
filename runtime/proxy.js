@@ -7,7 +7,7 @@
 import { createProxiedComponent } from './svelte-hooks.js'
 
 const handledMethods = ['constructor', '$destroy']
-const forwardedMethods = ['$set', '$on']
+const forwardedMethods = ['$set', '$$set', '$on']
 
 const logError = (msg, err) => {
   // eslint-disable-next-line no-console
