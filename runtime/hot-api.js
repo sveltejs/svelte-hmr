@@ -134,7 +134,8 @@ function applyHmr(args) {
   })
 
   if (canAccept) {
-    hot.accept(async ({ bubbled } = {}) => {
+    hot.accept(async arg => {
+      const { bubbled } = arg || {}
       const newCssId = r.current.cssId
       const cssChanged = newCssId !== cssId
       // ensure old style sheet has been removed by now
