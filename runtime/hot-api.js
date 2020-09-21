@@ -122,6 +122,9 @@ function applyHmr(args) {
       }
     }
 
+    // 2020-09-21 Snowpack master doesn't pass data as arg to dispose handler
+    data = data || hot.data
+
     data.record = r
 
     if (r.current.cssId !== cssId) {
