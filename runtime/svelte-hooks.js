@@ -113,10 +113,9 @@ export const createProxiedComponent = (
     // const $$inject = noPreserveState
     //   ? extractProps(restore.state, compileData)
     //   : restore.state
-    const $$inject = noPreserveState ? {} : restore.state
     const props = Object.assign({}, options.props)
-    if ($$inject) {
-      props.$$inject = $$inject
+    if (!noPreserveState) {
+      props.$$inject = restore.state
     }
     options = Object.assign({}, initialOptions, { target, anchor, props })
   }
