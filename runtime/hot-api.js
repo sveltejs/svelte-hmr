@@ -110,7 +110,15 @@ function applyHmr(args) {
     nonCssHash &&
     existing.current.nonCssHash === nonCssHash
 
-  r.update({ Component, hotOptions, canAccept, cssId, nonCssHash, cssOnly })
+  r.update({
+    Component,
+    hotOptions,
+    canAccept,
+    nonCssHash,
+    cssId,
+    previousCssId: r.current.cssId,
+    cssOnly,
+  })
 
   hot.dispose(data => {
     // handle previous fatal errors
@@ -139,10 +147,12 @@ function applyHmr(args) {
   if (canAccept) {
     hot.accept(async arg => {
       const { bubbled } = arg || {}
-      const newCssId = r.current.cssId
-      const cssChanged = newCssId !== cssId
+      // NOTE Snowpack registers accept handlers only once, so we can NOT rely
+      // on the surrounding scope variables -- they're not the last module!
+      const { cssId: newCssId, previousCssId } = r.current
+      const cssChanged = newCssId !== previousCssId
       // ensure old style sheet has been removed by now
-      if (cssChanged) removeStylesheet(cssId)
+      if (cssChanged) removeStylesheet(previousCssId)
       // guard: css only change
       if (
         // NOTE bubbled is provided only by rollup-plugin-hot, and we
@@ -150,7 +160,7 @@ function applyHmr(args) {
         // can't support CSS only injection with Nollup or Webpack currently
         bubbled === false && // WARNING check false, not falsy!
         r.current.cssOnly &&
-        (!cssChanged || replaceCss(cssId, newCssId))
+        (!cssChanged || replaceCss(previousCssId, newCssId))
       ) {
         return
       }
