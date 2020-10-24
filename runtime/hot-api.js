@@ -51,8 +51,6 @@ export const makeApplyHmr = transformArgs => args => {
   return applyHmr(allArgs)
 }
 
-const isNamedExport = v => v.export_name && v.module
-
 let needsReload = false
 
 function applyHmr(args) {
@@ -65,41 +63,13 @@ function applyHmr(args) {
     hot,
     hotOptions,
     Component,
-    compileData,
-    compileOptions,
+    acceptable, // some types of components are impossible to HMR correctly
     ProxyAdapter,
   } = args
 
   const existing = hot.data && hot.data.record
 
-  let canAccept = !existing || existing.current.canAccept
-
-  // meta info from compilation (vars, things that could be inspected in AST...)
-  // can be used to help the proxy better emulate the proxied component (and
-  // better mock svelte hooks, in the wait for official support)
-  if (compileData) {
-    // NOTE we're making Component carry the load to minimize diff with base branch
-    Component.$compile = compileData
-
-    // if the module has named exports (in context="module"), then we can't
-    // auto accept the component, since all the consumers need to be aware of
-    // the change (e.g. rerender with the new exports value)
-    if (!hotOptions.acceptNamedExports && canAccept) {
-      const hasNamedExports = compileData.vars.some(isNamedExport)
-      if (hasNamedExports) {
-        canAccept = false
-      }
-    }
-
-    // ...same for accessors: if accessible props change, then we need to
-    // rerender/rerun all the consumers to reflect the change
-    if (
-      !hotOptions.acceptAccessors &&
-      (compileData.accessors || (compileOptions && compileOptions.accessors))
-    ) {
-      canAccept = false
-    }
-  }
+  const canAccept = acceptable && (!existing || existing.current.canAccept)
 
   const r =
     existing || createProxy(ProxyAdapter, id, Component, hotOptions, canAccept)
