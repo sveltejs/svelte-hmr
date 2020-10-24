@@ -49,26 +49,6 @@ const restoreState = (cmp, restore) => {
   // better -- well, at all actually)
 }
 
-const pluck = source => (result, key) => {
-  result[key] = source[key]
-  return result
-}
-
-const extractProps = (state, { vars } = {}) => {
-  if (!vars) {
-    return state
-  }
-  return vars
-    .filter(v => !!v.export_name)
-    .map(v => v.export_name)
-    .concat(
-      Object.keys(state)
-        .filter(name => name.substr(0, 2) === '$$')
-        .map(v => v.name)
-    )
-    .reduce(pluck(state), {})
-}
-
 const get_current_component_safe = () => {
   // NOTE relying on dynamic bindings (current_component) makes us dependent on
   // bundler config (and apparently it does not work in demo-svelte-nollup)
@@ -97,22 +77,11 @@ export const createProxiedComponent = (
 ) => {
   let cmp
   let last
-  let compileData
   let options = initialOptions
 
   const isCurrent = _cmp => cmp === _cmp
 
   const assignOptions = (target, anchor, restore, noPreserveState) => {
-    // NOTE 2020-06-30 with noPreserveState, don't restore internal state of
-    // props either, reset them to the values set by the parent component or
-    // defaults
-    //
-    // TODO this makes compileData not needed anymore, so we should probably
-    // drop the weight now
-    //
-    // const $$inject = noPreserveState
-    //   ? extractProps(restore.state, compileData)
-    //   : restore.state
     const props = Object.assign({}, options.props)
     if (!noPreserveState && restore.state) {
       props.$$inject = restore.state
@@ -149,7 +118,6 @@ export const createProxiedComponent = (
         conservative = false,
       }
     ) => {
-      compileData = Component.$compile
       const restore = captureState(targetCmp)
       assignOptions(target, anchor, restore, noPreserveState)
       const previous = cmp
