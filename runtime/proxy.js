@@ -81,9 +81,6 @@ const copyComponentProperties = (proxy, cmp, previous) => {
 //
 // so we don't polute the component class with new members
 //
-// specificity & conformance with Svelte component constructor is achieved
-// in the "component level" (as opposed "instance level") createRecord
-//
 class ProxyComponent {
   constructor(
     {
@@ -216,6 +213,11 @@ class ProxyComponent {
   }
 }
 
+// TODO we should probably delete statics that were added on the previous
+// iteration, to avoid the case where something removed in the code would
+// remain available, and HMR would produce a different result than non-HMR --
+// namely, we'd expect a crash if a static method is still used somewhere but
+// removed from the code, and HMR would hide that until next reload
 const copyStatics = (component, proxy) => {
   //forward static properties and methods
   for (const key in component) {
@@ -244,7 +246,7 @@ export function createProxy(Adapter, id, Component, hotOptions, canAccept) {
 
   const name = `Proxy${debugName}`
 
-  // this trick gives the dynamic name Proxy<Component> to the concrete
+  // this trick gives the dynamic name Proxy<MyComponent> to the concrete
   // proxy class... unfortunately, this doesn't shows in dev tools, but
   // it stills allow to inspect cmp.constructor.name to confirm an instance
   // is a proxy
@@ -301,14 +303,8 @@ export function createProxy(Adapter, id, Component, hotOptions, canAccept) {
 
   // reload all existing instances of this component
   const reload = () => {
-    // update current references
-    // Object.assign(current, { Component, hotOptions })
-    // const { Component, hotOptions } = current
-
     // copy statics before doing anything because a static prop/method
     // could be used somewhere in the create/render call
-    // TODO delete props/methods previously added and of which value has
-    // not changed since
     copyStatics(current.Component, proxy)
 
     const errors = []
