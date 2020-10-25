@@ -14,7 +14,7 @@ On the other hand, if you are really developing a plugin... Sorry, no docs for n
 
 - preservation of component state, including local state (i.e. `let` vars in your components)
 
-- inject CSS instead of doing a full replace when only the component's CSS has changed, with compatible HMR APIs (`rollup-plugin-hot` and Nollup for now)
+- inject CSS instead of doing a full replace when only the component's CSS has changed, with compatible HMR APIs (`rollup-plugin-hot`, Nollup, and Snowpack for now)
 
 ## What's HMR, by the way?
 
@@ -121,14 +121,25 @@ Some initial work has also been made on supporting Sapper with Rollup, and basic
 
 ### Svelte Native
 
-The official Svelte Native template already includes HMR support.
-
-- [svelte-native-template]
+The official [Svelte Native template](svelte-native-template)
+ already includes HMR support.
 
 ### Vite
 
 - [vite-plugin-svelte]
 - [svite]
+
+### Snowpack
+
+Official [Snowpack plugin for Svelte](snowpack/plugin-svelte) has HMR support via `svelte-hmr`. Use [create-snowpack-app] with [app-template-svelte] to get started quickly:
+
+~~~bash
+npx create-snowpack-app new-dir --template @snowpack/app-template-svelte [--use-yarn | --use-pnpm | --no-install]
+~~~
+
+## License
+
+[ISC](LICENSE)
 
 [nollup]: https://github.com/PepsRyuu/nollup
 [rollup-plugin-hot]: https://github.com/rixo/rollup-plugin-hot
@@ -141,7 +152,6 @@ The official Svelte Native template already includes HMR support.
 [svelte-template-webpack-hot]: https://github.com/rixo/svelte-template-webpack-hot
 [vite-plugin-svelte]: https://github.com/intrnl/vite-plugin-svelte
 [svite]: https://github.com/dominikg/svite
-
-## License
-
-[ISC](LICENSE)
+[snowpack/plugin-svelte]: https://github.com/snowpackjs/snowpack/tree/master/plugins/plugin-svelte
+[create-snowpack-app]: https://github.com/snowpackjs/snowpack/tree/master/create-snowpack-app/cli
+[app-template-svelte]: https://github.com/snowpackjs/snowpack/tree/master/create-snowpack-app/app-template-svelte
