@@ -16,6 +16,55 @@ On the other hand, if you are really developing a plugin... Sorry, no docs for n
 
 - inject CSS instead of doing a full replace when only the component's CSS has changed, with compatible HMR APIs (`rollup-plugin-hot`, Nollup, and Snowpack for now)
 
+## Options
+
+Those are the HMR options that are implemented by `svelte-hmr` itself, and so should be supported by any plugin listed bellow (especially if they include a link pointing to this section). How to pass those options is specific to each plugins, so refer to their specific docs on this point.
+
+#### noReload
+
+Type: `bool`<br>
+Default: `false`
+
+By default, `svelte-hmr` will trigger a full browser reload when it detects an error that will prevent subsequent HMR updates to be applied correctly. Set this to `true` to prevent automatic reloads. Note that Svelte Native does _not_ execute in a browser, and so this option has no effect there.
+
+#### noPreserveState
+
+Type: `bool`<br>
+Default: `false`
+
+Prevent preserving the state of the component (i.e. value of props and `let` variables) across HMR updates.
+
+Note that, independently of this option, the state of child components of a component that is impacted by a HMR update will never be preserved beyond what is re-injected by props, and the state of parent / sibling components will always be preserved (more accurately: parent and siblings are not affected by HMR updates). Read the HMR explanation bellow if you want to understand why.
+
+#### noPreserveStateKey
+
+Type: `string`<br>
+Default: `'@!hmr'`
+
+Escape hatch from preservation of local state. There are some situation where preservation of state gets in the way, typically when you want to change the initial / default value of a prop or local variable. If this string appears anywhere in the component's code, then state won't be preserved for this update.
+
+You'd generally use it with a quick comment right where you are currently editing the code, and remove it just after saving the file:
+
+```js
+let answer = 42 // @!hmr
+```
+
+But you can also make it more permanent if you find that some of your components don't play with state preservation. Maybe use a noop string to clearly manifest your intention?
+
+```svelte
+<script>
+  '@!hmr'
+  ...
+</script>
+```
+
+#### optimistic
+
+Type: `bool`<br>
+Default: `true`
+
+Set this to `false` to consider runtime errors during component init (i.e. when your `<script>` code is run) as fatal to HMR (hence worthy of a full reload if `noReload` option is not set). By default, `svelte-hmr` will try to render the next version of the component in the place of the one that has crashed.
+
 ## What's HMR, by the way?
 
 > **NOTE** To avoid repetition, the following text only mentions HMR in the context of browsers, but it can also be used in other platforms. For example `svelte-hmr` is also used in Svelte Native.
@@ -73,14 +122,14 @@ Local state is preserved by Svelte HMR, that is any state that Svelte itself tra
 
 This means that in code like this:
 
-~~~svelte
+```svelte
 <script>
   let x = 1
   x++ // x is now 2
 </script>
 
 <p>{x}</p>
-~~~
+```
 
 If you replace `let x = 1` by `let x = 10` and save, the previous value of `x` will be preserved. That is, `x` will be 2 and not 10. The restoration of previous state happens _after_ the init code of the component has run, so the value will not be 11 either, despite the `x++` that is still here.
 
@@ -122,7 +171,7 @@ Some initial work has also been made on supporting Sapper with Rollup, and basic
 ### Svelte Native
 
 The official [Svelte Native template](svelte-native-template)
- already includes HMR support.
+already includes HMR support.
 
 ### Vite
 
@@ -133,9 +182,9 @@ The official [Svelte Native template](svelte-native-template)
 
 Official [Snowpack plugin for Svelte](snowpack/plugin-svelte) has HMR support via `svelte-hmr`. Use [create-snowpack-app] with [app-template-svelte] to get started quickly:
 
-~~~bash
+```bash
 npx create-snowpack-app new-dir --template @snowpack/app-template-svelte [--use-yarn | --use-pnpm | --no-install]
-~~~
+```
 
 ## License
 
