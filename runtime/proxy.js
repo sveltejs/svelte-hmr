@@ -7,7 +7,7 @@
 import { createProxiedComponent } from './svelte-hooks.js'
 
 const handledMethods = ['constructor', '$destroy']
-const forwardedMethods = ['$set', '$$set', '$on']
+const forwardedMethods = ['$set', '$on']
 
 const logError = (msg, err) => {
   // eslint-disable-next-line no-console
@@ -46,6 +46,43 @@ const relayCalls = (getTarget, names, dest = {}) => {
     }
   }
   return dest
+}
+
+const isInternal = key => key !== '$$' && key.substr(0, 2) === '$$'
+
+// This is intented as a somewhat generic / prospective fix to the situation
+// that arised with the introduction of $$set in Svelte 3.24.1 -- trying to
+// avoid giving full knowledge (like its name) of this implementation detail
+// to the proxy. The $$set method can be present or not on the component, and
+// its presence impacts the behaviour (but with HMR it will be tested if it is
+// present _on the proxy_). So the idea here is to expose exactly the same $$
+// props as the current version of the component and, for those that are
+// functions, proxy the calls to the current component.
+const relayInternalMethods = (proxy, cmp) => {
+  // delete any previously added $$ prop
+  Object.keys(proxy)
+    .filter(isInternal)
+    .forEach(key => {
+      delete proxy[key]
+    })
+  // proxy current $$ props to the actual component
+  Object.keys(cmp)
+    .filter(isInternal)
+    .forEach(key => {
+      Object.defineProperty(proxy, key, {
+        configurable: true,
+        get() {
+          const value = cmp[key]
+          if (typeof value !== 'function') return value
+          return (
+            value &&
+            function(...args) {
+              return value.apply(this, args)
+            }
+          )
+        },
+      })
+    })
 }
 
 const copyComponentProperties = (proxy, cmp, previous) => {
@@ -96,13 +133,20 @@ class ProxyComponent {
     let disposed = false
     let lastError = null
 
+    const setComponent = _cmp => {
+      cmp = _cmp
+      relayInternalMethods(this, cmp)
+    }
+
+    const getComponent = () => cmp
+
     const destroyComponent = () => {
       // destroyComponent is tolerant (don't crash on no cmp) because it
       // is possible that reload/rerender is called after a previous
       // createComponent has failed (hence we have a proxy, but no cmp)
       if (cmp) {
         cmp.$destroy()
-        cmp = null
+        setComponent(null)
       }
     }
 
@@ -117,7 +161,7 @@ class ProxyComponent {
           if (conservativeDestroy) {
             replaceOptions.conservativeDestroy = true
           }
-          cmp = cmp.$replace(current.Component, replaceOptions)
+          setComponent(cmp.$replace(current.Component, replaceOptions))
         } catch (err) {
           setError(err, target, anchor)
           if (
@@ -182,15 +226,13 @@ class ProxyComponent {
 
     // ---- forwarded methods ----
 
-    const getComponent = () => cmp
-
     relayCalls(getComponent, forwardedMethods, this)
 
     // ---- create & mount target component instance ---
 
     try {
       let lastProperties
-      cmp = createProxiedComponent(current.Component, options, {
+      const _cmp = createProxiedComponent(current.Component, options, {
         onDestroy,
         onMount: afterMount,
         onInstance: comp => {
@@ -205,6 +247,7 @@ class ProxyComponent {
           lastProperties = copyComponentProperties(this, comp, lastProperties)
         },
       })
+      setComponent(_cmp)
     } catch (err) {
       const { target, anchor } = options
       setError(err, target, anchor)
