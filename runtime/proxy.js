@@ -65,6 +65,8 @@ const relayInternalMethods = (proxy, cmp) => {
     .forEach(key => {
       delete proxy[key]
     })
+  // guard: no component
+  if (!cmp) return
   // proxy current $$ props to the actual component
   Object.keys(cmp)
     .filter(isInternal)
