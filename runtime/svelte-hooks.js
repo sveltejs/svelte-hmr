@@ -81,10 +81,18 @@ export const createProxiedComponent = (
 
   const isCurrent = _cmp => cmp === _cmp
 
-  const assignOptions = (target, anchor, restore, noPreserveState) => {
+  const assignOptions = (target, anchor, restore, preserveLocalState) => {
     const props = Object.assign({}, options.props)
-    if (!noPreserveState && restore.state) {
-      props.$$inject = restore.state
+    if (preserveLocalState && restore.state) {
+      if (Array.isArray(preserveLocalState)) {
+        // form ['a', 'b'] => preserve only 'a' and 'b'
+        props.$$inject = {}
+        for (const key of preserveLocalState) {
+          props.$$inject[key] = restore.state[key]
+        }
+      } else {
+        props.$$inject = restore.state
+      }
     } else {
       delete props.$$inject
     }
@@ -116,12 +124,12 @@ export const createProxiedComponent = (
       {
         target = options.target,
         anchor = options.anchor,
-        noPreserveState,
+        preserveLocalState,
         conservative = false,
       }
     ) => {
       const restore = captureState(targetCmp)
-      assignOptions(target, anchor, restore, noPreserveState)
+      assignOptions(target, anchor, restore, preserveLocalState)
       const previous = cmp
       if (conservative) {
         try {

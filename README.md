@@ -29,32 +29,66 @@ By default, `svelte-hmr` will trigger a full browser reload when it detects an e
 
 #### noPreserveState
 
+**Deprecated: removed and default changed from version 0.12. Use `preserveState` instead.**
+
+#### preserveState
+
 Type: `bool`<br>
 Default: `false`
 
-Prevent preserving the state of the component (i.e. value of props and `let` variables) across HMR updates.
-
-Note that, independently of this option, the state of child components of a component that is impacted by a HMR update will never be preserved beyond what is re-injected by props, and the state of parent / sibling components will always be preserved (more accurately: parent and siblings are not affected by HMR updates). Read the HMR explanation bellow if you want to understand why.
+Enable [preservation of local state](#preservation-of-local-state) for all variables in all components.
 
 #### noPreserveStateKey
 
 Type: `string`<br>
-Default: `'@!hmr'`
+Default: `'@hmr:reset'` (also accepts legacy `'@!hmr'`)
 
-Escape hatch from preservation of local state. There are some situation where preservation of state gets in the way, typically when you want to change the initial / default value of a prop or local variable. If this string appears anywhere in the component's code, then state won't be preserved for this update.
+Force disable preservation of local state for this component.
 
-You'd generally use it with a quick comment right where you are currently editing the code, and remove it just after saving the file:
+This flag has priority over all other settings of state preservation. If it is present, all the state of the component will be reset on the next update, regardless of the value of all the other state preservation settings.
 
-```js
-let answer = 42 // @!hmr
+```svelte
+<!-- @hmr:reset -->
+
+<script>
+  '@hmr:reset'
+
+  // @hmr:reset
+</script>
 ```
 
-But you can also make it more permanent if you find that some of your components don't play with state preservation. Maybe use a noop string to clearly manifest your intention?
+#### preserveAllLocalStateKey
+
+Type: `string`<br>
+Default: `'@hmr:keep-all'`
+
+Force preservation of all local variables of this component.
+
+```svelte
+<!-- @hmr:keep-all -->
+
+<script>
+  '@hmr:keep-all'
+
+  // @hmr:keep-all
+</script>
+```
+
+#### preserveLocalStateKey
+
+Type: `string`<br>
+Default: `'@hmr:keep'`
+
+Force preservation of a given local variable in this component.
 
 ```svelte
 <script>
-  '@!hmr'
-  ...
+  // @hmr:keep
+  let x = 0
+
+  let y = 0 // @hmr:keep
+
+  x = 1 // @hmr:keep
 </script>
 ```
 
@@ -118,7 +152,9 @@ Now, the best way to see what it can do for you is probably to checkout the temp
 
 ### Preservation of local state
 
-Local state is preserved by Svelte HMR, that is any state that Svelte itself tracks as reactive (basically any root scope `let` vars, exported or not).
+**From version 0.12** this behaviour has been deemed too confusing and hard to anticipate, so preservation of state is now disabled by default, and some escape hatches to preserve the state of some given variables have been added.
+
+Local state can be preserved by Svelte HMR, that is any state that Svelte itself tracks as reactive (basically any root scope `let` vars, exported or not).
 
 This means that in code like this:
 
@@ -133,9 +169,25 @@ This means that in code like this:
 
 If you replace `let x = 1` by `let x = 10` and save, the previous value of `x` will be preserved. That is, `x` will be 2 and not 10. The restoration of previous state happens _after_ the init code of the component has run, so the value will not be 11 either, despite the `x++` that is still here.
 
-If you find this behaviour inconvenient, you can disable it by setting `noPreserveState` option of your HMR-enabled bundler plugin.
+If you want this behaviour for all the state of all your components, you can enable it by setting the `preserveLocalState` option to `true`.
 
-If you want to disable it for just one particular file, or just temporarily, you can turn it off by adding a `// @!hmr` comment somewhere in your component.
+If you then want to disable it for just one particular file, or just temporarily, you can turn it off by adding a `// @hmr:reset` comment somewhere in your component.
+
+On the contrary, if you keep the default `preserveLocalState` to `false`, you can enable preservation of all the local state of a given component by adding the following comment: `// @hmr:keep-all`. You can also preserve only the state of some specific variables, by annotating them with: `// @hmr:keep`.
+
+For example:
+
+```svelte
+<script>
+  let x = 0 // @hmr:keep
+
+  // or:
+
+  // @hmr:keep
+  let y = 1,
+      z = 2
+</script>
+```
 
 ## Svelte HMR tools
 

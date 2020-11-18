@@ -126,7 +126,7 @@ class ProxyComponent {
       Adapter,
       id,
       debugName,
-      current, // { Component, hotOptions: { noPreserveState, ... } }
+      current, // { Component, hotOptions: { preserveLocalState, ... } }
       register,
     },
     options // { target, anchor, ... }
@@ -158,8 +158,8 @@ class ProxyComponent {
         adapter.rerender()
       } else {
         try {
-          const noPreserveState = current.hotOptions.noPreserveState
-          const replaceOptions = { target, anchor, noPreserveState }
+          const preserveLocalState = current.hotOptions.preserveLocalState
+          const replaceOptions = { target, anchor, preserveLocalState }
           if (conservativeDestroy) {
             replaceOptions.conservativeDestroy = true
           }
