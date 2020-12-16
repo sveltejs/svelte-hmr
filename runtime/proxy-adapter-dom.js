@@ -10,6 +10,8 @@ export default class ProxyAdapterDom {
 
     this.afterMount = this.afterMount.bind(this)
     this.rerender = this.rerender.bind(this)
+
+    this._noOverlay = !!instance.hotOptions.noOverlay
   }
 
   // NOTE overlay is only created before being actually shown to help test
@@ -22,6 +24,7 @@ export default class ProxyAdapterDom {
     return this.errorOverlay
   }
 
+  // TODO this is probably unused now: remove in next breaking release
   static renderCompileError(message) {
     const noCreate = !message
     const overlay = this.getErrorOverlay(noCreate)
@@ -63,6 +66,7 @@ export default class ProxyAdapterDom {
   }
 
   renderError(err) {
+    if (this._noOverlay) return
     const {
       instance: { debugName },
     } = this
@@ -71,12 +75,14 @@ export default class ProxyAdapterDom {
   }
 
   clearError() {
+    if (this._noOverlay) return
     const overlay = this.constructor.getErrorOverlay(true)
     if (!overlay) return
     overlay.clearErrors()
   }
 }
 
+// TODO this is probably unused now: remove in next breaking release
 if (typeof window !== 'undefined') {
   window.__SVELTE_HMR_ADAPTER = ProxyAdapterDom
 }
