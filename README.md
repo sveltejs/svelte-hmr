@@ -29,9 +29,9 @@ By default, `svelte-hmr` will trigger a full browser reload when it detects an e
 
 #### noPreserveState
 
-**Deprecated: removed and default changed from version 0.12. Use `preserveState` instead.**
+**Deprecated: removed and default changed from version 0.12. Use `preserveLocalState` instead.**
 
-#### preserveState
+#### preserveLocalState
 
 Type: `bool`<br>
 Default: `false`
