@@ -19,11 +19,24 @@ const captureState = cmp => {
   if (!cmp.$$) {
     throw new Error('Invalid component')
   }
+
   const {
     $$: { callbacks, bound, ctx },
   } = cmp
+
   const state = cmp.$capture_state()
-  return { ctx, callbacks, bound, state }
+
+  // capturing current value of props (or we'll recreate the component with the
+  // initial prop values, that may have changed -- and would not be reflected in
+  // options.props)
+  const props = Object.assign({}, cmp.$$.props)
+  Object.keys(cmp.$$.props).forEach(prop => {
+    if (state.hasOwnProperty(prop)) {
+      props[prop] = state[prop]
+    }
+  })
+
+  return { ctx, callbacks, bound, state, props }
 }
 
 // restoreState
@@ -83,6 +96,21 @@ export const createProxiedComponent = (
 
   const assignOptions = (target, anchor, restore, preserveLocalState) => {
     const props = Object.assign({}, options.props)
+
+    // Filtering props to avoid "unexpected prop" warning
+    // NOTE this is based on props present in initial options, but it should
+    //      always works, because props that are passed from the parent can't
+    //      change without a code change to the parent itself -- hence, the
+    //      child component will be fully recreated, and initial options should
+    //      always represent props that are currnetly passed by the parent
+    if (options.props && restore.props) {
+      for (const prop of Object.keys(options.props)) {
+        if (restore.props.hasOwnProperty(prop)) {
+          props[prop] = restore.props[prop]
+        }
+      }
+    }
+
     if (preserveLocalState && restore.state) {
       if (Array.isArray(preserveLocalState)) {
         // form ['a', 'b'] => preserve only 'a' and 'b'
