@@ -124,7 +124,12 @@ export const createProxiedComponent = (
     } else {
       delete props.$$inject
     }
-    options = Object.assign({}, initialOptions, { target, anchor, props })
+    options = Object.assign({}, initialOptions, {
+      target,
+      anchor,
+      props,
+      hydrate: false,
+    })
   }
 
   const instrument = targetCmp => {
