@@ -270,6 +270,33 @@ const copyStatics = (component, proxy) => {
   }
 }
 
+const globalListeners = {}
+
+const onGlobal = (event, fn) => {
+  event = event.toLowerCase()
+  if (!globalListeners[event]) globalListeners[event] = []
+  globalListeners[event].push(fn)
+}
+
+const fireGlobal = (event, ...args) => {
+  const listeners = globalListeners[event]
+  if (!listeners) return
+  for (const fn of listeners) {
+    fn(...args)
+  }
+}
+
+const fireBeforeUpdate = () => fireGlobal('beforeupdate')
+
+const fireAfterUpdate = () => fireGlobal('afterupdate')
+
+if (typeof window !== 'undefined') {
+  // eslint-disable-next-line no-undef
+  window.__SVELTE_HMR = {
+    on: onGlobal,
+  }
+}
+
 let fatalError = false
 
 export const hasFatalError = () => fatalError
@@ -348,6 +375,8 @@ export function createProxy(Adapter, id, Component, hotOptions, canAccept) {
 
   // reload all existing instances of this component
   const reload = () => {
+    fireBeforeUpdate()
+
     // copy statics before doing anything because a static prop/method
     // could be used somewhere in the create/render call
     copyStatics(current.Component, proxy)
@@ -366,6 +395,8 @@ export function createProxy(Adapter, id, Component, hotOptions, canAccept) {
     if (errors.length > 0) {
       return false
     }
+
+    fireAfterUpdate()
 
     return true
   }
