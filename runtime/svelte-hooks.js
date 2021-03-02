@@ -31,9 +31,7 @@ const captureState = cmp => {
   // options.props)
   const props = Object.assign({}, cmp.$$.props)
   Object.keys(cmp.$$.props).forEach(prop => {
-    if (state.hasOwnProperty(prop)) {
-      props[prop] = state[prop]
-    }
+    props[prop] = ctx[props[prop]]
   })
 
   return { ctx, callbacks, bound, state, props }
