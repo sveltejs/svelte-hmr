@@ -65,6 +65,7 @@ function applyHmr(args) {
     Component,
     acceptable, // some types of components are impossible to HMR correctly
     ProxyAdapter,
+    ignoreCss,
   } = args
 
   const existing = hot.data && hot.data.record
@@ -105,7 +106,7 @@ function applyHmr(args) {
 
     data.record = r
 
-    if (r.current.cssId !== cssId) {
+    if (!ignoreCss && r.current.cssId !== cssId) {
       if (hotOptions.cssEjectDelay) {
         setTimeout(() => removeStylesheet(cssId), hotOptions.cssEjectDelay)
       } else {
@@ -117,22 +118,25 @@ function applyHmr(args) {
   if (canAccept) {
     hot.accept(async arg => {
       const { bubbled } = arg || {}
-      // NOTE Snowpack registers accept handlers only once, so we can NOT rely
-      // on the surrounding scope variables -- they're not the last module!
-      const { cssId: newCssId, previousCssId } = r.current
-      const cssChanged = newCssId !== previousCssId
-      // ensure old style sheet has been removed by now
-      if (cssChanged) removeStylesheet(previousCssId)
-      // guard: css only change
-      if (
-        // NOTE bubbled is provided only by rollup-plugin-hot, and we
-        // can't safely assume a CSS only change without it... this means we
-        // can't support CSS only injection with Nollup or Webpack currently
-        bubbled === false && // WARNING check false, not falsy!
-        r.current.cssOnly &&
-        (!cssChanged || replaceCss(previousCssId, newCssId))
-      ) {
-        return
+
+      if (!ignoreCss) {
+        // NOTE Snowpack registers accept handlers only once, so we can NOT rely
+        // on the surrounding scope variables -- they're not the last module!
+        const { cssId: newCssId, previousCssId } = r.current
+        const cssChanged = newCssId !== previousCssId
+        // ensure old style sheet has been removed by now
+        if (cssChanged) removeStylesheet(previousCssId)
+        // guard: css only change
+        if (
+          // NOTE bubbled is provided only by rollup-plugin-hot, and we
+          // can't safely assume a CSS only change without it... this means we
+          // can't support CSS only injection with Nollup or Webpack currently
+          bubbled === false && // WARNING check false, not falsy!
+          r.current.cssOnly &&
+          (!cssChanged || replaceCss(previousCssId, newCssId))
+        ) {
+          return
+        }
       }
 
       const success = await r.reload()
