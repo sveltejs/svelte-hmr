@@ -1,3 +1,5 @@
+/* eslint-env browser */
+
 const removeElement = el => el && el.parentNode && el.parentNode.removeChild(el)
 
 const ErrorOverlay = () => {

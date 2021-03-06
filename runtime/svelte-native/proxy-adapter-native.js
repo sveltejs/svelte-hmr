@@ -1,8 +1,9 @@
 /* global document */
 
+// eslint-disable-next-line import/no-unresolved
 import { NavigationType } from 'tns-core-modules/ui/frame'
 
-import ProxyAdapterDom from '../proxy-adapter-dom'
+import { adapter as ProxyAdapterDom } from '../proxy-adapter-dom'
 
 import { patchShowModal, getModalData } from './patch-page-show-modal'
 
@@ -130,7 +131,7 @@ export default class ProxyAdapterNative extends ProxyAdapterDom {
     const { on } = originalNativeView
     const ownOn = originalNativeView.hasOwnProperty('on')
     // tricks svelte-native into giving us its handler
-    originalNativeView.on = function(type, handler, ...rest) {
+    originalNativeView.on = function(type, handler) {
       if (type === 'navigatedFrom') {
         this.navigatedFromHandler = handler
         if (ownOn) {
@@ -150,7 +151,7 @@ export default class ProxyAdapterNative extends ProxyAdapterDom {
     // nativePageElement needs to be updated each time (only for page
     // components, native component that are not pages follow normal flow)
     //
-    // DEBUG quid of components that are initially a page, but then have the
+    // TODO quid of components that are initially a page, but then have the
     // <page> tag removed while running? or the opposite?
     //
     // insertionPoint needs to be updated _only when the target changes_ --
@@ -159,7 +160,7 @@ export default class ProxyAdapterNative extends ProxyAdapterDom {
     // is, insertionPoint only needs to be created once when the component is
     // first mounted.
     //
-    // DEBUG is it really true that components' elements cannot move in the
+    // TODO is it really true that components' elements cannot move in the
     // DOM? what about keyed list?
     //
     const isNativePage = target.tagName === 'fragment'
@@ -216,7 +217,7 @@ export default class ProxyAdapterNative extends ProxyAdapterDom {
 
       if (isFirstPage) {
         // NOTE not so sure of bellow with the new NS6 method for replace
-        // 
+        //
         // The "replacePage" strategy does not work on the first page
         // of the stack.
         //
@@ -330,7 +331,7 @@ export default class ProxyAdapterNative extends ProxyAdapterDom {
     }
   }
 
-  renderError(err, target, anchor) {
+  renderError(err /* , target, anchor */) {
     // TODO fallback on TNS error handler for now... at least our error
     // is more informative
     throw err

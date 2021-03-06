@@ -1,5 +1,3 @@
-/* global Symbol */
-
 // This module monkey patches Page#showModal in order to be able to
 // access from the HMR proxy data passed to `showModal` in svelte-native.
 //
@@ -19,6 +17,7 @@
 //
 
 // FIXME should we override ViewBase#showModal instead?
+// eslint-disable-next-line import/no-unresolved
 import { Page } from 'tns-core-modules/ui/page'
 
 const prop =
