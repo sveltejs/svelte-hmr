@@ -1,13 +1,8 @@
 const createMakeHotFactory = require('./lib/make-hot.js')
 const { resolve } = require('path')
 
-const resolveRuntimeImport = (absoluteImports, target) => {
-  const base = absoluteImports
-    ? resolve(__dirname, 'runtime') + '/'
-    : 'svelte-hmr/runtime/'
-  return base + target
-}
+const resolveAbsoluteImport = target => resolve(__dirname, target)
 
-const createMakeHot = createMakeHotFactory({ resolveRuntimeImport })
+const createMakeHot = createMakeHotFactory({ resolveAbsoluteImport })
 
 module.exports = { createMakeHot }
