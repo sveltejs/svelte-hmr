@@ -64,6 +64,7 @@ function applyHmr(args) {
     hotOptions,
     Component,
     acceptable, // some types of components are impossible to HMR correctly
+    preserveLocalState,
     ProxyAdapter,
     ignoreCss,
   } = args
@@ -73,7 +74,15 @@ function applyHmr(args) {
   const canAccept = acceptable && (!existing || existing.current.canAccept)
 
   const r =
-    existing || createProxy(ProxyAdapter, id, Component, hotOptions, canAccept)
+    existing ||
+    createProxy({
+      Adapter: ProxyAdapter,
+      id,
+      Component,
+      hotOptions,
+      canAccept,
+      preserveLocalState,
+    })
 
   const cssOnly =
     hotOptions.injectCss &&

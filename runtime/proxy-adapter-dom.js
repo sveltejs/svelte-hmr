@@ -3,7 +3,7 @@ import ErrorOverlay from './overlay.js'
 
 const removeElement = el => el && el.parentNode && el.parentNode.removeChild(el)
 
-export default class ProxyAdapterDom {
+export const adapter = class ProxyAdapterDom {
   constructor(instance) {
     this.instance = instance
     this.insertionPoint = null
@@ -84,5 +84,5 @@ export default class ProxyAdapterDom {
 
 // TODO this is probably unused now: remove in next breaking release
 if (typeof window !== 'undefined') {
-  window.__SVELTE_HMR_ADAPTER = ProxyAdapterDom
+  window.__SVELTE_HMR_ADAPTER = adapter
 }

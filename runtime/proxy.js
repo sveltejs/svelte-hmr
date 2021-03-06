@@ -158,8 +158,11 @@ class ProxyComponent {
         adapter.rerender()
       } else {
         try {
-          const preserveLocalState = current.hotOptions.preserveLocalState
-          const replaceOptions = { target, anchor, preserveLocalState }
+          const replaceOptions = {
+            target,
+            anchor,
+            preserveLocalState: current.preserveLocalState,
+          }
           if (conservativeDestroy) {
             replaceOptions.conservativeDestroy = true
           }
@@ -305,7 +308,14 @@ export const hasFatalError = () => fatalError
  * Creates a HMR proxy and its associated `reload` function that pushes a new
  * version to all existing instances of the component.
  */
-export function createProxy(Adapter, id, Component, hotOptions, canAccept) {
+export function createProxy({
+  Adapter,
+  id,
+  Component,
+  hotOptions,
+  canAccept,
+  preserveLocalState,
+}) {
   const debugName = getDebugName(id)
   const instances = []
 
@@ -314,6 +324,7 @@ export function createProxy(Adapter, id, Component, hotOptions, canAccept) {
     Component,
     hotOptions,
     canAccept,
+    preserveLocalState,
   }
 
   const name = `Proxy${debugName}`
