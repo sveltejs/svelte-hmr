@@ -86,3 +86,8 @@ export const adapter = class ProxyAdapterDom {
 if (typeof window !== 'undefined') {
   window.__SVELTE_HMR_ADAPTER = adapter
 }
+
+// mitigate situation with Snowpack remote source pulling latest of runtime,
+// but using previous version of the Node code transform in the plugin
+// see: https://github.com/rixo/svelte-hmr/issues/27
+export default adapter
