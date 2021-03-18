@@ -2,9 +2,12 @@ import { test, describe } from 'zorax'
 import { compile, walk, parse } from 'svelte/compiler'
 
 import { createMakeHot } from '../index.js'
-import { injectScopeEverythingCssRule, normalizeNonJs } from './css-only.js'
+import {
+  injectScopeEverythingCssRule,
+  normalizeJsCode,
+} from '../lib/css-only.js'
 
-describe('normalizeNonJs', () => {
+describe('normalizeJsCode', () => {
   const shouldNeverChange = ({ emitCss = true } = {}) => (t, updates) => {
     const makeHot = createMakeHot({ walk })
 
@@ -38,11 +41,11 @@ describe('normalizeNonJs', () => {
     }
 
     let code = updates.shift()
-    let normal = normalizeNonJs(compileToJs(code))
+    let normal = normalizeJsCode(compileToJs(code))
 
     for (const step of updates) {
       const next = typeof step === 'function' ? step(code) : step
-      const normalNext = normalizeNonJs(compileToJs(next))
+      const normalNext = normalizeJsCode(compileToJs(next))
       t.eq(normalNext, normal)
       code = next
       normal = normalNext
