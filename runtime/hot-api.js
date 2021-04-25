@@ -98,6 +98,7 @@ function applyHmr(args) {
     cssId,
     previousCssId: r.current.cssId,
     cssOnly,
+    preserveLocalState,
   })
 
   hot.dispose(data => {
