@@ -1,8 +1,5 @@
 /* global document */
 
-// eslint-disable-next-line import/no-unresolved
-import { NavigationType } from 'tns-core-modules/ui/frame'
-
 import { adapter as ProxyAdapterDom } from '../proxy-adapter-dom'
 
 import { patchShowModal, getModalData } from './patch-page-show-modal'
@@ -94,13 +91,13 @@ const replacePage = (frame, newPageElement) => {
   const navigationContext = {
     entry: newBackstackEntry,
     isBackNavigation: false,
-    navigationType: NavigationType.replace,
+    navigationType: 2 /* NavigationType replace */,
   }
   frame._navigationQueue.push(navigationContext)
   frame._processNextNavigationEntry()
 }
 
-export default class ProxyAdapterNative extends ProxyAdapterDom {
+export const adapter = class ProxyAdapterNative extends ProxyAdapterDom {
   constructor(instance) {
     super(instance)
 

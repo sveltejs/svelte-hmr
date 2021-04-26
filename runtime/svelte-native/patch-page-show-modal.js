@@ -18,7 +18,7 @@
 
 // FIXME should we override ViewBase#showModal instead?
 // eslint-disable-next-line import/no-unresolved
-import { Page } from 'tns-core-modules/ui/page'
+import { Page } from '@nativescript/core'
 
 const prop =
   typeof Symbol !== 'undefined'
