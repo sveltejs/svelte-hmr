@@ -1,3 +1,4 @@
+/* eslint-env browser */
 /**
  * The HMR proxy is a component-like object whose task is to sit in the
  * component tree in place of the proxied component, and rerender each
@@ -294,10 +295,10 @@ const fireBeforeUpdate = () => fireGlobal('beforeupdate')
 const fireAfterUpdate = () => fireGlobal('afterupdate')
 
 if (typeof window !== 'undefined') {
-  // eslint-disable-next-line no-undef
   window.__SVELTE_HMR = {
     on: onGlobal,
   }
+  window.dispatchEvent(new CustomEvent('svelte-hmr:ready'))
 }
 
 let fatalError = false
