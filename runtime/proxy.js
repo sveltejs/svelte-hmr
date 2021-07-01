@@ -109,7 +109,7 @@ const copyComponentProperties = (proxy, cmp, previous) => {
           // order to most closely follow non-hmr behaviour.
           cmp[prop] = value
           // who knows? maybe the value has been transformed somehow
-          proxy[prop] = cmp[prop]
+          //proxy[prop] = cmp[prop]
         },
       })
       return true
