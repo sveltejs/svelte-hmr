@@ -108,8 +108,6 @@ const copyComponentProperties = (proxy, cmp, previous) => {
           // gives... if it throws an error, we want to throw the same error in
           // order to most closely follow non-hmr behaviour.
           cmp[prop] = value
-          // who knows? maybe the value has been transformed somehow
-          proxy[prop] = cmp[prop]
         },
       })
       return true
