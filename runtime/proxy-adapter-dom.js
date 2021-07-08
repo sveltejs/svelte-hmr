@@ -1,4 +1,6 @@
 /* global window, document */
+import { insert } from 'svelte/internal'
+
 import ErrorOverlay from './overlay.js'
 
 const removeElement = el => el && el.parentNode && el.parentNode.removeChild(el)
@@ -50,7 +52,7 @@ export const adapter = class ProxyAdapterDom {
     if (!this.insertionPoint) {
       this.insertionPoint = document.createComment(debugName)
     }
-    target.insertBefore(this.insertionPoint, anchor)
+    insert(target, this.insertionPoint, anchor)
   }
 
   rerender() {
