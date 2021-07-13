@@ -18,6 +18,7 @@
     "svelte": ">=3.19.0"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.16.0",
     "@rixo/eslint-config": "^0.8.1",
     "svelte": "^3.35.0",
     "tap-mocha-reporter": "^5.0.1",
@@ -25,6 +26,15 @@
     "zorax": "^0.0.12"
   },
   "scripts": {
-    "test": "zoar --pipe 'tap-mocha-reporter spec'"
+    "test": "zoar --pipe 'tap-mocha-reporter spec'",
+    "lint": "eslint --ignore-path .gitignore '**/*.{js,cjs,mjs}'",
+    "lint:fix": "pnpm run lint -- --fix",
+    "release": "pnpx --no changeset publish"
+  },
+  "engines": {
+    "pnpm": "^6.7.0",
+    "yarn": "forbidden, use pnpm",
+    "npm": "forbidden, use pnpm",
+    "node": "^12.20 || ^14.13.1 || >= 16"
   }
 }

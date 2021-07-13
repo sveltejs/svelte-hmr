@@ -1,0 +1,77 @@
+name: Release
+
+env:
+  pnpm_store_path: ${{github.workspace}}/.pnpm-store
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  release:
+    # prevents this action from running on forks
+    if: github.repository == 'rixo/svelte-hmr'
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+        with:
+          # This makes Actions fetch all Git history so that Changesets can generate changelogs with the correct commits
+          fetch-depth: 0
+      - name: setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+      # install pnpm and try to reuse cache from ci action by using same cache keys
+      - name: install pnpm
+        run: npm i -g pnpm@6
+      - name: set pnpm store-dir
+        run: pnpm config set store-dir ${{ env.pnpm_store_path }}
+      - name: pnpm-store
+        uses: actions/cache@v2
+        id: pnpm-store
+        with:
+          path: ${{ env.pnpm_store_path }}
+          key: ubuntu-latest-node-v14-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+
+      - name: pnpm-store-fallback
+        if: steps.pnpm-store.outputs.cache-hit != 'true'
+        uses: actions/cache@v2
+        id: pnpm-store-fallback
+        with:
+          path: ${{ env.pnpm_store_path }}
+          key: ubuntu-latest-node-v14-pnpm-store-fallback-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ubuntu-latest-node-v14-pnpm-store-fallback-
+            ubuntu-latest-node-v14-pnpm-store-
+
+      - name: install
+        # install but don't run scripts, they could be evil
+        run: pnpm install --frozen-lockfile --prefer-offline --ignore-scripts
+      - name: check store
+        run: pnpm store status
+
+      - name: Creating .npmrc
+        run: |
+          cat << EOF > "$HOME/.npmrc"
+            //registry.npmjs.org/:_authToken=$NPM_TOKEN
+          EOF
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Create Release Pull Request or Publish to npm
+        id: changesets
+        uses: changesets/action@master
+        with:
+          # This expects you to have a script called release which does a build for your packages and calls changeset publish
+          publish: pnpm release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # TODO alert discord
+      # - name: Send a Slack notification if a publish happens
+      #   if: steps.changesets.outputs.published == 'true'
+      #   # You can do something when a publish happens.
+      #   run: my-slack-bot send-notification --message "A new version of ${GITHUB_REPOSITORY} was published!"

@@ -1,0 +1,8 @@
+{
+  "mode": "pre",
+  "tag": "next",
+  "initialVersions": {
+    "svelte-hmr": "0.14.5"
+  },
+  "changesets": []
+}
