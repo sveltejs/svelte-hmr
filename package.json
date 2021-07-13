@@ -1,6 +1,6 @@
 {
   "name": "svelte-hmr",
-  "version": "0.14.5",
+  "version": "1.0.0-next.0",
   "description": "Bundler agnostic HMR utils for Svelte 3",
   "main": "index.js",
   "author": "rixo <rixo@rixo.fr>",
@@ -13,13 +13,19 @@
     "type": "git",
     "url": "https://github.com/rixo/svelte-hmr"
   },
-  "files": ["index.js", "lib", "runtime"],
+  "files": [
+    "index.js",
+    "lib",
+    "runtime"
+  ],
   "peerDependencies": {
     "svelte": ">=3.19.0"
   },
   "devDependencies": {
     "@changesets/cli": "^2.16.0",
+    "@changesets/get-github-info": "^0.5.0",
     "@rixo/eslint-config": "^0.8.1",
+    "dotenv": "^10.0.0",
     "svelte": "^3.35.0",
     "tap-mocha-reporter": "^5.0.1",
     "zoar": "^0.3.0",
