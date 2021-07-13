@@ -88,7 +88,8 @@ jobs:
         run: npm i -g pnpm@6
       - name: set pnpm store-dir
         run: pnpm config set store-dir ${{ env.pnpm_store_path }}
-
+      - name: install
+        run: pnpm install --frozen-lockfile --offline --ignore-scripts
       - name: lint
         run: pnpm lint
 
