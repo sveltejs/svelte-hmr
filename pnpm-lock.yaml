@@ -5,7 +5,7 @@ specifiers:
   '@changesets/get-github-info': ^0.5.0
   '@rixo/eslint-config': ^0.8.1
   dotenv: ^10.0.0
-  prettier: ^2.3.2
+  prettier: ^1.19.1
   svelte: ^3.38.3
   tap-mocha-reporter: ^5.0.1
   zoar: ^0.3.0
@@ -16,7 +16,7 @@ devDependencies:
   '@changesets/get-github-info': 0.5.0
   '@rixo/eslint-config': 0.8.1
   dotenv: 10.0.0
-  prettier: 2.3.2
+  prettier: 1.19.1
   svelte: 3.38.3
   tap-mocha-reporter: 5.0.1
   zoar: 0.3.0
@@ -2154,12 +2154,6 @@ packages:
   /prettier/1.19.1:
     resolution: {integrity: sha512-s7PoyDv/II1ObgQunCbB9PdLmUcBZcnWOcxDh7O0N/UwDEsHyqkW+Qh28jW+mVuCdx7gLB0BotYI1Y6uI9iyew==}
     engines: {node: '>=4'}
-    hasBin: true
-    dev: true
-
-  /prettier/2.3.2:
-    resolution: {integrity: sha512-lnJzDfJ66zkMy58OL5/NY5zp70S7Nz6KqcKkXYzn2tMVrNxvbqaBpg7H3qHaLxCJ5lNMsGuM8+ohS7cZrthdLQ==}
-    engines: {node: '>=10.13.0'}
     hasBin: true
     dev: true
 
