@@ -40,7 +40,7 @@
   },
   "scripts": {
     "test": "zoar --pipe 'tap-mocha-reporter spec'",
-    "test:ci": "zoar",
+    "test:ci": "zoar --exit",
     "lint": "eslint --ignore-path .gitignore '**/*.{js,cjs,mjs}'",
     "lint:fix": "pnpm run lint -- --fix",
     "format": "prettier --ignore-path .gitignore '**/*.{js,cjs,mjs}' --check",
