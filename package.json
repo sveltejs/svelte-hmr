@@ -18,6 +18,12 @@
     "lib",
     "runtime"
   ],
+  "engines": {
+    "pnpm": "^6.7.0",
+    "yarn": "forbidden, use pnpm",
+    "npm": "forbidden, use pnpm",
+    "node": "^12.20 || ^14.13.1 || >= 16"
+  },
   "peerDependencies": {
     "svelte": ">=3.19.0"
   },
@@ -39,11 +45,5 @@
     "format": "prettier --ignore-path .gitignore '**/*.{js,cjs,mjs}' --check",
     "format:fix": "pnpm run format -- --write",
     "release": "pnpx --no changeset publish"
-  },
-  "engines": {
-    "pnpm": "^6.7.0",
-    "yarn": "forbidden, use pnpm",
-    "npm": "forbidden, use pnpm",
-    "node": "^12.20 || ^14.13.1 || >= 16"
   }
 }
