@@ -1,8 +1,8 @@
 /* global window, document */
 import * as svelteInternal from 'svelte/internal'
-const svelteInsert = svelteInternal.insert_hydration || svelteInternal.insert;
+const svelteInsert = svelteInternal.insert_hydration || svelteInternal.insert
 if(!svelteInsert) {
-  throw new Error('failed to find insert_hydration and insert in svelte/internal');
+  throw new Error('failed to find insert_hydration and insert in svelte/internal')
 }
 
 import ErrorOverlay from './overlay.js'
