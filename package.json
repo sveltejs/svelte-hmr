@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "@rixo/eslint-config": "^0.8.1",
-    "svelte": "^3.35.0",
+    "svelte": "^3.40.0",
     "tap-mocha-reporter": "^5.0.1",
     "zoar": "^0.3.0",
     "zorax": "^0.0.12"

@@ -1,6 +1,6 @@
 devDependencies:
   '@rixo/eslint-config': 0.8.1
-  svelte: 3.35.0
+  svelte: 3.40.0
   tap-mocha-reporter: 5.0.1
   zoar: 0.3.0
   zorax: 0.0.12
@@ -1798,12 +1798,12 @@ packages:
       node: '>=8'
     resolution:
       integrity: sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw==
-  /svelte/3.35.0:
+  /svelte/3.40.0:
     dev: true
     engines:
       node: '>= 8'
     resolution:
-      integrity: sha512-gknlZkR2sXheu/X+B7dDImwANVvK1R0QGQLd8CNIfxxGPeXBmePnxfzb6fWwTQRsYQG7lYkZXvpXJvxvpsoB7g==
+      integrity: sha512-PCof5NCkxw7ZIkypiHwmjk8jCnnlmJ62NQIcGr/keBCOCx2FdAYmpjLjAey8hGy58xKK4WtwLUgFNcQZK2fPLQ==
   /table/5.4.6:
     dependencies:
       ajv: 6.12.6
@@ -2031,7 +2031,7 @@ packages:
     version: 0.0.1-rixo.3
 specifiers:
   '@rixo/eslint-config': ^0.8.1
-  svelte: ^3.35.0
+  svelte: ^3.40.0
   tap-mocha-reporter: ^5.0.1
   zoar: ^0.3.0
   zorax: ^0.0.12

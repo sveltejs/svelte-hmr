@@ -1,5 +1,9 @@
 /* global window, document */
-import { insert } from 'svelte/internal'
+import * as svelteInternal from 'svelte/internal'
+const svelteInsert = svelteInternal.insert_hydration || svelteInternal.insert;
+if(!svelteInsert) {
+  throw new Error('failed to find insert_hydration and insert in svelte/internal');
+}
 
 import ErrorOverlay from './overlay.js'
 
@@ -52,7 +56,7 @@ export const adapter = class ProxyAdapterDom {
     if (!this.insertionPoint) {
       this.insertionPoint = document.createComment(debugName)
     }
-    insert(target, this.insertionPoint, anchor)
+    svelteInsert(target, this.insertionPoint, anchor)
   }
 
   rerender() {
