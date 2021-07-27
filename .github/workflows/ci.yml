@@ -3,6 +3,7 @@ name: CI
 
 env:
   pnpm_store_path: ${{github.workspace}}/.pnpm-store
+  CI: true
 
 on:
   push:

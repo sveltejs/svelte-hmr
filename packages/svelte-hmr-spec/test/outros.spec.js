@@ -1,5 +1,7 @@
 const { page, wait } = require('test-hmr/commands')
 
+const isCI = process.env.CI === 'true'
+
 describe('outros', () => {
   testHmr`
     # updates when component contains an element with an outro
@@ -88,7 +90,7 @@ describe('outros', () => {
 
       ${function*() {
         yield page.click('div')
-        yield wait(20)
+        yield wait(isCI ? 200 : 20)
       }}
 
       wait for it...
