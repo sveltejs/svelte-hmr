@@ -24,7 +24,8 @@ dist
 node_modules
 **/node_modules
 # only workspace root has a lock
-**/pnpm-lock.yaml
+pnpm-lock.yaml
+!/pnpm-lock.yaml
 .pnpm-store
 **/.pnpm-store
 

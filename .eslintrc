@@ -9,6 +9,9 @@ settings:
     - svelte/internal
 
 overrides:
-  - files: ["index.js", "index.cjs", "index.mjs", "./lib/**/*"]
+  - files:
+      - "packages/svelte-hmr/index.js"
+      - "packages/svelte-hmr/lib/**/*"
+      - "**/rollup.config.js"
     env:
       node: true

@@ -1,0 +1,43 @@
+{
+  "name": "svelte-hmr",
+  "version": "1.0.0-next.0",
+  "description": "Bundler agnostic HMR utils for Svelte 3",
+  "main": "index.js",
+  "author": "rixo <rixo@rixo.fr>",
+  "license": "ISC",
+  "homepage": "https://github.com/rixo/svelte-hmr",
+  "bugs": {
+    "url": "https://github.com/rixo/svelte-hmr/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rixo/svelte-hmr"
+  },
+  "files": ["index.js", "lib", "runtime"],
+  "engines": {
+    "pnpm": "^6.7.0",
+    "yarn": "forbidden, use pnpm",
+    "npm": "forbidden, use pnpm",
+    "node": "^12.20 || ^14.13.1 || >= 16"
+  },
+  "peerDependencies": {
+    "svelte": ">=3.19.0"
+  },
+  "devDependencies": {
+    "dotenv": "^10.0.0",
+    "prettier": "^1.19.1",
+    "svelte": "^3.38.3",
+    "tap-mocha-reporter": "^5.0.1",
+    "zoar": "^0.3.0",
+    "zorax": "^0.0.12"
+  },
+  "scripts": {
+    "test": "zoar --pipe 'tap-mocha-reporter spec'",
+    "test:ci": "zoar --exit",
+    "lint": "eslint --ignore-path .gitignore '**/*.{js,cjs,mjs}'",
+    "lint:fix": "pnpm run lint -- --fix",
+    "format": "prettier --ignore-path .gitignore '**/*.{js,cjs,mjs}' --check",
+    "format:fix": "pnpm run format -- --write",
+    "release": "pnpx --no changeset publish"
+  }
+}
