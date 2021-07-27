@@ -9,6 +9,6 @@
     "prettier": "^1.19.1"
   },
   "scripts": {
-    "test:ci": "echo TODO"
+    "test": "pnpm --recursive test"
   }
 }

@@ -32,12 +32,12 @@
     "zorax": "^0.0.12"
   },
   "scripts": {
-    "test": "zoar --pipe 'tap-mocha-reporter spec'",
-    "test:ci": "zoar --exit",
     "lint": "eslint --ignore-path .gitignore '**/*.{js,cjs,mjs}'",
     "lint:fix": "pnpm run lint -- --fix",
     "format": "prettier --ignore-path .gitignore '**/*.{js,cjs,mjs}' --check",
     "format:fix": "pnpm run format -- --write",
-    "release": "pnpx --no changeset publish"
+    "release": "pnpx --no changeset publish",
+    "test:fancy": "zoar --pipe 'tap-mocha-reporter spec'",
+    "test": "zoar --exit"
   }
 }
