@@ -27,6 +27,6 @@
     "dev": "cross-env MUTE_NOLLUP=0 npm run dev:nollup",
     "start": "sirv public --single",
     "start:dev": "sirv public --single --dev",
-    "test": "pnpx svhs"
+    "test": "pnpm svhs"
   }
 }
