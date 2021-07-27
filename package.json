@@ -9,6 +9,8 @@
     "prettier": "^1.19.1"
   },
   "scripts": {
+    "release": "pnpx --no changeset publish",
+    "lint": "pnpm --recursive lint",
     "test": "pnpm --recursive test"
   }
 }
