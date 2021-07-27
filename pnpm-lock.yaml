@@ -39,7 +39,6 @@ importers:
       esm: ^3.2.25
       fast-glob: ^3.0.4
       mocha: ^6.1.4
-      mocha-unfunk-reporter: ^0.4.0
       node-fetch: ^2.6.0
       test-hmr: ^0.1.2
     dependencies:
@@ -47,7 +46,6 @@ importers:
       esm: 3.2.25
       fast-glob: 3.2.7
       mocha: 6.2.3
-      mocha-unfunk-reporter: 0.4.0
       node-fetch: 2.6.1
       test-hmr: 0.1.2
     devDependencies:
@@ -1465,11 +1463,6 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /diff/1.0.8:
-    resolution: {integrity: sha1-NDJ2MI7Jkbe8giZ+1VvBQR+XFmY=}
-    engines: {node: '>=0.3.1'}
-    dev: false
-
   /diff/3.5.0:
     resolution: {integrity: sha512-A46qtFgd+g7pDZinpnwiRJtxbC1hpgf0uzP3iG89scHk0AUC7A1TGxf5OiiOUv/JMZR8GOt8hL900hV0bOy5xA==}
     engines: {node: '>=0.3.1'}
@@ -2668,11 +2661,6 @@ packages:
       esprima: 4.0.1
     dev: true
 
-  /jsesc/0.4.3:
-    resolution: {integrity: sha1-qcf5Cv1aG/LuZN9sQW2rYWctKuk=}
-    hasBin: true
-    dev: false
-
   /jsesc/2.5.2:
     resolution: {integrity: sha512-OYu7XEzjkCQ3C5Ps3QIZsQfNpqoJyZZA99wd9aWd05NCtC5pWOkShK2mkL6HXQR6/Cy2lbNdPlZBpuQHXE63gA==}
     engines: {node: '>=4'}
@@ -3017,27 +3005,10 @@ packages:
       yallist: 4.0.0
     dev: true
 
-  /ministyle/0.1.4:
-    resolution: {integrity: sha1-sQSB6xaqj3ts2YOBc5OkTaDloM0=}
-    engines: {node: '>= 0.10.0'}
-    dev: false
-
-  /miniwrite/0.1.4:
-    resolution: {integrity: sha1-cvAjhcCsN9VC7+J9xnZLMZCHJc4=}
-    engines: {node: '>= 0.10.0'}
-    dependencies:
-      mkdirp: 0.3.5
-    dev: false
-
   /mixme/0.5.1:
     resolution: {integrity: sha512-NaeZIckeBFT7i0XBEpGyFcAE0/bLcQ9MHErTpnU3bLWVE5WZbxG5Y3fDsMxYGifTo5khDA42OquXCC2ngKJB+g==}
     engines: {node: '>= 8.0.0'}
     dev: true
-
-  /mkdirp/0.3.5:
-    resolution: {integrity: sha1-3j5fiWHIjHh+4TaN+EmsRBPsqNc=}
-    deprecated: Legacy versions of mkdirp are no longer supported. Please update to mkdirp 1.x. (Note that the API surface has changed to use Promises in 1.x.)
-    dev: false
 
   /mkdirp/0.5.4:
     resolution: {integrity: sha512-iG9AK/dJLtJ0XNgTuDbSyNS3zECqDlAhnQW4CsNxBG3LQJBbHmRX1egw39DmtOdCAqY+dKXV+sgPgilNWUKMVw==}
@@ -3052,15 +3023,6 @@ packages:
     hasBin: true
     dependencies:
       minimist: 1.2.5
-
-  /mocha-unfunk-reporter/0.4.0:
-    resolution: {integrity: sha1-We2peuxq5uJtevQXNJCmW3sILSA=}
-    dependencies:
-      jsesc: 0.4.3
-      ministyle: 0.1.4
-      miniwrite: 0.1.4
-      unfunk-diff: 0.0.2
-    dev: false
 
   /mocha/6.2.3:
     resolution: {integrity: sha512-0R/3FvjIGH3eEuG17ccFPk117XL2rWxatr81a57D+r/x2uTYZRbdZ4oVidEUMh2W2TJDa7MdAb12Lm2/qrKajg==}
@@ -4687,14 +4649,6 @@ packages:
       has-bigints: 1.0.1
       has-symbols: 1.0.2
       which-boxed-primitive: 1.0.2
-
-  /unfunk-diff/0.0.2:
-    resolution: {integrity: sha1-hWDWtcs9yx7U1UHn/lnOpRRpdXg=}
-    dependencies:
-      diff: 1.0.8
-      jsesc: 0.4.3
-      ministyle: 0.1.4
-    dev: false
 
   /unicode-length/2.0.2:
     resolution: {integrity: sha512-Ph/j1VbS3/r77nhoY2WU0GWGjVYOHL3xpKp0y/Eq2e5r0mT/6b649vm7KFO6RdAdrZkYLdxphYVgvODxPB+Ebg==}

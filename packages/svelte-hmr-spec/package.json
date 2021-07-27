@@ -21,7 +21,6 @@
     "esm": "^3.2.25",
     "fast-glob": "^3.0.4",
     "mocha": "^6.1.4",
-    "mocha-unfunk-reporter": "^0.4.0",
     "node-fetch": "^2.6.0",
     "test-hmr": "^0.1.2"
   },

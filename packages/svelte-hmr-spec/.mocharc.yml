@@ -1,5 +1,5 @@
 recursive: true
-reporter: mocha-unfunk-reporter
+#reporter: mocha-unfunk-reporter
 
 # we've got a real webpack + puppeteer behind our tests, they're not
 # the faster in the block...
