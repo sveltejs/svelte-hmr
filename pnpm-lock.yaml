@@ -36,6 +36,7 @@ importers:
     specifiers:
       '@rixo/eslint-config': ^0.7.0-alpha.7
       cheap-watch: ^1.0.2
+      esm: ^3.2.25
       fast-glob: ^3.0.4
       mocha: ^6.1.4
       mocha-unfunk-reporter: ^0.4.0
@@ -43,6 +44,7 @@ importers:
       test-hmr: ^0.1
     dependencies:
       cheap-watch: 1.0.3
+      esm: 3.2.25
       fast-glob: 3.2.7
       mocha: 6.2.3
       mocha-unfunk-reporter: 0.4.0

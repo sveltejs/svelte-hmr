@@ -3,7 +3,13 @@
   "private": true,
   "version": "0.0.1",
   "description": "Test suite for svelte HMR",
-  "keywords": ["test", "svelte", "sveltejs", "hmr", "webpack"],
+  "keywords": [
+    "test",
+    "svelte",
+    "sveltejs",
+    "hmr",
+    "webpack"
+  ],
   "author": "rixo <rixo@rixo.fr>",
   "license": "MIT",
   "main": "index.js",
@@ -12,6 +18,7 @@
   },
   "dependencies": {
     "cheap-watch": "^1.0.2",
+    "esm": "^3.2.25",
     "fast-glob": "^3.0.4",
     "mocha": "^6.1.4",
     "mocha-unfunk-reporter": "^0.4.0",
