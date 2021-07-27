@@ -54,7 +54,7 @@ jobs:
 
       - name: install
         if: steps.pnpm-store.outputs.cache-hit != 'true'
-        run: pnpm install --frozen-lockfile --prefer-offline
+        run: pnpm install --frozen-lockfile --prefer-offline --ignore-scripts
       - name: prune store
         if: steps.pnpm-store.outputs.cache-hit != 'true'
         run: pnpm store prune
@@ -154,6 +154,6 @@ jobs:
       - name: set pnpm store-dir
         run: pnpm config set store-dir ${{ env.pnpm_store_path }}
       - name: install
-        run: pnpm install --frozen-lockfile --offline --ignore-scripts
+        run: pnpm install --frozen-lockfile --offline
       - name: run tests
         run: pnpm test
