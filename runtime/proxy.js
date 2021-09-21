@@ -237,6 +237,7 @@ class ProxyComponent {
     try {
       let lastProperties
       const _cmp = createProxiedComponent(current.Component, options, {
+        allowLiveBinding: current.hotOptions.allowLiveBinding,
         onDestroy,
         onMount: afterMount,
         onInstance: comp => {

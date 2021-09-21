@@ -84,7 +84,7 @@ const get_current_component_safe = () => {
 export const createProxiedComponent = (
   Component,
   initialOptions,
-  { onInstance, onMount, onDestroy }
+  { allowLiveBinding, onInstance, onMount, onDestroy }
 ) => {
   let cmp
   let options = initialOptions
@@ -255,7 +255,9 @@ export const createProxiedComponent = (
     }
   }
 
-  const parentComponent = get_current_component_safe()
+  const parentComponent = allowLiveBinding
+    ? current_component
+    : get_current_component_safe()
 
   cmp = new Component(options)
   cmp.$$.hmr_cmp = cmp
