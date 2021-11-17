@@ -18,7 +18,11 @@ const production = !dev
 const hot = isNollup || (watch && !useLiveReload)
 
 const preserveLocalState =
-  process.env.PRESERVE_LOCAL_STATE === 'false' ? false : null
+  'PRESERVE_LOCAL_STATE' in process.env
+    ? process.env.PRESERVE_LOCAL_STATE === 'false'
+      ? false
+      : process.env.PRESERVE_LOCAL_STATE
+    : null
 
 const root = fs.realpathSync(__dirname)
 
