@@ -40,6 +40,11 @@ const defaultHotOptions = {
 
   // disable runtime error overlay
   noOverlay: false,
+
+  // set to true on systems that supports them, to avoid useless caught /
+  // managed (but still...) exceptions, by using Svelte's current_component
+  // instead of get_current_component
+  allowLiveBinding: false,
 }
 
 const defaultHotApi = 'hot-api-esm.js'

@@ -84,10 +84,9 @@ const get_current_component_safe = () => {
 export const createProxiedComponent = (
   Component,
   initialOptions,
-  { onInstance, onMount, onDestroy }
+  { allowLiveBinding, onInstance, onMount, onDestroy }
 ) => {
   let cmp
-  let last
   let options = initialOptions
 
   const isCurrent = _cmp => cmp === _cmp
@@ -139,6 +138,9 @@ export const createProxiedComponent = (
       return comp
     }
 
+    targetCmp.$$.on_before_hmr = []
+    targetCmp.$$.on_hmr = []
+
     // `conservative: true` means we want to be sure that the new component has
     // actually been successfuly created before destroying the old instance.
     // This could be useful for preventing runtime errors in component init to
@@ -161,6 +163,11 @@ export const createProxiedComponent = (
     ) => {
       const restore = captureState(targetCmp)
       assignOptions(target, anchor, restore, preserveLocalState)
+
+      const callbacks = cmp.$$.on_hmr
+
+      const afterCallbacks = callbacks.map(fn => fn(cmp)).filter(Boolean)
+
       const previous = cmp
       if (conservative) {
         try {
@@ -180,9 +187,17 @@ export const createProxiedComponent = (
           // previous can be null if last constructor has crashed
           previous.$destroy()
         }
-        cmp = createComponent(Component, restore, last)
-        last = cmp
+        cmp = createComponent(Component, restore, cmp)
       }
+
+      cmp.$$.hmr_cmp = cmp
+
+      for (const fn of afterCallbacks) {
+        fn(cmp)
+      }
+
+      cmp.$$.on_hmr = callbacks
+
       return cmp
     }
 
@@ -240,9 +255,12 @@ export const createProxiedComponent = (
     }
   }
 
-  const parentComponent = get_current_component_safe()
+  const parentComponent = allowLiveBinding
+    ? current_component
+    : get_current_component_safe()
 
   cmp = new Component(options)
+  cmp.$$.hmr_cmp = cmp
 
   instrument(cmp)
 
