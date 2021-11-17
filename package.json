@@ -8,6 +8,11 @@
     "dotenv": "^10.0.0",
     "prettier": "^1.19.1"
   },
+  "pnpm": {
+    "overrides": {
+      "svelte-hmr": "workspace:*"
+    }
+  },
   "scripts": {
     "release": "pnpx --no changeset publish",
     "lint": "pnpm --recursive lint",
