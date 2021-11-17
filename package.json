@@ -16,6 +16,7 @@
   "scripts": {
     "release": "pnpx --no changeset publish",
     "lint": "pnpm --recursive lint",
+    "test:ci": "pnpm --recursive test:ci",
     "test": "pnpm --recursive test"
   }
 }

@@ -10,6 +10,7 @@
     "@rollup/plugin-commonjs": "^19.0.2",
     "@rollup/plugin-node-resolve": "^13.0.4",
     "nollup": "^0.17.0",
+    "npm-run-all": "^4.1.5",
     "rollup": "2",
     "rollup-plugin-hot": "^0.1.1",
     "rollup-plugin-livereload": "^1.0.0",
@@ -27,6 +28,9 @@
     "dev": "cross-env MUTE_NOLLUP=0 npm run dev:nollup",
     "start": "sirv public --single",
     "start:dev": "sirv public --single --dev",
-    "test": "pnpm svhs"
+    "test:noPreserveState": "cross-env PRESERVE_LOCAL_STATE=false pnpm svhs",
+    "test:smartPreserveState": "cross-env PRESERVE_LOCAL_STATE=smart pnpm svhs",
+    "test": "run-p test:noPreserveState test:smartPreserveState",
+    "test:ci": "run-s test:noPreserveState test:smartPreserveState"
   }
 }
