@@ -1,6 +1,9 @@
 const { clickButton } = require('./helpers')
 
-describe('local state: preserveLocalStateKey', () => {
+const describeIf =
+  process.env.PRESERVE_LOCAL_STATE === 'false' ? describe : describe.skip
+
+describeIf('local state: preserveLocalStateKey', () => {
   testHmr`
     # inline annotation
 

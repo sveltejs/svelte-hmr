@@ -158,4 +158,4 @@ jobs:
       - name: install
         run: pnpm install --frozen-lockfile --offline
       - name: run tests
-        run: pnpm test
+        run: pnpm test:ci

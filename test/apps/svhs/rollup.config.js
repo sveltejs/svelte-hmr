@@ -17,7 +17,12 @@ const production = !dev
 
 const hot = isNollup || (watch && !useLiveReload)
 
-const noPreserveState = !!process.env.NO_PRESERVE_STATE
+const preserveLocalState =
+  'PRESERVE_LOCAL_STATE' in process.env
+    ? process.env.PRESERVE_LOCAL_STATE === 'false'
+      ? false
+      : process.env.PRESERVE_LOCAL_STATE
+    : null
 
 const root = fs.realpathSync(__dirname)
 
@@ -52,14 +57,11 @@ export default {
       },
       accessors: true,
       hot: hot && {
-        // expose test hooks from the plugin
         test,
-        // optimistic will try to recover from runtime
-        // errors during component init
-        optimistic: true,
-        // turn on to disable preservation of local component
-        // state -- i.e. non exported `let` variables
-        noPreserveState,
+        // optimistic: true,
+        ...(preserveLocalState != null && {
+          preserveLocalState,
+        }),
       },
     }),
 

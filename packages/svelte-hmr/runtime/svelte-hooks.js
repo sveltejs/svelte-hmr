@@ -84,10 +84,12 @@ const get_current_component_safe = () => {
 export const createProxiedComponent = (
   Component,
   initialOptions,
-  { allowLiveBinding, onInstance, onMount, onDestroy }
+  { allowLiveBinding, onInstance, onMount, onDestroy, smartPreserveLocalState }
 ) => {
   let cmp
   let options = initialOptions
+
+  let lastSmartPreserveLocalState = smartPreserveLocalState
 
   const isCurrent = _cmp => cmp === _cmp
 
@@ -109,18 +111,42 @@ export const createProxiedComponent = (
     }
 
     if (preserveLocalState && restore.state) {
+      // partial
       if (Array.isArray(preserveLocalState)) {
         // form ['a', 'b'] => preserve only 'a' and 'b'
         props.$$inject = {}
         for (const key of preserveLocalState) {
           props.$$inject[key] = restore.state[key]
         }
-      } else {
+      }
+      // smart -- preserve only if declaration has not changed
+      else if (typeof preserveLocalState === 'object') {
+        const hasChanged = key =>
+          lastSmartPreserveLocalState[key] !== preserveLocalState[key]
+        const someInitHasChanged = Object.keys(preserveLocalState).some(
+          hasChanged
+        )
+        if (someInitHasChanged) {
+          // delete props.$$inject
+          props.$$inject = {}
+          for (const key of Object.keys(preserveLocalState)) {
+            if (hasChanged(key)) continue
+            props.$$inject[key] = restore.state[key]
+          }
+        } else {
+          props.$$inject = restore.state
+        }
+      }
+      // all
+      else {
         props.$$inject = restore.state
       }
     } else {
       delete props.$$inject
     }
+
+    lastSmartPreserveLocalState = preserveLocalState
+
     options = Object.assign({}, initialOptions, {
       target,
       anchor,

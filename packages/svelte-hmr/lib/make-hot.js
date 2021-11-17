@@ -1,9 +1,11 @@
 const globalName = '___SVELTE_HMR_HOT_API'
 const globalAdapterName = '___SVELTE_HMR_HOT_API_PROXY_ADAPTER'
 
+const PRESERVE_LOCAL_STATE_SMART = 'smart'
+
 const defaultHotOptions = {
   // preserve all local state
-  preserveLocalState: false,
+  preserveLocalState: false, // true | false | 'smart'
 
   // escape hatchs from preservation of local state
   //
@@ -309,6 +311,53 @@ const createMakeHot = ({ resolveAbsoluteImport, pkg = {} }) => ({
     return [...variables]
   }
 
+  const resolveSmartPreserveLocalState = ({ code, compiled }) => {
+    if (!compiled.ast.instance) return false
+
+    const variables = {}
+
+    const reduceDeclaration = decl => {
+      const init = decl.init
+
+      if (!init) return undefined
+
+      if ('value' in init) return init.value
+
+      if (init.type === 'Identifier') return init.name
+
+      if (init.type === 'BinaryExpression') {
+        return [
+          reduceDeclaration(init.left),
+          reduceDeclaration(init.operator),
+          reduceDeclaration(init.right),
+        ].join(' ')
+      }
+
+      return code.slice(init.start, init.end)
+    }
+
+    walk(compiled.ast.instance, {
+      enter(node) {
+        switch (node.type) {
+          case 'VariableDeclaration': {
+            if (node.kind !== 'let') return
+
+            const decl =
+              node.declarations && node.declarations[0] && node.declarations[0]
+
+            const name = decl.id && node.declarations[0].id.name
+
+            if (!name) return
+
+            variables[name] = reduceDeclaration(decl)
+          }
+        }
+      },
+    })
+
+    return variables
+  }
+
   const resolvePreserveLocalState = ({
     hotOptions,
     originalCode,
@@ -331,6 +380,13 @@ const createMakeHot = ({ resolveAbsoluteImport, pkg = {} }) => ({
       }
       // preserveAllLocalStateKey
       if (preserveAllLocalStateKey && hasKey(preserveAllLocalStateKey)) {
+        return true
+      }
+      // preserveLocalState
+      if (preserveLocalState === PRESERVE_LOCAL_STATE_SMART) {
+        return resolveSmartPreserveLocalState({ code: originalCode, compiled })
+      }
+      if (preserveLocalState) {
         return true
       }
       // preserveLocalStateKey
