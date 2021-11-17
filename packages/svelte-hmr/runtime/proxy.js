@@ -251,6 +251,10 @@ class ProxyComponent {
           this.$$ = comp.$$
           lastProperties = copyComponentProperties(this, comp, lastProperties)
         },
+        smartPreserveLocalState:
+          // TODO: use constant
+          current.hotOptions.preserveLocalState === 'smart' &&
+          current.preserveLocalState,
       })
       setComponent(_cmp)
     } catch (err) {
