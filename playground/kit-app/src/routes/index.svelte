@@ -1,2 +1,12 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script>
+	let x = 0;
+
+	const increment = () => {
+		x++;
+	};
+
+</script>
+
+<p>{x}</p>
+
+<button on:click={increment}>++</button>
