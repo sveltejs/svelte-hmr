@@ -30,7 +30,7 @@
     "start:dev": "sirv public --single --dev",
     "test:noPreserveState": "cross-env PRESERVE_LOCAL_STATE=false pnpm svhs",
     "test:smartPreserveState": "cross-env PRESERVE_LOCAL_STATE=smart pnpm svhs",
-    "test": "run-p test:noPreserveState test:smartPreserveState",
-    "test:ci": "run-s test:noPreserveState test:smartPreserveState"
+    "test:ci": "run-s test:noPreserveState test:smartPreserveState",
+    "test": "run-p test:noPreserveState test:smartPreserveState"
   }
 }
