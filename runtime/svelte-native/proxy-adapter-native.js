@@ -137,9 +137,10 @@ export const adapter = class ProxyAdapterNative extends ProxyAdapterDom {
           delete originalNativeView.on
         }
       } else {
-        throw new Error(
-          'Unexpected call: has underlying svelte-native code changed?'
-        )
+        //some other handler wireup, we will just pass it on.
+        if (ownOn) {
+            on(type, handler);
+        }
       }
     }
   }
@@ -160,7 +161,8 @@ export const adapter = class ProxyAdapterNative extends ProxyAdapterDom {
     // TODO is it really true that components' elements cannot move in the
     // DOM? what about keyed list?
     //
-    const isNativePage = target.tagName === 'fragment'
+    
+    const isNativePage = (target.tagName === 'fragment' || target.tagName === 'frame') && target.firstChild && target.firstChild.tagName == 'page'
     if (isNativePage) {
       const nativePageElement = target.firstChild
       this.interceptPageNavigation(nativePageElement)
