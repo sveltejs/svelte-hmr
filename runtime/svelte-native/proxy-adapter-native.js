@@ -138,8 +138,8 @@ export const adapter = class ProxyAdapterNative extends ProxyAdapterDom {
         }
       } else {
         //some other handler wireup, we will just pass it on.
-        if (ownOn) {
-            on(type, handler);
+        if (on) {
+          on(type, handler);
         }
       }
     }
