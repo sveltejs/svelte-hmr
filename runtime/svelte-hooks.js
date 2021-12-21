@@ -138,7 +138,6 @@ export const createProxiedComponent = (
       return comp
     }
 
-    targetCmp.$$.on_before_hmr = []
     targetCmp.$$.on_hmr = []
 
     // `conservative: true` means we want to be sure that the new component has
@@ -162,7 +161,12 @@ export const createProxiedComponent = (
       }
     ) => {
       const restore = captureState(targetCmp)
-      assignOptions(target, anchor, restore, preserveLocalState)
+      assignOptions(
+        target || options.target,
+        anchor,
+        restore,
+        preserveLocalState
+      )
 
       const callbacks = cmp.$$.on_hmr
 
