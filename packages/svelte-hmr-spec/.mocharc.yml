@@ -1,0 +1,7 @@
+recursive: true
+#reporter: mocha-unfunk-reporter
+
+# we've got a real webpack + puppeteer behind our tests, they're not
+# the faster in the block...
+timeout: 5000
+slow: 1000

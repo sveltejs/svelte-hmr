@@ -1,30 +1,31 @@
 {
-  "name": "svelte-hmr",
-  "version": "0.14.9",
+  "name": "svelte-hmr-monorepo",
+  "private": true,
   "description": "Bundler agnostic HMR utils for Svelte 3",
-  "main": "index.js",
-  "author": "rixo <rixo@rixo.fr>",
   "license": "ISC",
-  "homepage": "https://github.com/rixo/svelte-hmr",
+  "homepage": "https://github.com/sveltejs/svelte-hmr",
   "bugs": {
-    "url": "https://github.com/rixo/svelte-hmr/issues"
+    "url": "https://github.com/sveltejs/svelte-hmr/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/rixo/svelte-hmr"
-  },
-  "files": ["index.js", "lib", "runtime"],
-  "peerDependencies": {
-    "svelte": ">=3.19.0"
+    "url": "https://github.com/sveltejs/svelte-hmr"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.21.0",
     "@rixo/eslint-config": "^0.8.1",
-    "svelte": "^3.40.0",
-    "tap-mocha-reporter": "^5.0.1",
-    "zoar": "^0.3.0",
-    "zorax": "^0.0.12"
+    "@svitejs/changesets-changelog-github-compact": "^0.1.1",
+    "prettier": "^1.19.1"
+  },
+  "pnpm": {
+    "overrides": {
+      "svelte-hmr": "workspace:*",
+      "ansi-regex@>2.1.1 <5.0.1": "^5.0.1"
+    }
   },
   "scripts": {
-    "test": "zoar --pipe 'tap-mocha-reporter spec'"
+    "release": "pnpx --no changeset publish",
+    "lint": "pnpm --recursive lint",
+    "test": "pnpm --recursive test"
   }
 }

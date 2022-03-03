@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Svelte Discord
+    url: https://svelte.dev/chat
+    about: If you want to chat, join our discord.

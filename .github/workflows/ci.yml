@@ -1,0 +1,75 @@
+# build and test
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  # "checks" job runs on linux + 16 only and checks that install, build, lint and audit work
+  # it also primes the pnpm store cache for linux, important for downstream tests
+  checks:
+    timeout-minutes: 5
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        # pseudo-matrix for convenience, NEVER use more than a single combination
+        node: [16]
+        os: [ubuntu-latest]
+    outputs:
+      build_successful: ${{ steps.build.outcome == 'success' }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+      - run: npm i -g pnpm@6
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+          cache: 'pnpm'
+          cache-dependency-path: '**/pnpm-lock.yaml'
+      - name: install
+        run: pnpm install --frozen-lockfile --prefer-offline
+# reactivate this when there is a build step
+#      - name: build
+#        id: build
+#        run: pnpm run build
+      - name: lint
+        if: (${{ success() }} || ${{ failure() }})
+        run: pnpm run lint
+      - name: audit
+        if: (${{ success() }} || ${{ failure() }})
+        run: pnpm audit
+
+  # this is the test matrix
+  # it is skipped if the build step of the checks job wasn't successful (still runs if lint or audit fail)
+  test:
+    needs: checks
+    if: (${{ success() }} || ${{ failure() }}) && (${{ needs.checks.output.build_successful }})
+    timeout-minutes: 10
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, macos-latest ]
+        node: [ 14, 16 ]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+      - run: npm i -g pnpm@6
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+          cache: 'pnpm'
+          cache-dependency-path: '**/pnpm-lock.yaml'
+      - name: install
+        run: pnpm install --frozen-lockfile --prefer-offline
+      - name: run tests
+        run: pnpm test

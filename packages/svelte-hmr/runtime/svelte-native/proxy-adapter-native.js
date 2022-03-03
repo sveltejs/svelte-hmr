@@ -139,7 +139,7 @@ export const adapter = class ProxyAdapterNative extends ProxyAdapterDom {
       } else {
         //some other handler wireup, we will just pass it on.
         if (on) {
-          on(type, handler);
+          on(type, handler)
         }
       }
     }
@@ -161,8 +161,11 @@ export const adapter = class ProxyAdapterNative extends ProxyAdapterDom {
     // TODO is it really true that components' elements cannot move in the
     // DOM? what about keyed list?
     //
-    
-    const isNativePage = (target.tagName === 'fragment' || target.tagName === 'frame') && target.firstChild && target.firstChild.tagName == 'page'
+
+    const isNativePage =
+      (target.tagName === 'fragment' || target.tagName === 'frame') &&
+      target.firstChild &&
+      target.firstChild.tagName == 'page'
     if (isNativePage) {
       const nativePageElement = target.firstChild
       this.interceptPageNavigation(nativePageElement)
