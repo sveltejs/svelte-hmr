@@ -261,16 +261,22 @@ class ProxyComponent {
   }
 }
 
-// TODO we should probably delete statics that were added on the previous
-// iteration, to avoid the case where something removed in the code would
-// remain available, and HMR would produce a different result than non-HMR --
-// namely, we'd expect a crash if a static method is still used somewhere but
-// removed from the code, and HMR would hide that until next reload
-const copyStatics = (component, proxy) => {
-  //forward static properties and methods
+const syncStatics = (component, proxy, previousKeys) => {
+  // remove previously copied keys
+  if (previousKeys) {
+    for (const key of previousKeys) {
+      delete proxy[key]
+    }
+  }
+
+  // forward static properties and methods
+  const keys = []
   for (const key in component) {
+    keys.push(key)
     proxy[key] = component[key]
   }
+
+  return keys
 }
 
 const globalListeners = {}
@@ -380,7 +386,7 @@ export function createProxy({
   }[name]
 
   // initialize static members
-  copyStatics(current.Component, proxy)
+  let previousStatics = syncStatics(current.Component, proxy)
 
   const update = newState => Object.assign(current, newState)
 
@@ -390,7 +396,7 @@ export function createProxy({
 
     // copy statics before doing anything because a static prop/method
     // could be used somewhere in the create/render call
-    copyStatics(current.Component, proxy)
+    previousStatics = syncStatics(current.Component, proxy, previousStatics)
 
     const errors = []
 

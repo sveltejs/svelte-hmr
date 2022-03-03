@@ -1,6 +1,16 @@
 {
   "name": "svelte-hmr-monorepo",
   "private": true,
+  "description": "Bundler agnostic HMR utils for Svelte 3",
+  "license": "ISC",
+  "homepage": "https://github.com/sveltejs/svelte-hmr",
+  "bugs": {
+    "url": "https://github.com/sveltejs/svelte-hmr/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sveltejs/svelte-hmr"
+  },
   "devDependencies": {
     "@changesets/cli": "^2.16.0",
     "@changesets/get-github-info": "^0.5.0",
