@@ -88,15 +88,16 @@ const relayInternalMethods = (proxy, cmp) => {
     })
 }
 
+// proxy custom methods
 const copyComponentProperties = (proxy, cmp, previous) => {
-  //proxy custom methods
-  const props = Object.getOwnPropertyNames(Object.getPrototypeOf(cmp))
   if (previous) {
     previous.forEach(prop => {
       delete proxy[prop]
     })
   }
-  return props.filter(prop => {
+
+  const props = Object.getOwnPropertyNames(Object.getPrototypeOf(cmp))
+  const wrappedProps = props.filter(prop => {
     if (!handledMethods.includes(prop) && !forwardedMethods.includes(prop)) {
       Object.defineProperty(proxy, prop, {
         configurable: true,
@@ -113,6 +114,8 @@ const copyComponentProperties = (proxy, cmp, previous) => {
       return true
     }
   })
+
+  return wrappedProps
 }
 
 // everything in the constructor!
@@ -165,7 +168,7 @@ class ProxyComponent {
           if (conservativeDestroy) {
             replaceOptions.conservativeDestroy = true
           }
-          setComponent(cmp.$replace(current.Component, replaceOptions))
+          cmp.$replace(current.Component, replaceOptions)
         } catch (err) {
           setError(err, target, anchor)
           if (
@@ -236,11 +239,12 @@ class ProxyComponent {
 
     try {
       let lastProperties
-      const _cmp = createProxiedComponent(current.Component, options, {
+      createProxiedComponent(current.Component, options, {
         allowLiveBinding: current.hotOptions.allowLiveBinding,
         onDestroy,
         onMount: afterMount,
         onInstance: comp => {
+          setComponent(comp)
           // WARNING the proxy MUST use the same $$ object as its component
           // instance, because a lot of wiring happens during component
           // initialisation... lots of references to $$ and $$.fragment have
@@ -252,7 +256,6 @@ class ProxyComponent {
           lastProperties = copyComponentProperties(this, comp, lastProperties)
         },
       })
-      setComponent(_cmp)
     } catch (err) {
       const { target, anchor } = options
       setError(err, target, anchor)
@@ -375,8 +378,8 @@ export function createProxy({
           if (!fatalError) {
             fatalError = true
             logError(
-              `Unrecoverable error in ${debugName}: next update will trigger a ` +
-                `full reload`
+              `Unrecoverable HMR error in ${debugName}: ` +
+                `next update will trigger a full reload`
             )
           }
           throw err
