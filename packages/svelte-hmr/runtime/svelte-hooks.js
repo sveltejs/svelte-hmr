@@ -29,9 +29,9 @@ const captureState = cmp => {
   // capturing current value of props (or we'll recreate the component with the
   // initial prop values, that may have changed -- and would not be reflected in
   // options.props)
-  const hmr_props_value = {}
+  const hmr_props_values = {}
   Object.keys(cmp.$$.props).forEach(prop => {
-    hmr_props_value[prop] = ctx[props[prop]]
+    hmr_props_values[prop] = ctx[props[prop]]
   })
 
   return {
@@ -41,7 +41,7 @@ const captureState = cmp => {
     callbacks,
     bound,
     state,
-    hmr_props_value,
+    hmr_props_values,
   }
 }
 
@@ -124,10 +124,10 @@ export const createProxiedComponent = (
     //      change without a code change to the parent itself -- hence, the
     //      child component will be fully recreated, and initial options should
     //      always represent props that are currnetly passed by the parent
-    if (options.props && restore.hmr_props_value) {
+    if (options.props && restore.hmr_props_values) {
       for (const prop of Object.keys(options.props)) {
-        if (restore.hmr_props_value.hasOwnProperty(prop)) {
-          props[prop] = restore.hmr_props_value[prop]
+        if (restore.hmr_props_values.hasOwnProperty(prop)) {
+          props[prop] = restore.hmr_props_values[prop]
         }
       }
     }
