@@ -12,7 +12,7 @@
     "url": "https://github.com/sveltejs/svelte-hmr"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.16.0",
+    "@changesets/cli": "^2.21.0",
     "@rixo/eslint-config": "^0.8.1",
     "@svitejs/changesets-changelog-github-compact": "^0.1.1",
     "prettier": "^1.19.1"
