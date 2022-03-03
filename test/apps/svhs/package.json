@@ -15,7 +15,7 @@
     "rollup-plugin-livereload": "^1.0.0",
     "rollup-plugin-svelte-hot": "github:rixo/rollup-plugin-svelte-hot#svhs",
     "rollup-plugin-terser": "^5.1.2",
-    "svelte": "~3.41.0",
+    "svelte": "~3.46.4",
     "svelte-hmr": "workspace:*",
     "svelte-hmr-spec": "workspace:*"
   },
