@@ -21,7 +21,7 @@ const captureState = cmp => {
   }
 
   const {
-    $$: { callbacks, bound, ctx },
+    $$: { callbacks, bound, ctx, props, hmr_future_props },
   } = cmp
 
   const state = cmp.$capture_state()
@@ -29,12 +29,20 @@ const captureState = cmp => {
   // capturing current value of props (or we'll recreate the component with the
   // initial prop values, that may have changed -- and would not be reflected in
   // options.props)
-  const props = Object.assign({}, cmp.$$.props)
+  const hmr_props_value = {}
   Object.keys(cmp.$$.props).forEach(prop => {
-    props[prop] = ctx[props[prop]]
+    hmr_props_value[prop] = ctx[props[prop]]
   })
 
-  return { ctx, callbacks, bound, state, props }
+  return {
+    ctx,
+    props,
+    hmr_future_props,
+    callbacks,
+    bound,
+    state,
+    hmr_props_value,
+  }
 }
 
 // restoreState
@@ -49,12 +57,28 @@ const restoreState = (cmp, restore) => {
   if (!restore) {
     return
   }
-  const { callbacks, bound } = restore
+  const { callbacks, bound, hmr_future_props } = restore
+
   if (callbacks) {
     cmp.$$.callbacks = callbacks
   }
+
   if (bound) {
-    cmp.$$.bound = bound
+    const propsByIndex = {}
+    for (const [name, i] of Object.entries(restore.props)) {
+      propsByIndex[i] = name
+    }
+    for (const oldIndex of Object.keys(bound)) {
+      const callback = bound[oldIndex]
+      const propName = hmr_future_props[-oldIndex - 1] || propsByIndex[oldIndex]
+      if (propName == null) continue
+      const newIndex = cmp.$$.props[propName]
+      cmp.$$.bound[newIndex] = callback
+      // NOTE if the prop doesn't exist or doesn't exist anymore in the new
+      // version of the component, clearing the binding is the expected
+      // behaviour (since that's what would happen in non HMR code)
+      callback(cmp.$$.ctx[newIndex])
+    }
   }
   // props, props.$$slots are restored at component creation (works
   // better -- well, at all actually)
@@ -100,10 +124,10 @@ export const createProxiedComponent = (
     //      change without a code change to the parent itself -- hence, the
     //      child component will be fully recreated, and initial options should
     //      always represent props that are currnetly passed by the parent
-    if (options.props && restore.props) {
+    if (options.props && restore.hmr_props_value) {
       for (const prop of Object.keys(options.props)) {
-        if (restore.props.hasOwnProperty(prop)) {
-          props[prop] = restore.props[prop]
+        if (restore.hmr_props_value.hasOwnProperty(prop)) {
+          props[prop] = restore.hmr_props_value[prop]
         }
       }
     }
@@ -129,14 +153,47 @@ export const createProxiedComponent = (
     })
   }
 
+  // Preserving knowledge of "future props" -- very hackish version (maybe
+  // there should be an option to opt out of this)
+  //
+  // The use case is bind:something where something doesn't exist yet in the
+  // target component, but comes to exist later, after a HMR update.
+  //
+  // If Svelte can't map a prop in the current version of the component, it
+  // will just completely discard it:
+  // https://github.com/sveltejs/svelte/blob/1632bca34e4803d6b0e0b0abd652ab5968181860/src/runtime/internal/Component.ts#L46
+  //
+  const rememberFutureProps = cmp => {
+    cmp.$$.hmr_future_props = []
+
+    if (typeof Proxy === 'undefined') return
+
+    cmp.$$.props = new Proxy(cmp.$$.props, {
+      get(target, name) {
+        if (target[name] === undefined) {
+          cmp.$$.hmr_future_props.push(name)
+          return -cmp.$$.hmr_future_props.length
+        }
+        return target[name]
+      },
+      set(target, name, value) {
+        target[name] = value
+      },
+    })
+  }
+
   const instrument = targetCmp => {
     const createComponent = (Component, restore, previousCmp) => {
       set_current_component(parentComponent || previousCmp)
       const comp = new Component(options)
-      restoreState(comp, restore)
+      // NOTE must be instrumented before restoreState, because restoring
+      // bindings relies on hacked $$.props
       instrument(comp)
+      restoreState(comp, restore)
       return comp
     }
+
+    rememberFutureProps(targetCmp)
 
     targetCmp.$$.on_hmr = []
 
