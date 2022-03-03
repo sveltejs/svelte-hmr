@@ -35,9 +35,10 @@ jobs:
           cache-dependency-path: '**/pnpm-lock.yaml'
       - name: install
         run: pnpm install --frozen-lockfile --prefer-offline
-      - name: build
-        id: build
-        run: pnpm run build
+# reactivate this when there is a build step
+#      - name: build
+#        id: build
+#        run: pnpm run build
       - name: lint
         if: (${{ success() }} || ${{ failure() }})
         run: pnpm run lint
