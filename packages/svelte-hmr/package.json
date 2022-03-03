@@ -1,6 +1,6 @@
 {
   "name": "svelte-hmr",
-  "version": "0.14.9",
+  "version": "0.14.10",
   "description": "Bundler agnostic HMR utils for Svelte 3",
   "main": "index.js",
   "author": "rixo <rixo@rixo.fr>",
@@ -11,7 +11,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/sveltejs/svelte-hmr"
+    "url": "https://github.com/sveltejs/svelte-hmr",
+    "directory": "packages/svelte-hmr"
   },
   "files": [
     "index.js",
