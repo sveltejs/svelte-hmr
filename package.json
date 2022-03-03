@@ -19,7 +19,8 @@
   },
   "pnpm": {
     "overrides": {
-      "svelte-hmr": "workspace:*"
+      "svelte-hmr": "workspace:*",
+      "ansi-regex@>2.1.1 <5.0.1": "^5.0.1"
     }
   },
   "scripts": {
