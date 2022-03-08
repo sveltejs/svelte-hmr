@@ -21,7 +21,7 @@ const captureState = cmp => {
   }
 
   const {
-    $$: { callbacks, bound, ctx },
+    $$: { callbacks, bound, ctx, props },
   } = cmp
 
   const state = cmp.$capture_state()
@@ -29,12 +29,57 @@ const captureState = cmp => {
   // capturing current value of props (or we'll recreate the component with the
   // initial prop values, that may have changed -- and would not be reflected in
   // options.props)
-  const props = Object.assign({}, cmp.$$.props)
+  const hmr_props_values = {}
   Object.keys(cmp.$$.props).forEach(prop => {
-    props[prop] = ctx[props[prop]]
+    hmr_props_values[prop] = ctx[props[prop]]
   })
 
-  return { ctx, callbacks, bound, state, props }
+  return {
+    ctx,
+    props,
+    callbacks,
+    bound,
+    state,
+    hmr_props_values,
+  }
+}
+
+// remapping all existing bindings (including hmr_future_foo ones) to the
+// new version's props indexes, and refresh them with the new value from
+// context
+const restoreBound = (cmp, restore) => {
+  // reverse prop:ctxIndex in $$.props to ctxIndex:prop
+  //
+  // ctxIndex can be either a regular index in $$.ctx or a hmr_future_ prop
+  //
+  const propsByIndex = {}
+  for (const [name, i] of Object.entries(restore.props)) {
+    propsByIndex[i] = name
+  }
+
+  // NOTE $$.bound cannot change in the HMR lifetime of a component, because
+  //      if bindings changes, that means the parent component has changed,
+  //      which means the child (current) component will be wholly recreated
+  for (const [oldIndex, updateBinding] of Object.entries(restore.bound)) {
+    // can be either regular prop, or future_hmr_ prop
+    const propName = propsByIndex[oldIndex]
+
+    // this should never happen if remembering of future props is enabled...
+    // in any case, there's nothing we can do about it if we have lost prop
+    // name knowledge at this point
+    if (propName == null) continue
+
+    // NOTE $$.props[propName] also propagates knowledge of a possible
+    //      future prop to the new $$.props (via $$.props being a Proxy)
+    const newIndex = cmp.$$.props[propName]
+    cmp.$$.bound[newIndex] = updateBinding
+
+    // NOTE if the prop doesn't exist or doesn't exist anymore in the new
+    //      version of the component, clearing the binding is the expected
+    //      behaviour (since that's what would happen in non HMR code)
+    const newValue = cmp.$$.ctx[newIndex]
+    updateBinding(newValue)
+  }
 }
 
 // restoreState
@@ -46,16 +91,16 @@ const captureState = cmp => {
 // also generally more respectful of normal operation.
 //
 const restoreState = (cmp, restore) => {
-  if (!restore) {
-    return
+  if (!restore) return
+
+  if (restore.callbacks) {
+    cmp.$$.callbacks = restore.callbacks
   }
-  const { callbacks, bound } = restore
-  if (callbacks) {
-    cmp.$$.callbacks = callbacks
+
+  if (restore.bound) {
+    restoreBound(cmp, restore)
   }
-  if (bound) {
-    cmp.$$.bound = bound
-  }
+
   // props, props.$$slots are restored at component creation (works
   // better -- well, at all actually)
 }
@@ -100,10 +145,10 @@ export const createProxiedComponent = (
     //      change without a code change to the parent itself -- hence, the
     //      child component will be fully recreated, and initial options should
     //      always represent props that are currnetly passed by the parent
-    if (options.props && restore.props) {
+    if (options.props && restore.hmr_props_values) {
       for (const prop of Object.keys(options.props)) {
-        if (restore.props.hasOwnProperty(prop)) {
-          props[prop] = restore.props[prop]
+        if (restore.hmr_props_values.hasOwnProperty(prop)) {
+          props[prop] = restore.hmr_props_values[prop]
         }
       }
     }
@@ -129,14 +174,44 @@ export const createProxiedComponent = (
     })
   }
 
+  // Preserving knowledge of "future props" -- very hackish version (maybe
+  // there should be an option to opt out of this)
+  //
+  // The use case is bind:something where something doesn't exist yet in the
+  // target component, but comes to exist later, after a HMR update.
+  //
+  // If Svelte can't map a prop in the current version of the component, it
+  // will just completely discard it:
+  // https://github.com/sveltejs/svelte/blob/1632bca34e4803d6b0e0b0abd652ab5968181860/src/runtime/internal/Component.ts#L46
+  //
+  const rememberFutureProps = cmp => {
+    if (typeof Proxy === 'undefined') return
+
+    cmp.$$.props = new Proxy(cmp.$$.props, {
+      get(target, name) {
+        if (target[name] === undefined) {
+          target[name] = 'hmr_future_' + name
+        }
+        return target[name]
+      },
+      set(target, name, value) {
+        target[name] = value
+      },
+    })
+  }
+
   const instrument = targetCmp => {
     const createComponent = (Component, restore, previousCmp) => {
       set_current_component(parentComponent || previousCmp)
       const comp = new Component(options)
-      restoreState(comp, restore)
+      // NOTE must be instrumented before restoreState, because restoring
+      // bindings relies on hacked $$.props
       instrument(comp)
+      restoreState(comp, restore)
       return comp
     }
+
+    rememberFutureProps(targetCmp)
 
     targetCmp.$$.on_hmr = []
 

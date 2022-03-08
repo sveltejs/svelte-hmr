@@ -95,7 +95,7 @@ importers:
       rollup-plugin-svelte-hot: github:rixo/rollup-plugin-svelte-hot#svhs
       rollup-plugin-terser: ^5.1.2
       sirv-cli: ^0.4.4
-      svelte: ~3.41.0
+      svelte: ~3.46.4
       svelte-hmr: workspace:*
       svelte-hmr-spec: workspace:*
     dependencies:
@@ -108,9 +108,9 @@ importers:
       rollup: 2.54.0
       rollup-plugin-hot: 0.1.1_rollup@2.54.0
       rollup-plugin-livereload: 1.3.0
-      rollup-plugin-svelte-hot: github.com/rixo/rollup-plugin-svelte-hot/5911fabc970c634f78c901e023526c81990e7474_bce53102debd41c5dac09b4d251cb2d9
+      rollup-plugin-svelte-hot: github.com/rixo/rollup-plugin-svelte-hot/5911fabc970c634f78c901e023526c81990e7474_0976037ac3c77f7249b7fcdddb456ee6
       rollup-plugin-terser: 5.3.1_rollup@2.54.0
-      svelte: 3.41.0
+      svelte: 3.46.4
       svelte-hmr: link:../../../packages/svelte-hmr
       svelte-hmr-spec: link:../../../packages/svelte-hmr-spec
 
@@ -3305,7 +3305,7 @@ packages:
   /jsonfile/4.0.0:
     resolution: {integrity: sha1-h3Gq4HmbZAdrdmQPygWPnBDjPss=}
     optionalDependencies:
-      graceful-fs: 4.2.6
+      graceful-fs: 4.2.9
     dev: true
 
   /just-extend/4.2.1:
@@ -3388,7 +3388,7 @@ packages:
     resolution: {integrity: sha512-OfCBkGEw4nN6JLtgRidPX6QxjBQGQf72q3si2uvqyFEMbycSFFHwAZeXx6cJgFM9wmLrf9zBwCP3Ivqa+LLZPw==}
     engines: {node: '>=6'}
     dependencies:
-      graceful-fs: 4.2.6
+      graceful-fs: 4.2.9
       js-yaml: 3.14.1
       pify: 4.0.1
       strip-bom: 3.0.0
@@ -5281,13 +5281,13 @@ packages:
     engines: {node: '>= 8'}
     dev: true
 
-  /svelte/3.41.0:
-    resolution: {integrity: sha512-X9/lnTcRBCrMdyFBVjfmqy1T2vyN8ejUE1OfbWSccc2Z42Amn3ab3XdBgVl+oDkZvzPfPMoxo6CEbWca7pXOew==}
+  /svelte/3.44.1:
+    resolution: {integrity: sha512-4DrCEJoBvdR689efHNSxIQn2pnFwB7E7j2yLEJtHE/P8hxwZWIphCtJ8are7bjl/iVMlcEf5uh5pJ68IwR09vQ==}
     engines: {node: '>= 8'}
     dev: true
 
-  /svelte/3.44.1:
-    resolution: {integrity: sha512-4DrCEJoBvdR689efHNSxIQn2pnFwB7E7j2yLEJtHE/P8hxwZWIphCtJ8are7bjl/iVMlcEf5uh5pJ68IwR09vQ==}
+  /svelte/3.46.4:
+    resolution: {integrity: sha512-qKJzw6DpA33CIa+C/rGp4AUdSfii0DOTCzj/2YpSKKayw5WGSS624Et9L1nU1k2OVRS9vaENQXp2CVZNU+xvIg==}
     engines: {node: '>= 8'}
     dev: true
 
@@ -5908,7 +5908,7 @@ packages:
       zora: 3.1.9
     dev: true
 
-  github.com/rixo/rollup-plugin-svelte-hot/5911fabc970c634f78c901e023526c81990e7474_bce53102debd41c5dac09b4d251cb2d9:
+  github.com/rixo/rollup-plugin-svelte-hot/5911fabc970c634f78c901e023526c81990e7474_0976037ac3c77f7249b7fcdddb456ee6:
     resolution: {tarball: https://codeload.github.com/rixo/rollup-plugin-svelte-hot/tar.gz/5911fabc970c634f78c901e023526c81990e7474}
     id: github.com/rixo/rollup-plugin-svelte-hot/5911fabc970c634f78c901e023526c81990e7474
     name: rollup-plugin-svelte-hot
@@ -5928,7 +5928,7 @@ packages:
       rollup-plugin-hot-nollup: 0.1.2_rollup@2.54.0
       rollup-pluginutils: 2.8.2
       sourcemap-codec: 1.4.8
-      svelte: 3.41.0
+      svelte: 3.46.4
     dev: true
 
   github.com/rixo/zora-reporters/002538be1e3fc28bc4bdca8e1bed15b20c8bd2e6:
