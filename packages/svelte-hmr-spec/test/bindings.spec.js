@@ -317,6 +317,8 @@ describe('bindings', () => {
     <script>
       ::0 export let bet = () => 1
       ::1 export let get = () => 2
+      ::2 export let bet = () => 3
+      ::3 export let get = () => 4
     </script>
 
     * * * * *
@@ -324,7 +326,16 @@ describe('bindings', () => {
     ::0::
       undefined
     ::1::
+      undefined
       ${clickButton()}
       2
+    ::2:: doesn't reuse a wrong variable in the right place
+      2
+      ${clickButton()}
+      undefined
+    ::3:: remembers older future prop
+      undefined
+      ${clickButton()}
+      4
   `
 })
