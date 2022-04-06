@@ -49,7 +49,7 @@ const relayCalls = (getTarget, names, dest = {}) => {
   return dest
 }
 
-const isInternal = key => key !== '$$' && key.substr(0, 2) === '$$'
+const isInternal = key => key !== '$$' && key.slice(0, 2) === '$$'
 
 // This is intented as a somewhat generic / prospective fix to the situation
 // that arised with the introduction of $$set in Svelte 3.24.1 -- trying to
