@@ -243,7 +243,7 @@ export const createProxiedComponent = (
         preserveLocalState
       )
 
-      const callbacks = cmp.$$.on_hmr
+      const callbacks = cmp ? cmp.$$.on_hmr : []
 
       const afterCallbacks = callbacks.map(fn => fn(cmp)).filter(Boolean)
 
