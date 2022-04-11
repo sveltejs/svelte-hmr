@@ -1,2 +1,10 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script lang="ts">
+	import GetContext from '$lib/GetContext.svelte';
+	import SetContext from '$lib/SetContext.svelte';
+</script>
+
+<h1>Indexy</h1>
+
+<SetContext>
+	<GetContext />
+</SetContext>

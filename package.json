@@ -20,7 +20,8 @@
   "pnpm": {
     "overrides": {
       "svelte-hmr": "workspace:*",
-      "ansi-regex@>2.1.1 <5.0.1": "^5.0.1"
+      "ansi-regex@>2.1.1 <5.0.1": "^5.0.1",
+      "vite": "/home/rixo/projects/github/vite/packages/vite"
     }
   },
   "scripts": {

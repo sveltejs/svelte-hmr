@@ -80,7 +80,7 @@ const renderApplyHmr = ({
   //
   `${imports.join(';')};${`
     if (${meta} && ${meta}.hot) {
-      if (false) ${meta}.hot.accept();
+      if (false) ${meta}.hot.acceptExports('default');
       $2 = ${globalName}.applyHmr({
         m: ${meta},
         id: ${json(id)},
