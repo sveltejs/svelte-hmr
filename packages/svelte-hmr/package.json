@@ -35,9 +35,9 @@
   },
   "scripts": {
     "lint": "eslint '**/*.{js,cjs,mjs}'",
-    "lint:fix": "pnpm run lint -- --fix",
+    "lint:fix": "pnpm run lint --fix",
     "format": "prettier '**/*.{js,cjs,mjs}' --check",
-    "format:fix": "pnpm run format -- --write",
+    "format:fix": "pnpm run format --write",
     "test:fancy": "zoar --pipe 'tap-mocha-reporter spec'",
     "test": "zoar --exit"
   }
