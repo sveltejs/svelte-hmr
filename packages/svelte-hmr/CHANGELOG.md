@@ -1,5 +1,15 @@
 # svelte-hmr
 
+## 0.14.12
+
+### Patch Changes
+
+- Fix acceptNamedExports option in tools that statically analyze accept (like Vite) ([`cafb9bb`](https://github.com/sveltejs/svelte-hmr/commit/cafb9bb7ea032d37b18fa4611542dd97ec81e197))
+
+* Fix recovery after error, when possible ([#49](https://github.com/sveltejs/svelte-hmr/pull/49))
+
+- change options.optimistic default value from true to false to fix buggy behavior on fatal runtime errors ([#53](https://github.com/sveltejs/svelte-hmr/pull/53))
+
 ## 0.14.11
 
 ### Patch Changes
