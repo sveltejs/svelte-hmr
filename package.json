@@ -22,9 +22,7 @@
       "svelte-hmr": "workspace:*"
     },
     "peerDependencyRules": {
-      "peerDependencyRules": {
-        "ignoreMissing": ["nollup","webpack","webpack-dev-server"]
-      }
+      "ignoreMissing": ["nollup","webpack","webpack-dev-server"]
     }
   },
   "scripts": {
