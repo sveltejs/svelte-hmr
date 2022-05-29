@@ -18,7 +18,8 @@ const defaultHotOptions = {
   // don't reload on fatal error
   noReload: false,
   // try to recover after runtime errors during component init
-  optimistic: true,
+  // defaults to false because some runtime errors are fatal and require a full reload
+  optimistic: false,
   // auto accept modules of components that have named exports (i.e. exports
   // from context="module")
   acceptNamedExports: true,
