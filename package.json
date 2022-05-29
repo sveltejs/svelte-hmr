@@ -19,13 +19,19 @@
   },
   "pnpm": {
     "overrides": {
-      "svelte-hmr": "workspace:*",
-      "ansi-regex@>2.1.1 <5.0.1": "^5.0.1"
+      "svelte-hmr": "workspace:*"
+    },
+    "peerDependencyRules": {
+      "ignoreMissing": ["nollup","webpack","webpack-dev-server"]
     }
   },
   "scripts": {
-    "release": "pnpx --no changeset publish",
+    "release": "pnpm changeset publish",
     "lint": "pnpm --recursive lint",
     "test": "pnpm --recursive test"
+  },
+  "packageManager": "pnpm@7.1.0",
+  "engines": {
+    "pnpm": "^7.1.0"
   }
 }
