@@ -95,9 +95,9 @@ Force preservation of a given local variable in this component.
 #### optimistic
 
 Type: `bool`<br>
-Default: `true`
+Default: `false`
 
-Set this to `false` to consider runtime errors during component init (i.e. when your `<script>` code is run) as fatal to HMR (hence worthy of a full reload if `noReload` option is not set). When `true`, `svelte-hmr` will try to render the next version of the component in the place of the one that has crashed instead of programming a full reload.
+When `false`, runtime errors during component init (i.e. when your `<script>` code is run) are considered fatal to HMR (hence worthy of a full reload if `noReload` option is not set). When `true`, `svelte-hmr` will try to render the next version of the component in the place of the one that has crashed instead of programming a full reload.
 
 ## What's HMR, by the way?
 
