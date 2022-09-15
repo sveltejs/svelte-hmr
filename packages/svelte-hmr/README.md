@@ -95,9 +95,9 @@ Force preservation of a given local variable in this component.
 #### optimistic
 
 Type: `bool`<br>
-Default: `true`
+Default: `false`
 
-Set this to `false` to consider runtime errors during component init (i.e. when your `<script>` code is run) as fatal to HMR (hence worthy of a full reload if `noReload` option is not set). When `true`, `svelte-hmr` will try to render the next version of the component in the place of the one that has crashed instead of programming a full reload.
+When `false`, runtime errors during component init (i.e. when your `<script>` code is run) are considered fatal to HMR (hence worthy of a full reload if `noReload` option is not set). When `true`, `svelte-hmr` will try to render the next version of the component in the place of the one that has crashed instead of programming a full reload.
 
 ## What's HMR, by the way?
 
@@ -191,57 +191,21 @@ For example:
 
 ## Svelte HMR tools
 
-### Vite 2
+### Vite
 
-The [official Svelte plugin for Vite][vite-plugin-svelte] has HRM support.
+The [official Svelte plugin for Vite][vite-plugin-svelte] has HMR support.
 
 ### Webpack
 
 The [official loader for Webpack][svelte-loader] now has HMR support.
 
-### Rollup / Nollup
+### Rollup
 
-- [svelte-template-hot]
-- [rollup-plugin-svelte-hot]
-
-#### HMR support for Rollup
-
-Rollup does not natively support HMR. You'll need to use one of the following solutions. The best way to get started is to refer to [svelte-template-hot], that demonstrates usage of both.
-
-- [rollup-plugin-hot]
-- [Nollup][nollup]
+Rollup does not natively support HMR, so we recommend using Vite. However, if you'd like to add HMR support to Rollup, the best way to get started is to refer to [svelte-template-hot], which demonstrates usage of both [rollup-plugin-hot] and [rollup-plugin-svelte-hot].
 
 ### Svelte Native
 
-The official [Svelte Native template][svelte-native-template]
-already includes HMR support.
-
-### Snowpack
-
-Official [Snowpack plugin for Svelte][snowpack/plugin-svelte] has HMR support via `svelte-hmr`. Use [create-snowpack-app] with [app-template-svelte] to get started quickly:
-
-```bash
-npx create-snowpack-app new-dir --template @snowpack/app-template-svelte [--use-yarn | --use-pnpm | --no-install]
-```
-
-### Sapper
-
-Sapper can be supported with Webpack's loader. The link bellow is still very much a work in progress (no docs at time of writing), but I'm adding it for future reference.
-
-- [sapper-template-hot#webpack](https://github.com/rixo/sapper-template-hot#webpack)
-
-Some initial work has also been made on supporting Sapper with Rollup, and basic support for simple cases is available. But this one is still in very early stages (and, again, poorly documented for now, sorry). I could really use some help with this one actually, if you're in the mood ;)
-
-- [sapper-template-hot#rollup](https://github.com/rixo/sapper-template-hot#rollup)
-
-Note that further work on HMR for Sapper is not pursued anymore, by me or anyone I would be aware of.
-
-### Vite 1
-
-Please note that both Vite 1 itself and the `vite-plugin-svelte` for Vite 1 linked bellow are deprecated / not supported anymore.
-
-- [@intrnl/vite-plugin-svelte]
-- [svite]
+The official [Svelte Native template][svelte-native-template] already includes HMR support.
 
 ## License
 
@@ -249,7 +213,6 @@ Please note that both Vite 1 itself and the `vite-plugin-svelte` for Vite 1 link
 
 [vite-plugin-svelte]: https://www.npmjs.com/package/@sveltejs/vite-plugin-svelte
 [svelte-loader]: https://github.com/sveltejs/svelte-loader
-[nollup]: https://github.com/PepsRyuu/nollup
 [rollup-plugin-hot]: https://github.com/rixo/rollup-plugin-hot
 [rollup-plugin-svelte-hot]: https://github.com/rixo/rollup-plugin-svelte-hot
 [rollup-plugin-svelte]: https://github.com/rollup/rollup-plugin-svelte
@@ -258,8 +221,3 @@ Please note that both Vite 1 itself and the `vite-plugin-svelte` for Vite 1 link
 [svelte-native-template]: https://github.com/halfnelson/svelte-native-template
 [svelte-loader-hot]: https://github.com/rixo/svelte-loader-hot
 [svelte-template-webpack-hot]: https://github.com/rixo/svelte-template-webpack-hot
-[@intrnl/vite-plugin-svelte]: https://github.com/intrnl/vite-plugin-svelte
-[svite]: https://github.com/dominikg/svite
-[snowpack/plugin-svelte]: https://github.com/snowpackjs/snowpack/tree/master/plugins/plugin-svelte
-[create-snowpack-app]: https://github.com/snowpackjs/snowpack/tree/master/create-snowpack-app/cli
-[app-template-svelte]: https://github.com/snowpackjs/snowpack/tree/master/create-snowpack-app/app-template-svelte
