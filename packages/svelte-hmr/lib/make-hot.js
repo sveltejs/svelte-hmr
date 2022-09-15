@@ -46,6 +46,9 @@ const defaultHotOptions = {
   // managed (but still...) exceptions, by using Svelte's current_component
   // instead of get_current_component
   allowLiveBinding: false,
+
+  // use acceptExports instead of accept, to fix support of context:module
+  partialAccept: false,
 }
 
 const defaultHotApi = 'hot-api-esm.js'
@@ -58,7 +61,11 @@ const renderApplyHmr = ({
   id,
   cssId,
   nonCssHash,
-  hotOptions: { injectCss },
+  hotOptions: {
+    injectCss,
+    partialAccept,
+    _accept = partialAccept ? "acceptExports(['default'])" : 'accept()',
+  },
   hotOptionsJson,
   hotApiImport,
   adapterImport,
@@ -81,7 +88,7 @@ const renderApplyHmr = ({
   //
   `${imports.join(';')};${`
     if (${meta} && ${meta}.hot) {
-      ${acceptable ? `if (false) ${meta}.hot.accept();` : ''};
+      ${acceptable ? `if (false) ${meta}.hot.${_accept};` : ''};
       $2 = ${globalName}.applyHmr({
         m: ${meta},
         id: ${json(id)},
