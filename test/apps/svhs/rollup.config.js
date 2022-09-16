@@ -2,7 +2,6 @@ import svelte from 'rollup-plugin-svelte-hot'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import livereload from 'rollup-plugin-livereload'
-import { terser } from 'rollup-plugin-terser'
 import hmr, { autoCreate } from 'rollup-plugin-hot'
 import rollup_start_dev from './rollup_start_dev'
 import * as fs from 'fs'
@@ -81,10 +80,6 @@ export default {
     // Watch the `public` directory and refresh the
     // browser on changes when not in production
     useLiveReload && livereload('public'),
-
-    // If we're building for production (npm run build
-    // instead of npm run dev), minify
-    production && terser(),
 
     // Automatically create missing imported files. This helps keeping
     // the HMR server alive, because Rollup watch tends to crash and
