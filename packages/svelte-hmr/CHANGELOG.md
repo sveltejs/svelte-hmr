@@ -1,5 +1,11 @@
 # svelte-hmr
 
+## 0.15.0
+
+### Minor Changes
+
+- Add partialAccept option to fix HMR support of `<script context="module">` ([#58](https://github.com/sveltejs/svelte-hmr/pull/58))
+
 ## 0.14.12
 
 ### Patch Changes

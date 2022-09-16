@@ -1,5 +1,0 @@
----
-'svelte-hmr': minor
----
-
-Add partialAccept option to fix HMR support of `<script context="module">`
