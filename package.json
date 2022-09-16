@@ -12,10 +12,10 @@
     "url": "https://github.com/sveltejs/svelte-hmr"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.21.0",
+    "@changesets/cli": "^2.23.2",
     "@rixo/eslint-config": "^0.8.1",
     "@svitejs/changesets-changelog-github-compact": "^0.1.1",
-    "prettier": "^1.19.1"
+    "prettier": "^2.7.1"
   },
   "pnpm": {
     "overrides": {
@@ -30,8 +30,9 @@
     "lint": "pnpm --recursive lint",
     "test": "pnpm --recursive test"
   },
-  "packageManager": "pnpm@7.1.0",
+  "packageManager": "pnpm@7.5.2",
   "engines": {
-    "pnpm": "^7.1.0"
+    "pnpm": "^7.5.2",
+    "node": "^14.13.1 || ^16.0.0 || >=18"
   }
 }
