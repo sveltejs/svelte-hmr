@@ -21,14 +21,14 @@ importers:
     specifiers:
       dotenv: ^10.0.0
       prettier: ^1.19.1
-      svelte: ^3.38.3
+      svelte: ^3.50.1
       tap-mocha-reporter: ^5.0.1
       zoar: ^0.3.0
       zorax: ^0.0.12
     devDependencies:
       dotenv: 10.0.0
       prettier: 1.19.1
-      svelte: 3.39.0
+      svelte: 3.50.1
       tap-mocha-reporter: 5.0.1
       zoar: 0.3.0
       zorax: 0.0.12
@@ -58,7 +58,7 @@ importers:
       '@sveltejs/adapter-auto': next
       '@sveltejs/kit': next
       '@types/cookie': ^0.5.1
-      svelte: ^3.46.0
+      svelte: ^3.50.1
       svelte-check: ^2.7.1
       typescript: ^4.7.4
       vite: ^3.1.0
@@ -66,17 +66,17 @@ importers:
       '@fontsource/fira-mono': 4.5.9
     devDependencies:
       '@sveltejs/adapter-auto': 1.0.0-next.75
-      '@sveltejs/kit': 1.0.0-next.483_svelte@3.46.4+vite@3.1.1
+      '@sveltejs/kit': 1.0.0-next.483_svelte@3.50.1+vite@3.1.1
       '@types/cookie': 0.5.1
-      svelte: 3.46.4
-      svelte-check: 2.9.0_svelte@3.46.4
+      svelte: 3.50.1
+      svelte-check: 2.9.0_svelte@3.50.1
       typescript: 4.8.3
       vite: 3.1.1
 
   playground/vite-app:
     specifiers:
       '@sveltejs/vite-plugin-svelte': ^1.0.2
-      svelte: ^3.49.0
+      svelte: ^3.50.1
       vite: ^3.1.0
     devDependencies:
       '@sveltejs/vite-plugin-svelte': 1.0.5_svelte@3.50.1+vite@3.1.1
@@ -95,7 +95,7 @@ importers:
       rollup-plugin-svelte-hot: github:rixo/rollup-plugin-svelte-hot#svhs
       rollup-plugin-terser: ^5.1.2
       sirv-cli: ^0.4.4
-      svelte: ~3.46.4
+      svelte: ~3.50.1
       svelte-hmr: workspace:*
       svelte-hmr-spec: workspace:*
     dependencies:
@@ -108,9 +108,9 @@ importers:
       rollup: 2.54.0
       rollup-plugin-hot: 0.1.1_rollup@2.54.0
       rollup-plugin-livereload: 1.3.0
-      rollup-plugin-svelte-hot: github.com/rixo/rollup-plugin-svelte-hot/5911fabc970c634f78c901e023526c81990e7474_caupv7mavv2d5vhna54je7ikli
+      rollup-plugin-svelte-hot: github.com/rixo/rollup-plugin-svelte-hot/5911fabc970c634f78c901e023526c81990e7474_ru4l7m6njexwi2gzjcbcyl4yti
       rollup-plugin-terser: 5.3.1_rollup@2.54.0
-      svelte: 3.46.4
+      svelte: 3.50.1
       svelte-hmr: link:../../../packages/svelte-hmr
       svelte-hmr-spec: link:../../../packages/svelte-hmr-spec
 
@@ -685,7 +685,7 @@ packages:
       - supports-color
     dev: true
 
-  /@sveltejs/kit/1.0.0-next.483_svelte@3.46.4+vite@3.1.1:
+  /@sveltejs/kit/1.0.0-next.483_svelte@3.50.1+vite@3.1.1:
     resolution: {integrity: sha512-0aiVdVJSy1kiK7xp4bw81qjDkErVaA6oIPlpbjsIYe2UYfeg3aRtST41b6XzLbyg61qLlHVGoM5WTLTIdLnbAQ==}
     engines: {node: '>=16.14'}
     hasBin: true
@@ -694,7 +694,7 @@ packages:
       svelte: ^3.44.0
       vite: ^3.1.0
     dependencies:
-      '@sveltejs/vite-plugin-svelte': 1.0.5_svelte@3.46.4+vite@3.1.1
+      '@sveltejs/vite-plugin-svelte': 1.0.5_svelte@3.50.1+vite@3.1.1
       cookie: 0.5.0
       devalue: 3.1.3
       kleur: 4.1.5
@@ -704,35 +704,12 @@ packages:
       sade: 1.8.1
       set-cookie-parser: 2.5.1
       sirv: 2.0.2
-      svelte: 3.46.4
+      svelte: 3.50.1
       tiny-glob: 0.2.9
       undici: 5.10.0
       vite: 3.1.1
     transitivePeerDependencies:
       - diff-match-patch
-      - supports-color
-    dev: true
-
-  /@sveltejs/vite-plugin-svelte/1.0.5_svelte@3.46.4+vite@3.1.1:
-    resolution: {integrity: sha512-CmSdSow0Dr5ua1A11BQMtreWnE0JZmkVIcRU/yG3PKbycKUpXjNdgYTWFSbStLB0vdlGnBbm2+Y4sBVj+C+TIw==}
-    engines: {node: ^14.18.0 || >= 16}
-    peerDependencies:
-      diff-match-patch: ^1.0.5
-      svelte: ^3.44.0
-      vite: ^3.0.0
-    peerDependenciesMeta:
-      diff-match-patch:
-        optional: true
-    dependencies:
-      '@rollup/pluginutils': 4.2.1
-      debug: 4.3.4
-      deepmerge: 4.2.2
-      kleur: 4.1.5
-      magic-string: 0.26.3
-      svelte: 3.46.4
-      svelte-hmr: link:packages/svelte-hmr
-      vite: 3.1.1
-    transitivePeerDependencies:
       - supports-color
     dev: true
 
@@ -3220,7 +3197,7 @@ packages:
     engines: {node: '>=0.10.0'}
 
   /is-fullwidth-code-point/2.0.0:
-    resolution: {integrity: sha1-o7MKXE8ZkYMWeqq5O+764937ZU8=}
+    resolution: {integrity: sha512-VHskAKYM8RfSFXwee5t5cbN5PZeq1Wrh6qd5bkyiXIf6UQcN6w/A0eXM9r6t8d+GYOh+o6ZhiEnb88LN/Y8m2w==}
     engines: {node: '>=4'}
 
   /is-fullwidth-code-point/3.0.0:
@@ -4031,7 +4008,7 @@ packages:
     dev: true
 
   /object-assign/4.1.1:
-    resolution: {integrity: sha1-IQmtx5ZYh8/AXLvUQsrIv7s2CGM=}
+    resolution: {integrity: sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==}
     engines: {node: '>=0.10.0'}
 
   /object-inspect/1.9.0:
@@ -4664,7 +4641,7 @@ packages:
     resolution: {integrity: sha512-NKN5kMDylKuldxYLSUfrbo5Tuzh4hd+2E8NPPX02mZtn1VuREQToYe/ZdlJy+J3uCpfaiGF05e7B8W0iXbQHmg==}
 
   /require-relative/0.8.7:
-    resolution: {integrity: sha1-eZlTn8ngR6N5KPoZb44VY9q9Nt4=}
+    resolution: {integrity: sha512-AKGr4qvHiryxRb19m3PsLRGuKVAbJLUD7E6eOaHkfKhwc+vSgVOCY5xNvm9EkolBKTOf0GrQAZKLimOCz81Khg==}
     dev: true
 
   /resolve-from/4.0.0:
@@ -5232,7 +5209,7 @@ packages:
     dev: true
 
   /strip-ansi/4.0.0:
-    resolution: {integrity: sha1-qEeQIusaw2iocTibY1JixQXuNo8=}
+    resolution: {integrity: sha512-4XaJ2zQdCzROZDivEVIDPkcQn8LMFSa8kj8Gxb/Lnwzv9A8VctNZ+lfivC/sV3ivW8ElJTERXZoPBRrZKkNKow==}
     engines: {node: '>=4'}
     dependencies:
       ansi-regex: 3.0.1
@@ -5316,7 +5293,7 @@ packages:
     engines: {node: '>= 0.4'}
     dev: true
 
-  /svelte-check/2.9.0_svelte@3.46.4:
+  /svelte-check/2.9.0_svelte@3.50.1:
     resolution: {integrity: sha512-9AVrtP7WbfDgCdqTZNPdj5CCCy1OrYMxFVWAWzNw7fl93c9klFJFtqzVXa6fovfQ050CcpUyJE2dPFL9TFAREw==}
     hasBin: true
     peerDependencies:
@@ -5326,12 +5303,10 @@ packages:
       chokidar: 3.5.2
       fast-glob: 3.2.11
       import-fresh: 3.3.0
-      minimist: 1.2.6
       picocolors: 1.0.0
       sade: 1.8.1
-      source-map: 0.7.3
-      svelte: 3.46.4
-      svelte-preprocess: 4.10.4_j6hh3xpe6qz57juarqdqwm25ha
+      svelte: 3.50.1
+      svelte-preprocess: 4.10.4_iprco5tylfmvffqgrvqxc46njy
       typescript: 4.8.3
     transitivePeerDependencies:
       - '@babel/core'
@@ -5346,7 +5321,7 @@ packages:
       - sugarss
     dev: true
 
-  /svelte-preprocess/4.10.4_j6hh3xpe6qz57juarqdqwm25ha:
+  /svelte-preprocess/4.10.4_iprco5tylfmvffqgrvqxc46njy:
     resolution: {integrity: sha512-fuwol0N4UoHsNQolLFbMqWivqcJ9N0vfWO9IuPAiX/5okfoGXURyJ6nECbuEIv0nU3M8Xe2I1ONNje2buk7l6A==}
     engines: {node: '>= 9.11.2'}
     requiresBuild: true
@@ -5393,18 +5368,8 @@ packages:
       magic-string: 0.25.7
       sorcery: 0.10.0
       strip-indent: 3.0.0
-      svelte: 3.46.4
+      svelte: 3.50.1
       typescript: 4.8.3
-    dev: true
-
-  /svelte/3.39.0:
-    resolution: {integrity: sha512-dcJCongL0cRkZWe9q+fde0T4HX8PksBywz2+EGDVIrdYdJaxTzrJu0RVeuDtL8Mx2hs4yn3W8zKPScuzG63hTg==}
-    engines: {node: '>= 8'}
-    dev: true
-
-  /svelte/3.46.4:
-    resolution: {integrity: sha512-qKJzw6DpA33CIa+C/rGp4AUdSfii0DOTCzj/2YpSKKayw5WGSS624Et9L1nU1k2OVRS9vaENQXp2CVZNU+xvIg==}
-    engines: {node: '>= 8'}
     dev: true
 
   /svelte/3.50.1:
@@ -5587,7 +5552,7 @@ packages:
     dev: true
 
   /tr46/0.0.3:
-    resolution: {integrity: sha1-gYT9NH2snNwYWZLzpmIuFLnZq2o=}
+    resolution: {integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==}
 
   /trim-newlines/3.0.1:
     resolution: {integrity: sha512-c1PTsA3tYrIsLGkJkzHF+w9F2EyxfXGo4UyJc4pFL++FMjnq0HJS69T3M7d//gKrFKwy429bouPescbjecU+Zw==}
@@ -5798,10 +5763,10 @@ packages:
     dev: true
 
   /webidl-conversions/3.0.1:
-    resolution: {integrity: sha1-JFNCdeKnvGvnvIZhHMFq4KVlSHE=}
+    resolution: {integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==}
 
   /whatwg-url/5.0.0:
-    resolution: {integrity: sha1-lmRU6HZUYuN2RNNib2dCzotwll0=}
+    resolution: {integrity: sha512-saE57nupxk6v3HY35+jzBwYa0rKSy0XR8JSxZPwgLr7ys0IBzhGviA1/TUGJLmSVqs8pb9AnvICXEuOHLprYTw==}
     dependencies:
       tr46: 0.0.3
       webidl-conversions: 3.0.1
@@ -6061,7 +6026,7 @@ packages:
       zora: 3.1.9
     dev: true
 
-  github.com/rixo/rollup-plugin-svelte-hot/5911fabc970c634f78c901e023526c81990e7474_caupv7mavv2d5vhna54je7ikli:
+  github.com/rixo/rollup-plugin-svelte-hot/5911fabc970c634f78c901e023526c81990e7474_ru4l7m6njexwi2gzjcbcyl4yti:
     resolution: {tarball: https://codeload.github.com/rixo/rollup-plugin-svelte-hot/tar.gz/5911fabc970c634f78c901e023526c81990e7474}
     id: github.com/rixo/rollup-plugin-svelte-hot/5911fabc970c634f78c901e023526c81990e7474
     name: rollup-plugin-svelte-hot
@@ -6081,7 +6046,7 @@ packages:
       rollup-plugin-hot-nollup: 0.1.2_rollup@2.54.0
       rollup-pluginutils: 2.8.2
       sourcemap-codec: 1.4.8
-      svelte: 3.46.4
+      svelte: 3.50.1
       svelte-hmr: link:packages/svelte-hmr
     dev: true
 
