@@ -2,12 +2,9 @@
 	"name": "kit-app",
 	"private": true,
 	"version": "0.0.1",
-	"scripts": {
-		"dev": "vite dev",
-		"build": "vite build",
-		"preview": "vite preview",
-		"check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
-		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch"
+	"type": "module",
+	"dependencies": {
+		"@fontsource/fira-mono": "^4.5.0"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "next",
@@ -18,8 +15,11 @@
 		"typescript": "^4.7.4",
 		"vite": "^3.1.0"
 	},
-	"type": "module",
-	"dependencies": {
-		"@fontsource/fira-mono": "^4.5.0"
+	"scripts": {
+		"dev": "vite dev",
+		"build": "vite build",
+		"preview": "vite preview",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch"
 	}
 }
