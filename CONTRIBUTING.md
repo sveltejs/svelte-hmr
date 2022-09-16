@@ -90,7 +90,7 @@ If you've changed APIs, update the documentation.
 
 #### Changelogs
 
-For changes to be reflected in package changelogs, run `pnpx changeset` and follow the prompts.
+For changes to be reflected in package changelogs, run `pnpm changeset` and follow the prompts.
 You should always select the packages you've changed, Most likely `svelte-hmr`.
 
 ### What happens next?
