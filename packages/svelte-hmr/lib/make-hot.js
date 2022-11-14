@@ -444,7 +444,9 @@ const createMakeHot = ({ resolveAbsoluteImport, pkg = {} }) => ({
 
     const { importAdapterName, injectCss } = hotOptions
 
-    const emitCss = compileOptions && (compileOptions.css === false || compileOptions.css === 'external')
+    const emitCss =
+      compileOptions &&
+      (compileOptions.css === false || compileOptions.css === 'external')
 
     const preserveLocalState = resolvePreserveLocalState({
       hotOptions,
