@@ -1,5 +1,11 @@
 # svelte-hmr
 
+## 0.15.1
+
+### Patch Changes
+
+- support 'external' as value for compileOptions.css ([#63](https://github.com/sveltejs/svelte-hmr/pull/63))
+
 ## 0.15.0
 
 ### Minor Changes
