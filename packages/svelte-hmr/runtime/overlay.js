@@ -103,7 +103,16 @@ const ErrorOverlay = () => {
   }
 
   const addError = (error, title) => {
-    const message = (error && error.stack) || error
+    let message
+    if (error && error.stack) {
+      if (error.message && error.stack.includes(error.message)) {
+        message = error.stack
+      } else {
+        message = error.message + '\n' + error.stack
+      }
+    } else {
+      message = error
+    }
     errors.push({ title, message })
     update()
   }
