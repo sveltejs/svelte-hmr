@@ -363,6 +363,9 @@ export function createProxy({
             },
             options
           )
+
+          // Assign reload function to internal API.
+          this.$$.hmr_reload = reload
         } catch (err) {
           // If we fail to create a proxy instance, any instance, that means
           // that we won't be able to fix this instance when it is updated.

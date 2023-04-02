@@ -269,6 +269,11 @@ export const createProxiedComponent = (
         cmp = createComponent(Component, restore, cmp)
       }
 
+      if (previous) {
+        // previous can be null if last constructor has crashed
+        cmp.$$.hmr_reload = previous.$$.hmr_reload
+      }
+
       cmp.$$.hmr_cmp = cmp
 
       for (const fn of afterCallbacks) {
