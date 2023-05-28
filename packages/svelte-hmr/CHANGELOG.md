@@ -1,5 +1,11 @@
 # svelte-hmr
 
+## 0.15.2
+
+### Patch Changes
+
+- Accept Svelte 4 as peer dependency ([`3b4300c`](https://github.com/sveltejs/svelte-hmr/commit/3b4300cc8acc734c34dbfafc495c06d5d4d17803))
+
 ## 0.15.1
 
 ### Patch Changes
