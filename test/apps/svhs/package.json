@@ -4,7 +4,8 @@
   "version": "1.0.0",
   "dependencies": {
     "cross-env": "^7.0.3",
-    "sirv-cli": "^0.4.4"
+    "sirv-cli": "^0.4.4",
+    "test-hmr": "link:../../../packages/test-hmr"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^19.0.2",
