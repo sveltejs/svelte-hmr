@@ -1,5 +1,4 @@
-import { vi, assert, expect } from 'vitest'
-import { test, hmr, replace } from '$test'
+import { test, hmr, vi, expect } from '$test'
 
 test(
   're-executes action when component changes',
@@ -63,7 +62,7 @@ test(
           'App.svelte': { x: 'still' },
         },
         steps: [
-          async () => {
+          () => {
             expect(done).toHaveBeenCalledWith('yay')
           },
           { expect: 'still <div>touched</div>' },

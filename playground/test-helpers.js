@@ -37,3 +37,7 @@ export const replaceInputValue =
     await clearInput(selector)(page)
     await page.type(selector, value)
   }
+
+/** @param {number} ms */
+export const wait = (ms) => async () =>
+  new Promise((resolve) => setTimeout(resolve, ms))

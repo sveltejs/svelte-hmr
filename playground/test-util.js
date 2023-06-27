@@ -1,7 +1,7 @@
 import { assert } from 'vitest'
 import { identity, normalizeHtml } from './util.js'
 
-export { test, assert } from 'vitest'
+export { test, describe, assert, expect, vi } from 'vitest'
 
 export * from './util.js'
 export * from './test-helpers.js'
@@ -21,7 +21,7 @@ export * from './test-helpers.js'
  *       expect?: TestHmrStepExpect
  *       edit?: TestHmrStepEdit
  *     }
- *   | ((page: Page) => Promise<void>)} TestHmrStepStepsItem
+ *   | ((page: Page) => Promise<void> | void)} TestHmrStepStepsItem
  *
  * @typedef {TestHmrStepStepsItem | TestHmrStepStepsItem[]} TestHmrStepStepsItems
  *
@@ -101,7 +101,7 @@ export const hmr = (_steps) => {
         await Promise.all(
           Object.entries(editSpec).map(([file, arg]) => {
             const template = files?.[file]
-            if (!template) {
+            if (template == null) {
               throw new Error(`Cannot edit missing file: ${file}`)
             }
             const contents =
@@ -135,15 +135,15 @@ export const hmr = (_steps) => {
         }
       }
 
-      if (step.edit) {
+      if ('edit' in step) {
         await runEdit(step.edit)
       }
 
-      if (step.expect) {
+      if ('expect' in step) {
         await runExpect(step.expect, step.name)
       }
 
-      if (step.steps) {
+      if ('steps' in step) {
         /** @param {TestHmrStepSteps} sub */
         const runSubStep = async (sub, i = 0) => {
           if (Array.isArray(sub)) {
