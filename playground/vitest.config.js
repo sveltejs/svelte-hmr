@@ -3,6 +3,8 @@ import { defineConfig } from 'vitest/config'
 
 import { isKeep } from './config.js'
 
+const timeout = process.env.CI ? 50000 : isKeep ? 0 : 30000
+
 export default defineConfig({
   resolve: {
     alias: {
@@ -10,7 +12,8 @@ export default defineConfig({
     },
   },
   test: {
-    testTimeout: isKeep ? 0 : 5000,
+    testTimeout: timeout,
+    hookTimeout: timeout,
     globalSetup: ['./vitestGlobalSetup.js'],
     setupFiles: ['./vitestSetup.js'],
   },
