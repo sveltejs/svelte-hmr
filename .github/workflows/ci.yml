@@ -9,6 +9,10 @@ on:
     branches:
       - master
 
+env:
+  # we call `pnpm playwright install` instead
+  PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
+
 jobs:
   # "checks" job runs on linux + 16 only and checks that install, build, lint and audit work
   # it also primes the pnpm store cache for linux, important for downstream tests
@@ -81,5 +85,7 @@ jobs:
           cache-dependency-path: '**/pnpm-lock.yaml'
       - name: install
         run: pnpm install --frozen-lockfile --prefer-offline
+      - name: install playwright chromium
+        run: cd playground && pnpm playwright install chromium
       - name: run tests
         run: pnpm test
