@@ -8,7 +8,7 @@
     "playwright-chromium": "^1.34.3",
     "sanitize-html": "^2.11.0",
     "vite": "^4.3.9",
-    "vitest": "^0.31.1"
+    "vitest": "^0.32.2"
   },
   "scripts": {
     "test": "vitest"
