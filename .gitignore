@@ -45,3 +45,5 @@ pnpm-lock.yaml
 *.bak.*
 *.bak
 *.orig
+
+/playground-*/

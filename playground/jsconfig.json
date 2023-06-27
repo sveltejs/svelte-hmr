@@ -1,0 +1,10 @@
+{
+  "extends": "../jsconfig.json",
+  "include": ["**/*"],
+  "compilerOptions": {
+    "types": ["vitest/globals", "./global.d.ts"],
+    "paths": {
+      "$test": ["./test-util.js"]
+    }
+  }
+}
