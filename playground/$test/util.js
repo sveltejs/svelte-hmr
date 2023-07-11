@@ -9,10 +9,7 @@ import sanitizeHtml from 'sanitize-html'
 export const call = (fn) => fn()
 
 export const randomId = () =>
-  crypto
-    .createHash('md5')
-    .update(`${Math.random()}${Date.now()}`)
-    .digest('hex')
+  crypto.createHash('md5').update(`${Math.random()}${Date.now()}`).digest('hex')
 
 // https://stackoverflow.com/a/40026669/1387519
 const trimRegex =
@@ -66,3 +63,17 @@ export const replace =
   (...args) =>
   (s) =>
     s.replace(...args)
+
+/** @template T */
+export const Deferred = () => {
+  /** @type {(value: T) => void} */
+  let resolve
+  /** @type {(error: Error) => void} */
+  let reject
+  /** @type {Promise<T>} */
+  const promise = new Promise((_resolve, _reject) => {
+    resolve = _resolve
+    reject = _reject
+  })
+  return { promise, resolve, reject }
+}

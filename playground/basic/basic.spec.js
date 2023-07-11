@@ -1,107 +1,112 @@
-import { test, assert, hmr, replace, normalizeHtml } from '$test'
+import { test, hmr, replace } from '$test'
 
-test('updates text content (twice)', async ({ start }) => {
-  const { edit, bodyHTML } = await start()
+test(
+  'updates text content (twice)',
+  hmr([
+    {
+      expect: '<h1>I am App</h1>',
+    },
+    {
+      name: 'first change',
+      edit: {
+        'App.svelte': '<h1>I am Reloaded</h1>',
+      },
+      expect: '<h1>I am Reloaded</h1>',
+    },
+    {
+      name: 'second change',
+      edit: {
+        'App.svelte': '<h2>I am Reloaded _again_</h2>',
+      },
+      expect: '<h2>I am Reloaded _again_</h2>',
+    },
+  ])
+)
 
-  assert.equal(await bodyHTML(), '<h1>I am App</h1>', 'initial')
+test(
+  'updates child text when child changes',
+  hmr([
+    {
+      files: {
+        'App.svelte': `
+          <script>
+            import Child from './Child.svelte'
+          </script>
 
-  await edit('src/App.svelte', '<h1>I am Reloaded</h1>')
-  assert.equal(await bodyHTML(), '<h1>I am Reloaded</h1>', 'after first change')
+          <Child name="foo" />
+          <Child name="bar" />
+          <Child name="baz" />
+        `,
+        'Child.svelte': ({ text }) => `
+          <script>
+            export let name
+          </script>
 
-  await edit('src/App.svelte', '<h2>I am Reloaded _again_</h2>')
-  assert.equal(
-    await bodyHTML(),
-    '<h2>I am Reloaded _again_</h2>',
-    'after second change'
-  )
-})
+          ${text ?? 'I am {name}.'}
+        `,
+      },
+      expect: 'I am foo. I am bar. I am baz.',
+    },
+    {
+      name: 'change',
+      edit: {
+        'Child.svelte': { text: 'My name is {name}.' },
+      },
+      expect: 'My name is foo. My name is bar. My name is baz.',
+    },
+  ])
+)
 
-test('updates child text when child changes', async ({ start }) => {
-  const { bodyHTML, edit } = await start({
-    files: {
-      'src/App.svelte': `
-        <script>
-          import Child from './Child.svelte'
-        </script>
-
-        <Child name="foo" />
-        <Child name="bar" />
-        <Child name="baz" />
-      `,
-      'src/Child.svelte': `
-        <script>
-          export let name
-        </script>
-
-        I am {name}.
+test(
+  'updates children elements',
+  hmr([
+    {
+      files: {
+        'App.svelte': `
+          <p>First paragraph</p>
+        `,
+      },
+      expect: '<p>First paragraph</p>',
+    },
+    {
+      name: 'added',
+      edit: {
+        'App.svelte': `
+          <p>First paragraph</p><p>Second paragraph</p>
+        `,
+      },
+      expect: '<p>First paragraph</p><p>Second paragraph</p>',
+    },
+    {
+      name: 'changed',
+      edit: {
+        'App.svelte': `
+          <p>First paragraph</p>
+          <p>Last paragraph</p>
+        `,
+      },
+      expect: `
+         <p>First paragraph</p>
+         <p>Last paragraph</p>
       `,
     },
-  })
-
-  assert.equal(await bodyHTML(), 'I am foo. I am bar. I am baz.', 'initial')
-
-  await edit('src/Child.svelte', (code) =>
-    code.replace('I am {name}.', 'My name is {name}.')
-  )
-  assert.equal(
-    await bodyHTML(),
-    'My name is foo. My name is bar. My name is baz.',
-    'after edit'
-  )
-})
-
-test('updates children elements', async ({ start }) => {
-  const { bodyHTML, edit } = await start({
-    files: {
-      'src/App.svelte': `
+    {
+      name: 'inserted',
+      edit: {
+        'App.svelte': `
+          <p>First paragraph</p>
+          <div>Middle</div>
+          <p>Last paragraph</p>
+        `,
+      },
+      expect: `
         <p>First paragraph</p>
+        <div>Middle</div>
+        <p>Last paragraph</p>
       `,
     },
-  })
-
-  assert.equal(await bodyHTML(), '<p>First paragraph</p>', 'initial')
-
-  await edit('src/App.svelte', '<p>First paragraph</p><p>Second paragraph</p>')
-  assert.equal(
-    await bodyHTML(),
-    '<p>First paragraph</p><p>Second paragraph</p>',
-    'added'
-  )
-
-  await edit(
-    'src/App.svelte',
-    `
-      <p>First paragraph</p>
-      <p>Last paragraph</p>
-    `
-  )
-  assert.equal(
-    await bodyHTML(),
-    normalizeHtml`
-      <p>First paragraph</p>
-      <p>Last paragraph</p>
-    `,
-    'changed'
-  )
-
-  await edit(
-    'src/App.svelte',
-    normalizeHtml`
-      <p>First paragraph</p>
-      <div>Middle</div>
-      <p>Last paragraph</p>
-    `
-  )
-  assert.equal(
-    await bodyHTML(),
-    normalizeHtml`
-      <p>First paragraph</p>
-      <div>Middle</div>
-      <p>Last paragraph</p>
-    `,
-    'inserted'
-  )
-})
+  ])
+)
 
 test(
   'updates children elements',

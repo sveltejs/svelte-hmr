@@ -7,7 +7,7 @@ export const WS_ENDPOINT_FILE = path.join(GLOBAL_DIR, 'wsEndpoint')
 
 export const GLOBAL_STATE_FILE = path.join(GLOBAL_DIR, 'global_state.json')
 
-export const ROOT_DIR = path.resolve(__dirname, '..')
+export const ROOT_DIR = path.resolve(__dirname, '../..')
 
 export const PLAYGROUND_DIR = path.resolve(ROOT_DIR, 'playground')
 

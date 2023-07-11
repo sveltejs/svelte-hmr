@@ -1,10 +1,6 @@
 import { assert } from 'vitest'
+import { initHmrTest } from './hmr-context.js'
 import { identity, normalizeHtml } from './util.js'
-
-export { test, describe, assert, expect, vi } from 'vitest'
-
-export * from './util.js'
-export * from './test-helpers.js'
 
 /** @typedef {import('playwright-chromium').Page} Page */
 
@@ -34,57 +30,50 @@ export * from './test-helpers.js'
  *   steps?: TestHmrStepSteps
  * }} TestHmrStep
  *
+ * @typedef {Record<
+ *   string,
+ *   string | ((placeholders: Record<string, string>) => string)
+ * >} FilesOption
+ *
  * @typedef {Omit<TestHmrStep, 'name'> & {
  *   name?: string
  *   cd?: string
  *   exposeFunction?: Record<string, function>
- *   files?: import('./global.d.ts').FilesOption
+ *   files?: FilesOption
  * }} TestHmrInitStep
  */
 
-// /**
-//  * @typedef {[TestHmrInitStep, ...TestHmrStep[]]} TestHmrChain
-//  * @param {TestHmrChain | [TestHmrChain] | [() => TestHmrChain]} args
-//  */
-// export const hmr = (...args) => {
-//   if (args.length === 1 && typeof args[0] === 'function') {
-//     return hmr(args[0]())
-//   }
-//
-//   const _steps =
-//     args.length === 1 && Array.isArray(args[0])
-//       ? args[0]
-//       : /** @type [TestHmrInitStep, ...TestHmrStep[]] */ (args)
-
 /**
  * @typedef {[TestHmrInitStep, ...TestHmrStep[]]} TestHmrArg
- * @param {TestHmrArg | (() => TestHmrArg)} _steps
+ * @param {TestHmrArg | ((ctx: import('vitest').TestContext) => TestHmrArg)} _steps
  */
 export const hmr = (_steps) => {
-  if (typeof _steps === 'function') {
-    return hmr(_steps())
-  }
-
-  const {
-    cd = 'src',
-    name = 'init',
-    exposeFunction,
-    files,
-    ...init
-  } = /** @type {TestHmrInitStep} */ (_steps.shift())
-
-  _steps.unshift({ ...init, name })
-
-  const steps = /** @type {TestHmrStep[]} */ (_steps)
-
-  const resolve =
-    cd && cd !== '.'
-      ? /** @param {string} file */
-        (file) => `${cd}/${file}`
-      : identity
-
   /** @param {import('vitest').TestContext} ctx */
-  return async ({ start }) => {
+  return async (ctx) => {
+    if (typeof _steps === 'function') {
+      return hmr(_steps(ctx))
+    }
+
+    const {
+      cd = 'src',
+      name = 'init',
+      exposeFunction,
+      files = {},
+      ...init
+    } = /** @type {TestHmrInitStep} */ (_steps.shift())
+
+    _steps.unshift({ ...init, name })
+
+    const steps = /** @type {TestHmrStep[]} */ (_steps)
+
+    const resolve =
+      cd && cd !== '.'
+        ? /** @param {string} file */
+          (file) => `${cd}/${file}`
+        : identity
+
+    const { start, stop } = initHmrTest(ctx)
+
     const { page, edit } = await start({
       exposeFunction,
       files: Object.fromEntries(
@@ -100,15 +89,18 @@ export const hmr = (_steps) => {
       const runEdit = async (editSpec) => {
         await Promise.all(
           Object.entries(editSpec).map(([file, arg]) => {
-            const template = files?.[file]
-            if (template == null) {
-              throw new Error(`Cannot edit missing file: ${file}`)
+            const resolveContents = () => {
+              if (typeof arg === 'object') {
+                const template = files?.[file]
+                if (template == null) {
+                  throw new Error(`Cannot edit missing file: ${file}`)
+                }
+                return /** @type {function} */ (template)(arg)
+              } else {
+                return arg
+              }
             }
-            const contents =
-              typeof arg === 'object'
-                ? /** @type {function} */ (template)(arg)
-                : arg
-            return edit(resolve(file), contents)
+            return edit(resolve(file), resolveContents())
           })
         )
       }
@@ -184,5 +176,7 @@ export const hmr = (_steps) => {
         await runSubStep(step.steps)
       }
     }
+
+    await stop()
   }
 }

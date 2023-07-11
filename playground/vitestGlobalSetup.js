@@ -10,8 +10,8 @@ import {
   PLAYGROUND_DIR,
   isOpen,
   isCI,
-} from './config.js'
-import { call, randomId } from './util.js'
+} from './$test/config.js'
+import { call, randomId } from './$test/util.js'
 
 const TMP_PLAYGROUND_DIR = process.env.TMP_PLAYGROUND_DIR
   ? path.resolve(ROOT_DIR, process.env.TMP_PLAYGROUND_DIR)
@@ -20,7 +20,7 @@ const TMP_PLAYGROUND_DIR = process.env.TMP_PLAYGROUND_DIR
 const initBrowserServer = async () => {
   const browserServer = await chromium.launchServer({
     headless: !isOpen,
-    // devtools: true,
+    devtools: isOpen,
     args: isCI ? ['--no-sandbox', '--disable-setuid-sandbox'] : undefined,
   })
 

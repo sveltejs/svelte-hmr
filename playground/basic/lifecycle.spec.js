@@ -1,8 +1,8 @@
-import { test, hmr, vi, expect } from '$test'
+import { test, hmr, vi } from '$test'
 
 test(
   'onMount',
-  hmr(() => {
+  hmr(({ expect }) => {
     const mounted = vi.fn()
     const unmounted = vi.fn()
 

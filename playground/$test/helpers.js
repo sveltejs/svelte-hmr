@@ -12,6 +12,15 @@ export const clickButton =
   }
 
 /**
+ * @param {string} selector
+ * @returns {(page: Page) => Promise<void>}
+ */
+export const click = (selector) => async (page) => {
+  const element = await page.$(selector)
+  await element.click()
+}
+
+/**
  * @param {string} [selector]
  * @returns {(page: Page) => Promise<void>}
  */
