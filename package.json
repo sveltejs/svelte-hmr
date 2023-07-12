@@ -32,7 +32,7 @@
     "@changesets/cli": "^2.21.0",
     "@svitejs/changesets-changelog-github-compact": "^0.1.1",
     "@tsconfig/svelte": "^4.0.1",
-    "eslint": "^8.41.0",
+    "eslint": "^8.44.0",
     "prettier": "^2.8.8",
     "prettier-plugin-jsdoc": "^0.4.2",
     "svelte": "^4.0.0",
