@@ -25,9 +25,6 @@
   "peerDependencies": {
     "svelte": "^3.54.0 || ^4.0.0"
   },
-  "devDependencies": {
-    "dotenv": "^10.0.0"
-  },
   "scripts": {
     "lint": "eslint '**/*.{js,cjs,mjs}'",
     "lint:fix": "pnpm run lint --fix",
