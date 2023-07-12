@@ -20,7 +20,7 @@
     "runtime"
   ],
   "engines": {
-    "node": "^14.18.0 || >= 16"
+    "node": "^14.13.1 || >= 16"
   },
   "peerDependencies": {
     "svelte": "^3.54.0 || ^4.0.0"
