@@ -101,9 +101,9 @@ const copyComponentProperties = (proxy, cmp, previous) => {
     if (!handledMethods.includes(prop) && !forwardedMethods.includes(prop)) {
       Object.defineProperty(proxy, prop, {
         configurable: true,
-        get() {
-          return cmp[prop]
-        },
+        // get() {
+        //   return cmp[prop]
+        // },
         set(value) {
           // we're changing it on the real component first to see what it
           // gives... if it throws an error, we want to throw the same error in
