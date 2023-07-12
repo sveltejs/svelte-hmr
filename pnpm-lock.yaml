@@ -58,16 +58,6 @@ importers:
       svelte: 4.0.0
       vite: 4.3.9
 
-  playground/sanity:
-    specifiers:
-      '@sveltejs/vite-plugin-svelte': ^2.4.1
-      svelte: ^4.0.0
-      vite: ^4.3.9
-    devDependencies:
-      '@sveltejs/vite-plugin-svelte': 2.4.1_svelte@4.0.0+vite@4.3.9
-      svelte: 4.0.0
-      vite: 4.3.9
-
 packages:
 
   /@aashutoshrathi/word-wrap/1.2.6:
