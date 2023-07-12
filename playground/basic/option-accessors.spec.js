@@ -1,6 +1,6 @@
 import { describe, test, hmr } from '$test'
 
-describe.only('accessors: true', () => {
+describe('accessors: true', () => {
   test(
     'reloads components with <svelte:options accessors />',
     hmr([
