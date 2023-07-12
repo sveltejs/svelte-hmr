@@ -20,10 +20,10 @@
     "runtime"
   ],
   "engines": {
-    "node": ">= 16"
+    "node": "^14.18.0 || >= 16"
   },
   "peerDependencies": {
-    "svelte": "^3.19.0 || ^4.0.0-next.0"
+    "svelte": "^3.54.0 || ^4.0.0"
   },
   "devDependencies": {
     "dotenv": "^10.0.0"
