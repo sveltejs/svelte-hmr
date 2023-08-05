@@ -20,7 +20,7 @@
     "cheap-watch": "^1.0.2",
     "esm": "^3.2.25",
     "fast-glob": "^3.0.4",
-    "mocha": "^6.1.4",
+    "mocha": "^10.2.0",
     "node-fetch": "^2.6.7",
     "test-hmr": "^0.1.2"
   },
