@@ -17,9 +17,9 @@
     "svhs": "./cli.js"
   },
   "dependencies": {
-    "cheap-watch": "^1.0.2",
+    "cheap-watch": "^1.0.4",
     "esm": "^3.2.25",
-    "fast-glob": "^3.0.4",
+    "fast-glob": "^3.3.1",
     "mocha": "^10.2.0",
     "node-fetch": "^2.6.7",
     "test-hmr": "^0.1.2"

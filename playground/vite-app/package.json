@@ -4,9 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "devDependencies": {
-    "@sveltejs/vite-plugin-svelte": "^1.0.2",
-    "svelte": "^3.50.1",
-    "vite": "^3.1.0"
+    "@sveltejs/vite-plugin-svelte": "^2.4.3",
+    "svelte": "^3.59.2",
+    "vite": "^4.4.8"
   },
   "scripts": {
     "dev": "vite",
