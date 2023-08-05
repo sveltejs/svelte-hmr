@@ -1,5 +1,11 @@
 # svelte-hmr
 
+## 0.15.3
+
+### Patch Changes
+
+- Fix injecting imports whose paths contain special characters ([#78](https://github.com/sveltejs/svelte-hmr/pull/78))
+
 ## 0.15.2
 
 ### Patch Changes
