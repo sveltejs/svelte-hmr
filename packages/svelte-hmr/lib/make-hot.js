@@ -75,8 +75,8 @@ const renderApplyHmr = ({
   preserveLocalState,
   emitCss,
   imports = [
-    `import * as ${globalName} from '${hotApiImport}'`,
-    `import { adapter as ${importAdapterName} } from '${adapterImport}'`,
+    `import * as ${globalName} from ${JSON.stringify(hotApiImport)}`,
+    `import { adapter as ${importAdapterName} } from ${JSON.stringify(adapterImport)}`,
   ],
 }) =>
   // this silly formatting keeps all original characters in their position,
