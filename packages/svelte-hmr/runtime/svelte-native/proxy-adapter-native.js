@@ -47,65 +47,15 @@ const getNavTransition = ({ transition }) => {
   return transition ? { animated: true, transition } : { animated: false }
 }
 
-// copied from TNS FrameBase.replacePage
-//
-// it is not public but there is a comment in there indicating it is for
-// HMR (probably their own core HMR though)
-//
-// NOTE this "worked" in TNS 5, but not anymore in TNS 6: updated version bellow
-//
-// eslint-disable-next-line no-unused-vars
-const replacePage_tns5 = (frame, newPageElement, hotOptions) => {
-  const currentBackstackEntry = frame._currentEntry
-  frame.navigationType = 2
-  frame.performNavigation({
-    isBackNavigation: false,
-    entry: {
-      resolvedPage: newPageElement.nativeView,
-      //
-      // entry: currentBackstackEntry.entry,
-      entry: Object.assign(
-        currentBackstackEntry.entry,
-        getNavTransition(hotOptions)
-      ),
-      navDepth: currentBackstackEntry.navDepth,
-      fragmentTag: currentBackstackEntry.fragmentTag,
-      frameId: currentBackstackEntry.frameId,
-    },
-  })
-}
-
-// Updated for TNS v6
-//
-// https://github.com/NativeScript/NativeScript/blob/6.1.1/tns-core-modules/ui/frame/frame-common.ts#L656
-const replacePage = (frame, newPageElement) => {
-  const currentBackstackEntry = frame._currentEntry
-  const newPage = newPageElement.nativeView
-  const newBackstackEntry = {
-    entry: currentBackstackEntry.entry,
-    resolvedPage: newPage,
-    navDepth: currentBackstackEntry.navDepth,
-    fragmentTag: currentBackstackEntry.fragmentTag,
-    frameId: currentBackstackEntry.frameId,
-  }
-  const navigationContext = {
-    entry: newBackstackEntry,
-    isBackNavigation: false,
-    navigationType: 2 /* NavigationType replace */,
-  }
-  frame._navigationQueue.push(navigationContext)
-  frame._processNextNavigationEntry()
-}
-
 export const adapter = class ProxyAdapterNative extends ProxyAdapterDom {
   constructor(instance) {
     super(instance)
 
     this.nativePageElement = null
     this.originalNativeView = null
-    this.navigatedFromHandler = null
+    //this.navigatedFromHandler = null
 
-    this.relayNativeNavigatedFrom = this.relayNativeNavigatedFrom.bind(this)
+    //this.relayNativeNavigatedFrom = this.relayNativeNavigatedFrom.bind(this)
   }
 
   dispose() {
@@ -123,27 +73,27 @@ export const adapter = class ProxyAdapterNative extends ProxyAdapterDom {
   // svelte-native uses navigateFrom event + e.isBackNavigation to know
   // when to $destroy the component -- but we don't want our proxy instance
   // destroyed when we renavigate to the same page for navigation purposes!
-  interceptPageNavigation(pageElement) {
-    const originalNativeView = pageElement.nativeView
-    const { on } = originalNativeView
-    const ownOn = originalNativeView.hasOwnProperty('on')
-    // tricks svelte-native into giving us its handler
-    originalNativeView.on = function(type, handler) {
-      if (type === 'navigatedFrom') {
-        this.navigatedFromHandler = handler
-        if (ownOn) {
-          originalNativeView.on = on
-        } else {
-          delete originalNativeView.on
-        }
-      } else {
-        //some other handler wireup, we will just pass it on.
-        if (on) {
-          on(type, handler)
-        }
-      }
-    }
-  }
+  // interceptPageNavigation(pageElement) {
+  //   const originalNativeView = pageElement.nativeView
+  //   const { on } = originalNativeView
+  //   const ownOn = originalNativeView.hasOwnProperty('on')
+  //   // tricks svelte-native into giving us its handler
+  //   originalNativeView.on = function(type, handler) {
+  //     if (type === 'navigatedFrom') {
+  //       this.navigatedFromHandler = handler
+  //       if (ownOn) {
+  //         originalNativeView.on = on
+  //       } else {
+  //         delete originalNativeView.on
+  //       }
+  //     } else {
+  //       //some other handler wireup, we will just pass it on.
+  //       if (on) {
+  //         on(type, handler)
+  //       }
+  //     }
+  //   }
+  // }
 
   afterMount(target, anchor) {
     // nativePageElement needs to be updated each time (only for page
@@ -168,7 +118,8 @@ export const adapter = class ProxyAdapterNative extends ProxyAdapterDom {
       target.firstChild.tagName == 'page'
     if (isNativePage) {
       const nativePageElement = target.firstChild
-      this.interceptPageNavigation(nativePageElement)
+      // Commented this out as it breaks navigation events
+      //this.interceptPageNavigation(nativePageElement)
       this.nativePageElement = nativePageElement
     } else {
       // try to protect against components changing from page to no-page
@@ -216,6 +167,15 @@ export const adapter = class ProxyAdapterNative extends ProxyAdapterDom {
         throw new Error('Failed to create updated page')
       }
       const isFirstPage = !frame.canGoBack()
+      const nativeView = newPageElement.nativeView
+      const navigationEntry = Object.assign(
+        {},
+        {
+          create: () => nativeView,
+          clearHistory: true,
+        },
+        getNavTransition(hotOptions)
+      );
 
       if (isFirstPage) {
         // NOTE not so sure of bellow with the new NS6 method for replace
@@ -233,19 +193,9 @@ export const adapter = class ProxyAdapterNative extends ProxyAdapterDom {
         //
         // Fortunately, we can overwrite history in this case.
         //
-        const nativeView = newPageElement.nativeView
-        frame.navigate(
-          Object.assign(
-            {},
-            {
-              create: () => nativeView,
-              clearHistory: true,
-            },
-            getNavTransition(hotOptions)
-          )
-        )
+        frame.navigate(navigationEntry)
       } else {
-        replacePage(frame, newPageElement, hotOptions)
+        frame.replacePage(navigationEntry)
       }
     } else {
       const backEntry = frame.backStack.find(
@@ -295,7 +245,7 @@ export const adapter = class ProxyAdapterNative extends ProxyAdapterDom {
     const {
       instance: { refreshComponent },
     } = this
-    const { nativePageElement, relayNativeNavigatedFrom } = this
+    const { nativePageElement /*, relayNativeNavigatedFrom */ } = this
     const oldNativeView = nativePageElement.nativeView
     // rerender
     const target = document.createElement('fragment')
@@ -306,32 +256,32 @@ export const adapter = class ProxyAdapterNative extends ProxyAdapterDom {
     // this.nativePageElement is updated in afterMount, triggered by proxy / hooks
     const newPageElement = this.nativePageElement
     // update event proxy
-    oldNativeView.off('navigatedFrom', relayNativeNavigatedFrom)
-    nativePageElement.nativeView.on('navigatedFrom', relayNativeNavigatedFrom)
+    //oldNativeView.off('navigatedFrom', relayNativeNavigatedFrom)
+    //nativePageElement.nativeView.on('navigatedFrom', relayNativeNavigatedFrom)
     return newPageElement
   }
 
-  relayNativeNavigatedFrom({ isBackNavigation }) {
-    const { originalNativeView, navigatedFromHandler } = this
-    if (!isBackNavigation) {
-      return
-    }
-    if (originalNativeView) {
-      const { off } = originalNativeView
-      const ownOff = originalNativeView.hasOwnProperty('off')
-      originalNativeView.off = function() {
-        this.navigatedFromHandler = null
-        if (ownOff) {
-          originalNativeView.off = off
-        } else {
-          delete originalNativeView.off
-        }
-      }
-    }
-    if (navigatedFromHandler) {
-      return navigatedFromHandler.apply(this, arguments)
-    }
-  }
+  // relayNativeNavigatedFrom({ isBackNavigation }) {
+  //   const { originalNativeView, navigatedFromHandler } = this
+  //   if (!isBackNavigation) {
+  //     return
+  //   }
+  //   if (originalNativeView) {
+  //     const { off } = originalNativeView
+  //     const ownOff = originalNativeView.hasOwnProperty('off')
+  //     originalNativeView.off = function() {
+  //       this.navigatedFromHandler = null
+  //       if (ownOff) {
+  //         originalNativeView.off = off
+  //       } else {
+  //         delete originalNativeView.off
+  //       }
+  //     }
+  //   }
+  //   if (navigatedFromHandler) {
+  //     return navigatedFromHandler.apply(this, arguments)
+  //   }
+  // }
 
   renderError(err /* , target, anchor */) {
     // TODO fallback on TNS error handler for now... at least our error
