@@ -52,10 +52,6 @@ export const adapter = class ProxyAdapterNative extends ProxyAdapterDom {
     super(instance)
 
     this.nativePageElement = null
-    this.originalNativeView = null
-    //this.navigatedFromHandler = null
-
-    //this.relayNativeNavigatedFrom = this.relayNativeNavigatedFrom.bind(this)
   }
 
   dispose() {
@@ -69,31 +65,6 @@ export const adapter = class ProxyAdapterNative extends ProxyAdapterDom {
       this.nativePageElement = null
     }
   }
-
-  // svelte-native uses navigateFrom event + e.isBackNavigation to know
-  // when to $destroy the component -- but we don't want our proxy instance
-  // destroyed when we renavigate to the same page for navigation purposes!
-  // interceptPageNavigation(pageElement) {
-  //   const originalNativeView = pageElement.nativeView
-  //   const { on } = originalNativeView
-  //   const ownOn = originalNativeView.hasOwnProperty('on')
-  //   // tricks svelte-native into giving us its handler
-  //   originalNativeView.on = function(type, handler) {
-  //     if (type === 'navigatedFrom') {
-  //       this.navigatedFromHandler = handler
-  //       if (ownOn) {
-  //         originalNativeView.on = on
-  //       } else {
-  //         delete originalNativeView.on
-  //       }
-  //     } else {
-  //       //some other handler wireup, we will just pass it on.
-  //       if (on) {
-  //         on(type, handler)
-  //       }
-  //     }
-  //   }
-  // }
 
   afterMount(target, anchor) {
     // nativePageElement needs to be updated each time (only for page
@@ -118,8 +89,6 @@ export const adapter = class ProxyAdapterNative extends ProxyAdapterDom {
       target.firstChild.tagName == 'page'
     if (isNativePage) {
       const nativePageElement = target.firstChild
-      // Commented this out as it breaks navigation events
-      //this.interceptPageNavigation(nativePageElement)
       this.nativePageElement = nativePageElement
     } else {
       // try to protect against components changing from page to no-page
@@ -245,43 +214,31 @@ export const adapter = class ProxyAdapterNative extends ProxyAdapterDom {
     const {
       instance: { refreshComponent },
     } = this
-    const { nativePageElement /*, relayNativeNavigatedFrom */ } = this
-    const oldNativeView = nativePageElement.nativeView
+    const { nativePageElement: oldNativePageElement } = this
+    const oldNativeView = oldNativePageElement.nativeView
     // rerender
     const target = document.createElement('fragment')
+
     // not using conservative for now, since there's nothing in place here to
     // leverage it (yet?) -- and it might be easier to miss breakages in native
     // only code paths
     refreshComponent(target, null)
+
     // this.nativePageElement is updated in afterMount, triggered by proxy / hooks
     const newPageElement = this.nativePageElement
-    // update event proxy
-    //oldNativeView.off('navigatedFrom', relayNativeNavigatedFrom)
-    //nativePageElement.nativeView.on('navigatedFrom', relayNativeNavigatedFrom)
+
+    // svelte-native uses navigateFrom event + e.isBackNavigation to know when to $destroy the component.
+    // To keep that behaviour after refresh, we move event handler from old native view to the new one using 
+    // __navigationFromHandler property that svelte-native provides us with.
+    const navigationFromHandler = oldNativeView.__navigationFromHandler;
+    if (navigationFromHandler) {
+      oldNativeView.off('navigatedFrom', navigationFromHandler)
+      newPageElement.nativeView.on('navigatedFrom', navigationFromHandler)
+      delete oldNativeView.__navigationFromHandler;
+    }
+
     return newPageElement
   }
-
-  // relayNativeNavigatedFrom({ isBackNavigation }) {
-  //   const { originalNativeView, navigatedFromHandler } = this
-  //   if (!isBackNavigation) {
-  //     return
-  //   }
-  //   if (originalNativeView) {
-  //     const { off } = originalNativeView
-  //     const ownOff = originalNativeView.hasOwnProperty('off')
-  //     originalNativeView.off = function() {
-  //       this.navigatedFromHandler = null
-  //       if (ownOff) {
-  //         originalNativeView.off = off
-  //       } else {
-  //         delete originalNativeView.off
-  //       }
-  //     }
-  //   }
-  //   if (navigatedFromHandler) {
-  //     return navigatedFromHandler.apply(this, arguments)
-  //   }
-  // }
 
   renderError(err /* , target, anchor */) {
     // TODO fallback on TNS error handler for now... at least our error
