@@ -144,7 +144,7 @@ export const adapter = class ProxyAdapterNative extends ProxyAdapterDom {
           clearHistory: true,
         },
         getNavTransition(hotOptions)
-      );
+      )
 
       if (isFirstPage) {
         // NOTE not so sure of bellow with the new NS6 method for replace
@@ -230,11 +230,12 @@ export const adapter = class ProxyAdapterNative extends ProxyAdapterDom {
     // svelte-native uses navigateFrom event + e.isBackNavigation to know when to $destroy the component.
     // To keep that behaviour after refresh, we move event handler from old native view to the new one using 
     // __navigateFromHandler property that svelte-native provides us with.
-    const navigateFromHandler = oldNativeView.__navigateFromHandler;
+    const navigateFromHandler = oldNativeView.__navigateFromHandler
     if (navigateFromHandler) {
       oldNativeView.off('navigatedFrom', navigateFromHandler)
       newPageElement.nativeView.on('navigatedFrom', navigateFromHandler)
-      delete oldNativeView.__navigateFromHandler;
+      newPageElement.nativeView.__navigateFromHandler = navigateFromHandler
+      delete oldNativeView.__navigateFromHandler
     }
 
     return newPageElement
