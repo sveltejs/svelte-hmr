@@ -228,7 +228,7 @@ export const adapter = class ProxyAdapterNative extends ProxyAdapterDom {
     const newPageElement = this.nativePageElement
 
     // svelte-native uses navigateFrom event + e.isBackNavigation to know when to $destroy the component.
-    // To keep that behaviour after refresh, we move event handler from old native view to the new one using 
+    // To keep that behaviour after refresh, we move event handler from old native view to the new one using
     // __navigateFromHandler property that svelte-native provides us with.
     const navigateFromHandler = oldNativeView.__navigateFromHandler
     if (navigateFromHandler) {
