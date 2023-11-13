@@ -379,7 +379,7 @@ export function createProxy({
             fatalError = true
             logError(
               `Unrecoverable HMR error in ${debugName}: ` +
-                `next update will trigger a full reload`
+                `next update will trigger a full reload`, err
             )
           }
           throw err
