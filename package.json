@@ -19,7 +19,10 @@
     "overrides": {
       "svelte-hmr": "workspace:*",
       "semver@<7.5.2": ">=7.5.2",
-      "svelte": "$svelte"
+      "svelte": "$svelte",
+      "postcss@<8.4.31": ">=8.4.31",
+      "get-func-name@<2.0.1": ">=2.0.1",
+      "vite@>=4.4.0 <4.4.12": ">=4.4.12"
     }
   },
   "devDependencies": {
