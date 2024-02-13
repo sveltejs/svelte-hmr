@@ -76,7 +76,9 @@ const renderApplyHmr = ({
   emitCss,
   imports = [
     `import * as ${globalName} from ${JSON.stringify(hotApiImport)}`,
-    `import { adapter as ${importAdapterName} } from ${JSON.stringify(adapterImport)}`,
+    `import { adapter as ${importAdapterName} } from ${JSON.stringify(
+      adapterImport
+    )}`,
   ],
 }) =>
   // this silly formatting keeps all original characters in their position,
