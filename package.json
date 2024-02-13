@@ -18,7 +18,8 @@
   "pnpm": {
     "overrides": {
       "svelte-hmr": "workspace:*",
-      "svelte": "$svelte"
+      "svelte": "$svelte",
+      "vite@>=4.0.0 <=4.5.1": ">=4.5.2"
     }
   },
   "devDependencies": {
