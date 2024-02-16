@@ -1,5 +1,11 @@
 # svelte-hmr
 
+## 0.16.0
+
+### Minor Changes
+
+- Update native adapter for support of NativeScript 8 ([`b8aabc0`](https://github.com/sveltejs/svelte-hmr/commit/b8aabc09d87821a10095224d4ab11fb83d7b243c))
+
 ## 0.15.3
 
 ### Patch Changes
