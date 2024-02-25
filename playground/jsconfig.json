@@ -1,0 +1,9 @@
+{
+  "extends": "../jsconfig.json",
+  "include": ["**/*"],
+  "compilerOptions": {
+    "paths": {
+      "$test": ["./$test/index.js"]
+    }
+  }
+}

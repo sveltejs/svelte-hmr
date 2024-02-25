@@ -9,6 +9,10 @@ on:
     branches:
       - master
 
+env:
+  # we call `pnpm playwright install` instead
+  PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
+
 jobs:
   # "checks" job runs on linux + 16 only and checks that install, build, lint and audit work
   # it also primes the pnpm store cache for linux, important for downstream tests
@@ -52,8 +56,20 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu-latest, macos-latest ]
-        node: [ 14, 16 ]
+        node: [16]
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        svelte: [4]
+        include:
+          # not compatible with pnpm 8...
+          # - node: 14
+          #   os: ubuntu-latest
+          #   svelte: 3
+          - node: 18
+            os: ubuntu-latest
+            svelte: 4
+          - node: 20
+            os: ubuntu-latest
+            svelte: 4
     steps:
       - uses: actions/checkout@v3
       - uses: pnpm/action-setup@v2.2.4
@@ -61,7 +77,17 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
           cache: 'pnpm'
+      - name: use svelte 3
+        if: matrix.svelte == 3
+        run: |
+          tmppkg="$(jq '.devDependencies.svelte = "^3.59.2"' package.json)" && echo -E "${tmppkg}" > package.json && tmppkg=""
       - name: install
+        if: matrix.node != 14 && matrix.svelte != 3
         run: pnpm install --frozen-lockfile --prefer-offline
+      - name: install for node14 or svelte3
+        if: matrix.node == 14 || matrix.svelte == 3
+        run: pnpm install --no-frozen-lockfile --prefer-offline
+      - name: install playwright chromium
+        run: cd playground && pnpm playwright install chromium
       - name: run tests
         run: pnpm test

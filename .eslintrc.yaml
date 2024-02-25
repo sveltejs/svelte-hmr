@@ -1,0 +1,15 @@
+parserOptions:
+  sourceType: module
+  ecmaVersion: latest
+
+# overrides:
+#   - files:
+#       - "packages/svelte-hmr/index.js"
+#       - "packages/svelte-hmr/lib/**/*"
+#       - "**/rollup.config.js"
+#     env:
+#       node: true
+
+env:
+  node: true
+  # es2022: true

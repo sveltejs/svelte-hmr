@@ -1,5 +1,0 @@
-overrides:
-  - files:
-      - "src/**"
-    env:
-      browser: true

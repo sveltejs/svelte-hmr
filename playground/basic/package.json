@@ -1,0 +1,14 @@
+{
+  "name": "@svelte-hmr/playground-basic",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^2.4.1",
+    "svelte": "^4.0.0",
+    "vite": "^4.3.9"
+  }
+}
