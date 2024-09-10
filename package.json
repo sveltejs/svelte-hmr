@@ -19,11 +19,16 @@
     "overrides": {
       "svelte-hmr": "workspace:*",
       "svelte": "$svelte",
-      "vite@>=4.0.0 <=4.5.1": ">=4.5.2"
+      "vite@>=4.0.0 <=4.5.1": ">=4.5.2",
+      "vite@>=5.1.0 <=5.1.6": ">=5.1.7",
+      "braces@<3.0.3": ">=3.0.3",
+      "micromatch@<4.0.8": ">=4.0.8",
+      "sanitize-html@<2.12.1": ">=2.12.1",
+      "svelte@<4.2.19": ">=4.2.19"
     }
   },
   "devDependencies": {
-    "@changesets/cli": "^2.26.2",
+    "@changesets/cli": "^2.27.8",
     "@svitejs/changesets-changelog-github-compact": "^0.1.1",
     "@tsconfig/svelte": "^4.0.1",
     "eslint": "^8.44.0",

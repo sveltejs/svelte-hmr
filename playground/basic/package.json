@@ -7,8 +7,13 @@
     "dev": "vite"
   },
   "devDependencies": {
-    "@sveltejs/vite-plugin-svelte": "^2.4.1",
+    "@sveltejs/vite-plugin-svelte": "^3.1.2",
     "svelte": "^4.0.0",
-    "vite": "^4.3.9"
+    "vite": "^5.4.3"
+  },
+  "pnpm": {
+    "overrides": {
+      "vite@>=5.1.0 <=5.1.6": ">=5.1.7"
+    }
   }
 }
