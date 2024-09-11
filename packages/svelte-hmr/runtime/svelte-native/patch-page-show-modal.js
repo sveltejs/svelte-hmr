@@ -17,7 +17,7 @@
 //
 
 // FIXME should we override ViewBase#showModal instead?
-// eslint-disable-next-line import/no-unresolved
+// @ts-ignore
 import { Page } from '@nativescript/core'
 
 const prop =

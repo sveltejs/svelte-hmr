@@ -1,0 +1,14 @@
+{
+  "extends": "@tsconfig/svelte/tsconfig.json",
+  "include": ["packages/**/*", "playground/**/*"],
+  "exclude": ["node_modules", "**/*.bak"],
+  "compilerOptions": {
+    "checkJs": true,
+    "moduleResolution": "node16",
+    "module": "es2022",
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    //"noUnusedLocals": true,
+    //"types": []
+  }
+}

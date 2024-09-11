@@ -45,3 +45,6 @@ pnpm-lock.yaml
 *.bak.*
 *.bak
 *.orig
+
+# temporary playground files
+/playground-*/
