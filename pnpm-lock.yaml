@@ -7,12 +7,6 @@ settings:
 overrides:
   svelte-hmr: workspace:*
   svelte: ^4.0.0
-  vite@>=4.0.0 <=4.5.1: '>=4.5.2'
-  vite@>=5.1.0 <=5.1.6: '>=5.1.7'
-  braces@<3.0.3: '>=3.0.3'
-  micromatch@<4.0.8: '>=4.0.8'
-  sanitize-html@<2.12.1: '>=2.12.1'
-  svelte@<4.2.19: '>=4.2.19'
 
 importers:
 
@@ -37,7 +31,7 @@ importers:
         specifier: ^0.4.2
         version: 0.4.2(prettier@2.8.8)
       svelte:
-        specifier: '>=4.2.19'
+        specifier: ^4.0.0
         version: 4.2.19
       svelte-check:
         specifier: ^3.4.4
@@ -57,10 +51,10 @@ importers:
         specifier: ^1.34.3
         version: 1.47.0
       sanitize-html:
-        specifier: '>=2.12.1'
+        specifier: ^2.11.0
         version: 2.13.0
       vite:
-        specifier: '>=5.1.7'
+        specifier: ^5.1.1
         version: 5.4.3
       vitest:
         specifier: ^1.2.2
@@ -72,7 +66,7 @@ importers:
         specifier: ^3.1.2
         version: 3.1.2(svelte@4.2.19)(vite@5.4.3)
       svelte:
-        specifier: '>=4.2.19'
+        specifier: ^4.0.0
         version: 4.2.19
       vite:
         specifier: ^5.4.3
@@ -766,8 +760,8 @@ packages:
     engines: {node: ^18.0.0 || >=20}
     peerDependencies:
       '@sveltejs/vite-plugin-svelte': ^3.0.0
-      svelte: '>=4.2.19'
-      vite: '>=5.1.7'
+      svelte: ^4.0.0
+      vite: ^5.0.0
     dependencies:
       '@sveltejs/vite-plugin-svelte': 3.1.2(svelte@4.2.19)(vite@5.4.3)
       debug: 4.3.7
@@ -781,8 +775,8 @@ packages:
     resolution: {integrity: sha512-Txsm1tJvtiYeLUVRNqxZGKR/mI+CzuIQuc2gn+YCs9rMTowpNZ2Nqt53JdL8KF9bLhAf2ruR/dr9eZCwdTriRA==}
     engines: {node: ^18.0.0 || >=20}
     peerDependencies:
-      svelte: '>=4.2.19'
-      vite: '>=5.1.7'
+      svelte: ^4.0.0
+      vite: ^5.0.0
     dependencies:
       '@sveltejs/vite-plugin-svelte-inspector': 2.1.0(@sveltejs/vite-plugin-svelte@3.1.2)(svelte@4.2.19)(vite@5.4.3)
       debug: 4.3.7
@@ -2626,7 +2620,7 @@ packages:
     resolution: {integrity: sha512-ij0u4Lw/sOTREP13BdWZjiXD/BlHE6/e2e34XzmVmsp5IN4kVa3PWP65NM32JAgwjZlwBg/+JtiNV1MM8khu0Q==}
     hasBin: true
     peerDependencies:
-      svelte: '>=4.2.19'
+      svelte: ^4.0.0
     dependencies:
       '@jridgewell/trace-mapping': 0.3.25
       chokidar: 3.6.0
@@ -2661,7 +2655,7 @@ packages:
       sass: ^1.26.8
       stylus: ^0.55.0
       sugarss: ^2.0.0 || ^3.0.0 || ^4.0.0
-      svelte: '>=4.2.19'
+      svelte: ^4.0.0
       typescript: '>=3.9.5 || ^4.0.0 || ^5.0.0'
     peerDependenciesMeta:
       '@babel/core':
@@ -2878,7 +2872,7 @@ packages:
   /vitefu@0.2.5(vite@5.4.3):
     resolution: {integrity: sha512-SgHtMLoqaeeGnd2evZ849ZbACbnwQCIwRH57t18FxcXoZop0uQu0uzlIhJBlF/eWVzuce0sHeqPcDo+evVcg8Q==}
     peerDependencies:
-      vite: '>=4.5.2'
+      vite: ^3.0.0 || ^4.0.0 || ^5.0.0
     peerDependenciesMeta:
       vite:
         optional: true
