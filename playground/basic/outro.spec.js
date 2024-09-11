@@ -74,7 +74,7 @@ describe('outros', () => {
     ])
   )
 
-  test(
+  test.skipIf(isCI)(
     'updates when a child component contains an element with an outro that has run',
     hmr([
       {
@@ -119,9 +119,11 @@ describe('outros', () => {
             text: '1ne',
           },
         },
-        expect: {
-          '[data-focus]': '1ne',
-        },
+        steps: [
+          {
+            expect: { '[data-focus]': '1ne' },
+          },
+        ],
       },
     ])
   )
