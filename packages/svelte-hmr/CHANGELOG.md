@@ -1,5 +1,11 @@
 # svelte-hmr
 
+## 0.17.0
+
+### Minor Changes
+
+- Rewrite tests to get rid of old vulnerable (dev) dependencies, and update CI setup ([#72](https://github.com/sveltejs/svelte-hmr/pull/72))
+
 ## 0.16.0
 
 ### Minor Changes
