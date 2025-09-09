@@ -4,9 +4,14 @@ on:
   push:
     branches:
       - master
+permissions: {}
 
 jobs:
   release:
+    permissions:
+      contents: write # to create release (changesets/action)
+      id-token: write # OpenID Connect token needed for provenance
+      pull-requests: write # to create pull request (changesets/action)
     # prevents this action from running on forks
     if: github.repository == 'sveltejs/svelte-hmr'
     name: Release
@@ -14,7 +19,7 @@ jobs:
     strategy:
       matrix:
         # pseudo-matrix for convenience, NEVER use more than a single combination
-        node: [20]
+        node: [24]
         os: [ubuntu-latest]
     steps:
       - name: checkout
@@ -39,13 +44,6 @@ jobs:
       - name: install
         run: pnpm install --frozen-lockfile --prefer-offline
 
-      - name: Creating .npmrc
-        run: |
-          cat << EOF > "$HOME/.npmrc"
-            //registry.npmjs.org/:_authToken=$NPM_TOKEN
-          EOF
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Create Release Pull Request or Publish to npm
         id: changesets
         uses: changesets/action@v1
@@ -54,7 +52,7 @@ jobs:
           publish: pnpm release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true
 
       # TODO alert discord
       # - name: Send a Slack notification if a publish happens
