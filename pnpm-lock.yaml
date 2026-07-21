@@ -12,12 +12,12 @@ importers:
 
   .:
     devDependencies:
+      '@changesets/changelog-github':
+        specifier: 1.0.0-next.6
+        version: 1.0.0-next.6
       '@changesets/cli':
         specifier: ^2.27.8
         version: 2.27.8
-      '@svitejs/changesets-changelog-github-compact':
-        specifier: ^0.1.1
-        version: 0.1.1
       '@tsconfig/svelte':
         specifier: ^4.0.1
         version: 4.0.1
@@ -124,6 +124,14 @@ packages:
       '@changesets/types': 6.0.0
     dev: true
 
+  /@changesets/changelog-github@1.0.0-next.6:
+    resolution: {integrity: sha512-0ShCWgNt50xP0mryAYT8wtSkMUinG8uhxXgCgwHZ4UvJnR2f4ns8OsGAxYu8FIds7kHFdLOz7qX4YQ6AX4tVUA==}
+    engines: {node: ^22.11 || ^24 || >=26}
+    dependencies:
+      '@changesets/get-github-info': 1.0.0-next.4
+      '@changesets/types': 7.0.0-next.7
+    dev: true
+
   /@changesets/cli@2.27.8:
     resolution: {integrity: sha512-gZNyh+LdSsI82wBSHLQ3QN5J30P4uHKJ4fXgoGwQxfXwYFTJzDdvIJasZn8rYQtmKhyQuiBj4SSnLuKlxKWq4w==}
     hasBin: true
@@ -187,13 +195,11 @@ packages:
       semver: 7.6.3
     dev: true
 
-  /@changesets/get-github-info@0.5.2:
-    resolution: {integrity: sha512-JppheLu7S114aEs157fOZDjFqUDpm7eHdq5E8SSR0gUBTEK0cNSHsrSR5a66xs0z3RWuo46QvA3vawp8BxDHvg==}
+  /@changesets/get-github-info@1.0.0-next.4:
+    resolution: {integrity: sha512-Bosh+XOoFvLMzAj301tg6phbrEggBtvEccrnceEvYsKSM7PjcIa32Fy22SU5g+501HZywkdwcAlybdWF+e/zzw==}
+    engines: {node: ^22.11 || ^24 || >=26}
     dependencies:
-      dataloader: 1.4.0
-      node-fetch: 2.7.0
-    transitivePeerDependencies:
-      - encoding
+      dataloader: 2.2.3
     dev: true
 
   /@changesets/get-release-plan@4.0.4:
@@ -268,6 +274,11 @@ packages:
 
   /@changesets/types@6.0.0:
     resolution: {integrity: sha512-b1UkfNulgKoWfqyHtzKS5fOZYSJO+77adgL7DLRDr+/7jhChN+QcHnbjiQVOz/U+Ts3PGNySq7diAItzDgugfQ==}
+    dev: true
+
+  /@changesets/types@7.0.0-next.7:
+    resolution: {integrity: sha512-1XyshLw+lRCg2DWxi1Qt3hbezjBostHzXvGXVgSzAeZ+fL+r2ikcMbpaQ98D9ivwKhYFf1FBbKbEc+XsBZsIJQ==}
+    engines: {node: ^22.11 || ^24 || >=26}
     dev: true
 
   /@changesets/write@0.3.2:
@@ -815,16 +826,6 @@ packages:
       - supports-color
     dev: true
 
-  /@svitejs/changesets-changelog-github-compact@0.1.1:
-    resolution: {integrity: sha512-eBi211CfmKtkxB6tINicaDPBMbolswPbaAy7kCx+uUFL/LxztLm9cB+7jP54TgCrv+mMz8vSJWIs/baH63PjsA==}
-    engines: {node: ^12.20 || ^14.13.1 || >= 16}
-    dependencies:
-      '@changesets/get-github-info': 0.5.2
-      dotenv: 16.4.5
-    transitivePeerDependencies:
-      - encoding
-    dev: true
-
   /@tsconfig/svelte@4.0.1:
     resolution: {integrity: sha512-B+XlGpmuAQzJqDoBATNCvEPqQg0HkO7S8pM14QDI5NsmtymzRexQ1N+nX2H6RTtFbuFgaZD4I8AAi8voGg0GLg==}
     dev: true
@@ -1165,8 +1166,8 @@ packages:
       source-map-js: 1.2.1
     dev: true
 
-  /dataloader@1.4.0:
-    resolution: {integrity: sha512-68s5jYdlvasItOJnCuI2Q9s4q98g0pCyL3HrcKJu8KNugUl8ahgmZYg38ysLTgQjjXX3H8CJLkAvWrclWfcalw==}
+  /dataloader@2.2.3:
+    resolution: {integrity: sha512-y2krtASINtPFS1rSDjacrFgn1dcUuoREVabwlOGOe4SdxenREqwjwjElAdwvbGM7kgZz9a3KVicWR7vcz8rnzA==}
     dev: true
 
   /debug@4.3.7:
@@ -1262,11 +1263,6 @@ packages:
       dom-serializer: 2.0.0
       domelementtype: 2.3.0
       domhandler: 5.0.3
-    dev: true
-
-  /dotenv@16.4.5:
-    resolution: {integrity: sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==}
-    engines: {node: '>=12'}
     dev: true
 
   /enquirer@2.4.1:
@@ -2148,18 +2144,6 @@ packages:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
     dev: true
 
-  /node-fetch@2.7.0:
-    resolution: {integrity: sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==}
-    engines: {node: 4.x || >=6.0.0}
-    peerDependencies:
-      encoding: ^0.1.0
-    peerDependenciesMeta:
-      encoding:
-        optional: true
-    dependencies:
-      whatwg-url: 5.0.0
-    dev: true
-
   /normalize-path@3.0.0:
     resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==}
     engines: {node: '>=0.10.0'}
@@ -2795,10 +2779,6 @@ packages:
       is-number: 7.0.0
     dev: true
 
-  /tr46@0.0.3:
-    resolution: {integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==}
-    dev: true
-
   /type-check@0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
     engines: {node: '>= 0.8.0'}
@@ -2984,17 +2964,6 @@ packages:
       - sugarss
       - supports-color
       - terser
-    dev: true
-
-  /webidl-conversions@3.0.1:
-    resolution: {integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==}
-    dev: true
-
-  /whatwg-url@5.0.0:
-    resolution: {integrity: sha512-saE57nupxk6v3HY35+jzBwYa0rKSy0XR8JSxZPwgLr7ys0IBzhGviA1/TUGJLmSVqs8pb9AnvICXEuOHLprYTw==}
-    dependencies:
-      tr46: 0.0.3
-      webidl-conversions: 3.0.1
     dev: true
 
   /which@1.3.1:
