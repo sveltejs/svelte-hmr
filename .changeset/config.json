@@ -1,6 +1,6 @@
 {
   "$schema": "https://unpkg.com/@changesets/config@1.6.0/schema.json",
-  "changelog": ["@svitejs/changesets-changelog-github-compact", { "repo": "sveltejs/svelte-hmr" }],
+  "changelog": ["@changesets/changelog-github", { "repo": "sveltejs/svelte-hmr", "template": "\n- {summary} {ref}" }],
   "commit": false,
   "linked": [],
   "access": "public",
